@@ -1,0 +1,14 @@
+
+
+Enhancements
+	Allow for prompting of passwords for certs stored on disk.
+
+	Handle multiple certs being returned from query
+	Handle multiple certs locally
+	configurations
+		cert file names
+		cert file locations
+
+	What to do with other SMIME/A records - hashes, etc...
+
+	NAPTR functionality

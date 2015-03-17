@@ -1,4 +1,6 @@
-The MIT License (MIT)
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
 Copyright (c) <2014> Verisign, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,3 +19,36 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<!DOCTYPE overlay >
+
+<?xml-stylesheet type="text/css" href="chrome://custombutton/content/button.css"?>
+<overlay 
+  id="custombutton-overlay" 
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/javascript" src="chrome://custombutton/content/button.js" />
+
+  <!-- Thunderbird compose -->
+  <toolbarpalette id="MsgComposeToolbarPalette">  
+  <!-- button details -->
+  <!-- -->
+  <toolbarbutton 
+    class="toolbarbutton-1"
+    id="dane-encrypt-button-1"
+    label="Dane-EnCrypt"
+    tooltiptext="Dane lookup and encrypt"
+    oncommand="CustomButton[1]()"/>
+  <!-- -->
+  <toolbarbutton 
+    class="toolbarbutton-1" 
+    id="dane-sign-button-1"
+    label="Dane-Sign"
+    tooltiptext="Dane sign"
+    oncommand="CustomButton[3]()" />
+  <!-- "chromeclass-toolbar-additional custombutton" -->
+
+  </toolbarpalette>
+</overlay>
+

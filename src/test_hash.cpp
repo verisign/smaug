@@ -1,4 +1,4 @@
-The MIT License (MIT)
+/*
 Copyright (c) <2014> Verisign, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,3 +17,36 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+#include <string>
+#include <iostream>
+#include <cstdlib>
+
+#include "dane_openssl.h"
+
+void usage() {
+    std::cout << "Usage: hash_test <string>" << std::endl;
+    exit(-1);
+}
+
+int main(int argc, char *argv[]) {
+
+    if (argc != 2) {
+	usage();
+    }
+
+    std::string phrase    = std::string(argv[1]);
+    std::string resultStr = "";
+    hash_sha224( resultStr, phrase );
+    std::cout << "Result of sha224 String [" << resultStr << "]" << std::endl;
+
+    resultStr = "";
+    hash_sha256( resultStr, phrase );
+    std::cout << "Result of sha256 String [" << resultStr << "]" << std::endl;
+    
+    resultStr = "";
+    hash_sha512( resultStr, phrase );
+    std::cout << "Result of sha512 String [" << resultStr << "]" << std::endl;
+    return 0;
+}

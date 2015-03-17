@@ -1,4 +1,5 @@
-The MIT License (MIT)
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
 Copyright (c) <2014> Verisign, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,3 +18,35 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<!DOCTYPE overlay >
+
+<?xml-stylesheet type="text/css" href="chrome://custombutton/content/button.css"?>
+
+<overlay id="script-overlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/javascript" src="chrome://custombutton/content/button.js" />
+  <script type="application/x-javascript;version=1.8" src="windowpane.js"/>
+
+  <!-- Thunderbird mail -->
+  <toolbarpalette id="MailToolbarPalette">
+  
+  <!-- button details -->
+    <toolbarbutton id="dane-vrfy-signed-button-1"
+		   class="toolbarbutton-1"
+		   label="Verify Signature"
+		   tooltiptext="Verify Signature"
+		   oncommand="CustomButton[4]()"
+		   />
+    <toolbarbutton id="dane-decrypt-button-1"
+		   class="toolbarbutton-1"
+		   label="Decrypt"
+		   tooltiptext="Decrypt message"
+		   oncommand="CustomButton[2]()"
+		   />
+  <!-- 		 class="toolbarbutton-1 chromeclass-toolbar-additional custombutton" -->
+
+  </toolbarpalette>
+</overlay>

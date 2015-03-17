@@ -1,4 +1,4 @@
-The MIT License (MIT)
+/*
 Copyright (c) <2014> Verisign, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,3 +17,43 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+#ifndef __DANE_CERT_H__
+#define __DANE_CERT_H__
+
+#include <stdint.h>
+#include <string>
+#include <cstring>
+#include <cstdlib>
+
+#include "dane_enc.h"
+
+class Certificate {
+ public:
+    std::string record;
+    bool        valid;
+    uint32_t    getdns_response_status;
+    uint16_t    certType;
+    uint32_t    certLen;
+    uint8_t     cert[MAX_CERTIFICATE_LEN];
+
+    uint8_t     cert_usage;
+    uint8_t     cert_selector;
+    uint8_t     cert_matching_type;
+    uint8_t     cert_access;
+
+    Certificate();
+    ~Certificate();
+    uint16_t  getCertType();
+    uint32_t  getResponseStatus();
+    void      printCert();
+    uint32_t  getCert(uint8_t * certBuf, uint32_t certSize,
+                      uint8_t& usage, uint8_t& type, uint8_t& selector);
+    void      setCertificateInfo(const std::string record);
+
+ private:
+    int getDnsData();
+};
+
+#endif

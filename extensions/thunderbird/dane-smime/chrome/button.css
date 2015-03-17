@@ -1,4 +1,4 @@
-The MIT License (MIT)
+/* 
 Copyright (c) <2014> Verisign, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,3 +17,33 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+#dane-encrypt-button-1,
+#wrapper-dane-encrypt-button-1
+  {list-style-image: url("chrome://custombutton/content/encrypt.jpg");}
+
+#dane-sign-button-1,
+#wrapper-dane-sign-button-1
+  {list-style-image: url("chrome://custombutton/content/sign.jpg");}
+
+#dane-decrypt-button-1,
+#wrapper-dane-decrypt-button-1
+  {list-style-image: url("chrome://custombutton/content/encrypt.jpg");}
+
+#dane-vrfy-signed-button-1,
+#wrapper-dane-vrfy-signed-button-1
+  {list-style-image: url("chrome://custombutton/content/vrfy.jpg");}
+
+/* common style for all custom buttons */
+.custombutton                  
+  {-moz-image-region: rect( 0px 24px 24px  0px);}
+
+.custombutton:hover     
+  {-moz-image-region: rect(24px 24px 48px  0px);}
+
+[iconsize="small"] .custombutton
+  {-moz-image-region: rect( 0px 40px 16px 24px);}
+
+[iconsize="small"] .custombutton:hover
+  {-moz-image-region: rect(24px 40px 40px 24px);}

@@ -1,0 +1,1232 @@
+
+
+
+DANE                                                          P. Hoffman
+Internet-Draft                                            VPN Consortium
+Intended status: Standards Track                             J. Schlyter
+Expires: April 3, 2014                                          Kirei AB
+                                                                 S. Rose
+                                                                    NIST
+                                                      September 30, 2013
+
+
+Using Secure DNS to Associate Certificates with Domain Names For S/MIME
+                        draft-ietf-dane-smime-02
+
+Abstract
+
+   This document describes how to use secure DNS to associate an S/MIME
+   user's certificate with the intended domain name, similar to the way
+   that DANE (RFC 6698) does for TLS.  Specific mechanisms are included
+   to accommodate separate encryption and signature certificates.
+
+Requirements Language
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   [RFC2119].
+
+   This document also makes use of standard PKIX, DNSSEC, and S/MIME
+   terminology.  See [RFC5280], [RFC4033], [RFC4034], [RFC4035], and
+   [RFC5751] respectively, for these terms.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on April 3, 2014.
+
+Copyright Notice
+
+
+
+Hoffman, et al.           Expires April 3, 2014                 [Page 1]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+   Copyright (c) 2013 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hoffman, et al.           Expires April 3, 2014                 [Page 2]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+Table of Contents
+
+   1.  Introduction . . . . . . . . . . . . . . . . . . . . . . . . .  4
+     1.1.  Scope  . . . . . . . . . . . . . . . . . . . . . . . . . .  4
+
+   2.  The SMIMEA Resource Record . . . . . . . . . . . . . . . . . .  5
+     2.1.  SMIMEA RDATA Fields  . . . . . . . . . . . . . . . . . . .  5
+       2.1.1.  The Certificate Usage Field  . . . . . . . . . . . . .  5
+       2.1.2.  The Selector Field . . . . . . . . . . . . . . . . . .  7
+       2.1.3.  The Matching Type Field  . . . . . . . . . . . . . . .  7
+       2.1.4.  Certificate Access Field . . . . . . . . . . . . . . .  7
+       2.1.5.  The Certificate Association Data Field . . . . . . . .  8
+     2.2.  SMIMEA RR Presentation Format  . . . . . . . . . . . . . .  8
+     2.3.  SMIMEA RR Examples . . . . . . . . . . . . . . . . . . . .  9
+
+   3.  Domain Names for S/MIME Certificate Associations . . . . . . .  9
+     3.1.  Domain Name Preparation  . . . . . . . . . . . . . . . . .  9
+     3.2.  Domain Name Examples . . . . . . . . . . . . . . . . . . . 10
+
+   4.  Use of SMIMEA Records in SMIME . . . . . . . . . . . . . . . . 11
+     4.1.  Usable Certificate Associations  . . . . . . . . . . . . . 11
+
+   5.  Mandatory-to-Implement Features  . . . . . . . . . . . . . . . 12
+
+   6.  IANA Considerations  . . . . . . . . . . . . . . . . . . . . . 12
+     6.1.  SMIMEA RRtype  . . . . . . . . . . . . . . . . . . . . . . 12
+     6.2.  SMIMEA Certificate Usage Registry  . . . . . . . . . . . . 13
+     6.3.  SMIMEA Selectors . . . . . . . . . . . . . . . . . . . . . 13
+     6.4.  SMIMEA Matching Types  . . . . . . . . . . . . . . . . . . 14
+     6.5.  Certificate Access Field . . . . . . . . . . . . . . . . . 14
+
+   7.  Security Considerations  . . . . . . . . . . . . . . . . . . . 14
+
+   8.  Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . 15
+
+   9.  References . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+     9.1.  Normative References . . . . . . . . . . . . . . . . . . . 15
+     9.2.  Informative References . . . . . . . . . . . . . . . . . . 17
+
+   Appendix A.  Operational Considerations for Deploying SMIMEA
+                Records . . . . . . . . . . . . . . . . . . . . . . . 18
+     A.1.  Provisioning SMIMEA Records in DNS with Aliases and
+           Wildcards  . . . . . . . . . . . . . . . . . . . . . . . . 18
+       A.1.1.  Provisioning SMIMEA with DNAME Records . . . . . . . . 18
+       A.1.2.  Provisioning SMIMEA with CNAME Records . . . . . . . . 19
+       A.1.3.  Provisioning SMIMEA Records with Wildcards . . . . . . 19
+         A.1.3.1.  Wildcard for All Invalid Users . . . . . . . . . . 20
+         A.1.3.2.  Organization TA Wildcard . . . . . . . . . . . . . 20
+
+
+
+Hoffman, et al.           Expires April 3, 2014                 [Page 3]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+1.  Introduction
+
+   S/MIME [RFC5751] messages often contain a certificate.  This
+   certificate assists in authenticating the sender of the message and
+   can be used for encrypting messages that will be sent in reply.  In
+   order for the S/MIME receiver to authenticate that a message is the
+   sender who is identified in the message, the receiver's mail user
+   agent (MUA) must validate that this certificate is associated with
+   the purported sender.  Currently, the MUA must trust a trust anchor
+   upon which the sender's certificate is rooted, and must successfully
+   validate the certificate.
+
+   Some people want to authenticate the association of the sender's
+   certificate with the sender without trusting a configured trust
+   anchor.  Given that the DNS administrator for a domain name is
+   authorized to give identifying information about the zone, it makes
+   sense to allow that administrator to also make an authoritative
+   binding between email messages purporting to come from the domain
+   name and a certificate that might be used by someone authorized to
+   send mail from those servers.  The easiest way to do this is to use
+   the DNS.
+
+   To send S/MIME encrypted messages to another user, it is necessary to
+   have the intended recipient's encryption certificate.  If the users
+   do not share a common certificate directory, the intended recipient
+   must provide his/her certificate prior to successful encryption.  The
+   DNS is a good way to publish these certificates or to advertise a
+   location for accessing them.
+
+   S/MIME best practices require separate public keys for encryption and
+   Signatures [NIST.800-57-1].  This document defines structures to
+   accommodate distinct certificates for SMIME encryption and signature
+   operations.
+
+   This standard is largely based on DANE for TLS [RFC6698] and uses
+   terminology from [I-D.draft-ietf-dane-registry-acronyms].
+
+1.1.  Scope
+
+   This document defines a mechanism to employ DNS/DNSSEC to discover
+   and validate users' S/MIME encryption certificates and to validate
+   certificates in S/MIME digital signatures.  It does not alter
+   standards for S/MIME [RFC5751] or any email or message related
+   protocol.
+
+   This document does not propose to designate or use the DNS as a
+   historical archive of user and trust anchor certificates.
+   Certificates made available via DANE are asserted to be valid.  This
+
+
+
+Hoffman, et al.           Expires April 3, 2014                 [Page 4]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+   mechanism can be used to facilitate key rollovers, but will not
+   address the issue of providing or validating expired certificates.
+
+2.  The SMIMEA Resource Record
+
+   The SMIMEA DNS resource record (RR) is used to associate an end
+   entity certificate or public key with the associated email address,
+   thus forming a "SMIMEA certificate association".
+
+   The type value for the SMIMEA RR type is to be assigned.
+
+   The SMIMEA RR is class independent.
+
+   The SMIMEA RR has no special TTL requirements.
+
+2.1.  SMIMEA RDATA Fields
+
+   The RDATA for the SMIMEA RR consists of a one-octet certificate usage
+   field, a one-octet selector field, a one-octet matching type field, a
+   one-octet certificate access field, and the certificate association
+   data field.
+
+                           1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |  Cert. Usage  |   Selector    | Matching Type | Cert. Access  |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      /                                                               /
+      /                 Certificate Association Data                  /
+      /                                                               /
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+
+
+2.1.1.  The Certificate Usage Field
+
+   A one-octet value, called "certificate usage", specifies the provided
+   association that will be used to validate the certificate.  This
+   value will be defined in a new IANA registry in order to make it
+   easier to add additional certificate usages in the future.  Four of
+   the initial usages defined in this document are similar to the first
+   four TLSA [RFC6698] certificate usages.  The certificate usage values
+   are:
+
+      0 or PKIX-CA -- PKIX-CA is used to specify a CA certificate, or
+      the public key of such a certificate, that MUST be found in any of
+      the PKIX certification paths for the user.  This certificate usage
+      is sometimes referred to as "CA constraint" because it limits
+
+
+
+Hoffman, et al.           Expires April 3, 2014                 [Page 5]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+      which CA can be used to issue certificates for a given user.  The
+      presented certificate MUST pass PKIX certification path
+      validation, and a CA certificate that matches the SMIMEA record
+      MUST be included as part of a valid certification path.  Because
+      this certificate usage allows both trust anchors and CA
+      certificates, the certificate might or might not have the
+      basicConstraints extension present.
+
+      1 or PKIX-EE -- PKIX-EE is used to specify an end entity
+      certificate, or the public key of such a certificate, that MUST be
+      matched with the end entity certificate for the SMIME user.  This
+      certificate usage is sometimes referred to as "user certificate
+      constraint" because it limits which end entity certificate can be
+      used by a given user.  The target user certificate MUST pass PKIX
+      certification path validation and MUST match the SMIMEA record.
+
+      2 or DANE-TA -- DANE-TA is used to specify a certificate, or the
+      public key of such a certificate, that MUST be used as the trust
+      anchor when validating the SMIME user certificate.  This
+      certificate usage is sometimes referred to as "trust anchor
+      assertion" and allows a domain name administrator to specify a new
+      trust anchor -- for example, if the domain issues its own
+      certificates under its own CA that is not expected to be in the
+      end users' collection of trust anchors.  The target user
+      certificate MUST pass PKIX certification path validation, with any
+      certificate matching the SMIMEA record considered to be a trust
+      anchor for this certification path validation.
+
+      3 or DANE-EE -- DANE-EE is used to specify a certificate, or the
+      public key of such a certificate, that MUST match the SMIME user's
+      certificate.  This certificate usage is sometimes referred to as
+      "domain-issued certificate" because it allows for a domain name
+      administrator to issue certificates for a domain without involving
+      a third-party CA.  The target user certificate MUST match the
+      SMIMEA record.  The difference between certificate usage 1 and
+      certificate usage 3 is that certificate usage 1 requires that the
+      certificate pass PKIX validation, but PKIX validation is not
+      tested for certificate usage 3.
+
+      4 or REJECT -- REJECT is used by the domain owner to assert that
+      this user's certificate MUST be considered invalid for the
+      requested function (i.e. signature or encryption).  This is a
+      stronger assertion than a failed certificate validation check.
+      Possible usage scenarios include unrecognized user names and
+      revoked user certificates.  Values in all other RDATA fields MAY
+      be ignored but all fields MUST be populated to comply with SMIMEA
+      RDATA parsing requirements.
+
+
+
+
+Hoffman, et al.           Expires April 3, 2014                 [Page 6]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+   The certificate usages defined in this document explicitly only apply
+   to PKIX-formatted certificates in DER encoding [ITU.X690.2002].  If
+   SMIME allows other formats later, or if extensions to this RR type
+   are made that accept other formats for certificates, those
+   certificates will need their own certificate usage values.
+
+2.1.2.  The Selector Field
+
+   A one-octet value, called "selector", specifies which part of the
+   SMIME certificate presented by the server will be matched against the
+   association data.  This value will be defined in a new IANA registry.
+   The selectors defined in this document are:
+
+      0 or CERT -- Full certificate: the Certificate binary structure as
+      defined in [RFC5280].
+
+      1 or SPKI -- SubjectPublicKeyInfo: DER-encoded binary structure as
+      defined in [RFC5280].
+
+   (Note that the use of "selector" in this document is completely
+   unrelated to the use of "selector" in DomainKeys Identified Mail
+   (DKIM) [RFC6376].)
+
+2.1.3.  The Matching Type Field
+
+   A one-octet value, called "matching type", specifies how the
+   certificate association is presented.  This value will be defined in
+   a new IANA registry.  The types defined in this document are:
+
+      0 or Full -- Exact match on selected content
+
+      1 or SHA2-256 -- SHA-256 hash of selected content [RFC6234]
+
+      2 or SHA2-512 -- SHA-512 hash of selected content [RFC6234]
+
+   If the SMIMEA record's matching type is a hash, having the record use
+   the same hash algorithm that was used in the signature in the
+   certificate (if possible) will assist clients that support a small
+   number of hash algorithms.
+
+2.1.4.  Certificate Access Field
+
+   This one octet value indicates an alternative method for certificate
+   discovery.  Some domain owners may not want to publish user
+   certificates via DNS but may want to use the DNS to advertise the
+   means to access them.  If full user certificates are not included in
+   the Certificate Association Data this field MAY be used to indicate
+   how the user's certificate can be obtained.  The RDATA certificate
+
+
+
+Hoffman, et al.           Expires April 3, 2014                 [Page 7]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+   association data MUST be used to validate certificates obtained by
+   the alternative method.
+
+      0 or NO: No alternative method advertised.
+
+      1 or NAPTR : NAPTR record available.  The same domain name used
+      for this SMIMEA request MAY be used again with type NAPTR
+      [RFC3403] to retrieve the URI for certificate access.
+
+      2 or WF: X.509 certificates available in WebFinger [RFC7033].
+
+2.1.5.  The Certificate Association Data Field
+
+   This field specifies the "certificate association data" to be
+   matched.  These bytes are either raw data (that is, the full
+   certificate or its SubjectPublicKeyInfo, depending on the selector)
+   for matching type Full (0), or the hash of the raw data for matching
+   types SHA2-256 (1) and SHA2-512 (2).  The data refers to the
+   certificate in the association, not to the ASN.1 Certificate object.
+   For certificate usage type REJECT (4) at least one byte of data is
+   REQUIRED but the value MUST be ignored.
+
+2.2.  SMIMEA RR Presentation Format
+
+   The presentation format of the RDATA portion (as defined in
+   [RFC1035]) is as follows:
+
+   o  The certificate usage field MUST be represented either as a
+      certificate usage mnemonic or an 8-bit unsigned integer.
+
+   o  The selector field MUST be represented either as a selector field
+      mnemonic or an 8-bit unsigned integer.
+
+   o  The matching type field MUST be represented either as a matching
+      type mnemonic or an 8-bit unsigned integer.
+
+   o  The certificate access field MUST be represented either as a
+      certificate access mnemonic or an 8-bit unsigned integer.
+
+   o  The certificate association data field MUST be represented as a
+      string of hexadecimal characters.  Whitespace is allowed within
+      the string of hexadecimal characters, as described in [RFC1035].
+
+   Where practical, the mnemonic form SHOULD be used in order to provide
+   clarity.
+
+
+
+
+
+
+Hoffman, et al.           Expires April 3, 2014                 [Page 8]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+2.3.  SMIMEA RR Examples
+
+   In the following examples, the domain name is formed using the rules
+   in Section 3.
+
+   An example of a hashed (SHA2-256) association of a Full PKIX-CA
+   certificate in the PKIX validation path of a certificate used to
+   validate a signed S/MIME message.  No alternative certificate access
+   is advertised.
+
+      MFWGSY3F._sign._smimecert.example.com. IN SMIMEA (
+         0 0 1 0 d2abde240d7cd3ee6b4b28c54df034b9
+                 7983a1d16e8a410e4561cb106618e971 )
+
+    Alternatively
+
+      MFWGSY3F._sign._smimecert.example.com. IN SMIMEA (
+         PKIX-CA FULL SHA2-256 NO d2abde240d7cd3ee6b4b28c54df034b9
+                                  7983a1d16e8a410e4561cb106618e971 )
+
+   An example resource record providing Full self-signed encryption
+   certificate:
+
+      MFWGSY3F._encr._smimecert.example.com. IN SMIMEA (
+         DANE-EE Cert Full NO 30820307308201efa003020102020... )
+
+   An example of resource record invalidating all digital signatures by
+   identified user:
+
+      MNUHKY3L._sign._smimecert.example.com. IN SMIMEA (
+                            REJECT Cert Full NO 00 )
+
+3.  Domain Names for S/MIME Certificate Associations
+
+   SMIMEA domain names include function and user labels.  The purpose is
+   to identify the function specific certificate if a user has multiple
+   certificates.  Alias MAY be used if a user has a common certificate
+   for both functions
+
+3.1.  Domain Name Preparation
+
+   Domain names are prepared for requests in the following manner.
+
+   1.  The user name (the "left-hand side" of the email address, called
+       the "local-part" in the mail message format definition [RFC5322]
+       and the "local part" in the specification for internationalized
+       email [RFC6530]), is encoded with Base32 [RFC4648], to become the
+       left-most label in the prepared domain name.  This does not
+
+
+
+Hoffman, et al.           Expires April 3, 2014                 [Page 9]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+       include the "@" character that separates the left and right sides
+       of the email address.
+
+   2.  The second left-most label is the function specific label
+       segment.  It is selected based on the S/MIME function the MUA is
+       performing.  Values are:
+
+          "_encr" for obtaining or validating a certificate or public
+          key to be used to encrypt a message.
+
+          "_sign" for certificate validation data to verify a digital
+          signature.
+
+       For certificate use cases XXXX-EE (1 and 3) the function specific
+       label SHOULD be consistent with the Key Usage field (defined in
+       section 4.2.1.3 of [RFC5280]) of the associated certificate.
+
+   3.  The string "_smimecert" becomes the third left-most label in the
+       prepared domain.  The function specific label segment is separate
+       to enable delegation of a single _smimecert zone cut.
+
+   4.  The domain name (the "right-hand side" of the email address,
+       called the "domain" in [RFC5322]) is appended to the result of
+       step 3 to complete the prepared domain name.
+
+   Design note: Encoding the user name with Base32 allows local parts
+   that have characters that would prevent their use in domain names.
+   For example, a period (".") is a valid character in a local part, but
+   would wreak havoc in a domain name.  Similarly, RFC 6530 allows non-
+   ASCII characters in local parts, and encoding a local part with non-
+   ASCII characters with Base32 renders the name usable in the DNS.
+   Base32 encoding is case sensitive so "alice" encodes to "MFWGSY3F"
+   whereas "Alice" encodes to "IFWGSY3F".  Compliant MUAs SHOULD be
+   aware that user-provided addresses might not match the case of their
+   intended recipient's true address.
+
+3.2.  Domain Name Examples
+
+   Example 1.  Signature certificate verification: to request an SMIMEA
+   resource record to verify a signature certificate for a user whose
+   address is "alice@example.com", you would use:
+
+            "MFWGSY3F._sign._smimecert.example.com"
+
+
+
+
+
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 10]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+   Example 2.  Encryption key discovery: to request an SMIMEA resource
+   record for encrypting an email to user "bob@example.com" you would
+   use:
+
+            "MJXWE===._encr._smimecert.example.com"
+
+4.  Use of SMIMEA Records in SMIME
+
+   SMIMEA records are used to publish user certificates or validate user
+   certificates acquired by other means.  Typically these use cases are
+   associated with message encryption and signature validation processes
+   respectively.  Section 2.1 of this document defines the mandatory
+   matching rules for the data.  Where possible, consistency with
+   [RFC6698] is maintained.
+
+4.1.  Usable Certificate Associations
+
+   An implementation of this protocol makes a DNS query for SMIMEA
+   records, validates these records using DNSSEC, and uses the resulting
+   SMIMEA records and validation to modify S/MIME message processing
+   behavior.
+
+   Determining whether an SMIMEA RRSet can be used MUST be based on the
+   DNSSEC validation state (as defined in [RFC4035]).
+
+   o  An SMIMEA RRSet whose DNSSEC validation state is secure MUST be
+      used as a certificate association for S/MIME unless a local policy
+      would prohibit the use of the specific certificate association in
+      the secure SMIMEA RRSet.
+
+   o  If the DNSSEC validation state on the response to the request for
+      the SMIMEA RRSet is bogus then the RRSet MUST be disregarded and
+      considered unusable.  Additional SMIMEA queries may be initiated.
+
+   o  If the DNSSEC validation state is indeterminate or insecure then
+      the SMIMEA RRSet MUST be disregarded and considered unusable.
+
+   MUAs that rely on another entity to perform the DNSSEC signature
+   validation SHOULD use a secure mechanism between themselves and the
+   validator.  Examples of secure transports to other hosts include TSIG
+   [RFC2845], SIG(0) [RFC2931], and IPsec [RFC6071].  Note that it is
+   not sufficient to use secure transport to a DNS resolver that does
+   not do DNSSEC signature validation.
+
+   If a certificate association contains a certificate usage, selector,
+   or matching type that is not understood by the MUA, that certificate
+   association MUST be considered unusable.  If the comparison data for
+   a certificate is malformed, the certificate association MUST be
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 11]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+   considered unusable.
+
+   If a certificate association contains a matching type or certificate
+   association data that uses a cryptographic algorithm that is
+   considered too weak for the MUA's local policy, the certificate
+   association MUST be considered unusable.
+
+   If a MUA receives zero usable certificate associations from a DNS
+   request or from its cache, it processes S/MIME requests in the normal
+   fashion without any input from the SMIMEA records.
+
+   If a MUA performing certificate validation receives one or more
+   usable certificate associations then it MUST attempt to match each
+   certificate association with the user's certificate until a
+   successful match is found.  If no certificate associations match then
+   the certificate MUST be considered invalid.
+
+   If a MUA makes an SMIMEA request for an encryption certificate and
+   the response includes more than one valid certificate, the
+   certificate with the most recent "Not Before" data SHOULD be
+   selected. [ Are there better criteria? ]
+
+5.  Mandatory-to-Implement Features
+
+   S/MIME MUAs conforming to this specification MUST be able to
+   correctly interpret SMIMEA records with certificate usages PKIX-CA,
+   PKIX-EE, DANE-TA, DANE-EE and REJECT.  S/MIME MUAs conforming to this
+   specification MUST be able to compare a certificate association with
+   a certificate offered by another S/MIME MUA using selector types FULL
+   and SPKI, and matching type FULL (no hash used) and matching type
+   SHA2-256, and SHOULD be able to make such comparisons with matching
+   type SHA2-512.
+
+6.  IANA Considerations
+
+6.1.  SMIMEA RRtype
+
+   This document uses a new DNS RR type, SMIMEA, whose value will be
+   allocated by IANA from the Resource Record (RR) TYPEs subregistry of
+   the Domain Name System (DNS) Parameters registry.
+
+
+
+
+
+
+
+
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 12]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+6.2.  SMIMEA Certificate Usage Registry
+
+   This document creates a new registry, "SMIMEA Certificate Usages".
+   The registry policy is "RFC Required".  The initial entries in the
+   registry are:
+
+     +-------+----------+--------------------------------+-------------+
+     | Value | Mnemonic | Short Description              | Reference   |
+     +-------+----------+--------------------------------+-------------+
+     |   0   | PKIX-CA  | CA      constraint             | [this doc]  |
+     |   1   | PKIX-EE  | Service certificate constraint | [this doc]  |
+     |   2   | DANE-TA  | Trust anchor assertion         | [this doc]  |
+     |   3   | DANE-EE  | Domain-issued certificate      | [this doc]  |
+     |   4   | REJECT   | Invalid Certificate or User    | [this doc]  |
+     | 5-254 |          | Unassigned                     |             |
+     |  255  | PrivCert | Reserved for Private Use       | [this doc]  |
+     +-------+----------+--------------------------------+-------------+
+
+
+   Applications to the registry can request specific values that have
+   yet to be assigned.
+
+6.3.  SMIMEA Selectors
+
+   This document creates a new registry, "TLSA Selectors".  The registry
+   policy is "Specification Required".  The initial entries in the
+   registry are:
+
+          +-------+----------+--------------------------+-------------+
+          | Value | Mnemonic | Short Description        | Reference   |
+          +-------+----------+--------------------------+-------------+
+          |   0   | Cert     | Full certificate         | [this doc]  |
+          |   1   | SPKI     | SubjectPublicKeyInfo     | [this doc]  |
+          | 2-254 |          | Unassigned               |             |
+          |  255  | PrivSel  | Reserved for Private Use | [this doc]  |
+          +-------+----------+--------------------------+-------------+
+
+
+   Applications to the registry can request specific values that have
+   yet to be assigned.
+
+
+
+
+
+
+
+
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 13]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+6.4.  SMIMEA Matching Types
+
+   This document creates a new registry, "SMIMEA Matching Types".  The
+   registry policy is "Specification Required".  The initial entries in
+   the registry are:
+
+         +-------+-----------+--------------------------+-------------+
+         | Value | Mnemonic  | Short Description        | Reference   |
+         +-------+-----------+--------------------------+-------------+
+         |   0   | Full      | No hash used             | [this doc]  |
+         |   1   | SHA2-256  | 256 bit hash by SHA2     | [this doc]  |
+         |   2   | SHA2-512  | 512 bit hash by SHA2     | [this doc]  |
+         | 3-254 |           | Unassigned               |             |
+         |  255  | PrivMatch | Reserved for Private Use | [this doc]  |
+         +-------+-----------+--------------------------+-------------+
+
+
+   Applications to the registry can request specific values that have
+   yet to be assigned.
+
+6.5.  Certificate Access Field
+
+   This document creates a new registry, "SMIMEA Certificate Access".
+   The registry policy is "Specification Required".  The initial entries
+   in the registry are:
+
+         +-------+-----------+---------------------------+-------------+
+         | Value | Mnemonic  | Short Description         | Reference   |
+         +-------+-----------+---------------------------+-------------+
+         |   0   | NO        | No Alternative Advertised | [this doc]  |
+         |   1   | NAPTR     | NAPTR                     | [this doc]  |
+         |   2   | WF        | WebFinger                 | [this doc]  |
+         | 3-254 |           | Unassigned                |             |
+         |  255  | PrivUse   | Reserved for Private Use  | [this doc]  |
+         +-------+-----------+---------------------------+-------------+
+
+
+   Applications to the registry can request specific values that have
+   yet to be assigned.
+
+7.  Security Considerations
+
+   DNS zones that are signed with DNSSEC using NSEC for denial of
+   existence are susceptible to zone-walking, a mechanism that allow
+   someone to enumerate all the names in the zone.  Someone who wanted
+   to collect email addresses from a zone that uses SMIMEA might use
+   such a mechanism.  DNSSEC-signed zones using NSEC3 for denial of
+   existence are significantly less susceptible to zone-walking.
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 14]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+   Someone could still attempt a dictionary attack on the zone to find
+   SMIMEA records, just as they can use dictionary attacks on an SMTP
+   server to see which addresses are valid.
+
+   Client treatment of any information included in the trust anchor is a
+   matter of local policy.  This specification does not mandate that
+   such information be inspected or validated by the domain name
+   administrator.
+
+   SMIME/A signed data is currently subject to downgrade attack by
+   simply removing the SMIME wrapper.  Techniques for a domain owner to
+   assert required usage of S/MIME is beyond the scope of this document.
+
+8.  Acknowledgements
+
+   Miek Gieben, Martin Pels and Todd Larsen contributed technical ideas
+   and support to this document.
+
+9.  References
+
+9.1.  Normative References
+
+   [I-D.draft-ietf-dane-registry-acronyms]  Gudmundsson, O., "Adding
+                                            acronyms to simplify DANE
+                                            conversations", draft-ietf-
+                                            dane-registry-acronyms-00
+                                            (work in progress),
+                                            September 2013.
+
+   [ITU.X690.2002]                          International
+                                            Telecommunications Union,
+                                            "Information Technology -
+                                            ASN.1 encoding rules:
+                                            Specification of Basic
+                                            Encoding Rules (BER),
+                                            Canonical Encoding Rules
+                                            (CER) and Distinguished
+                                            Encoding Rules (DER)", ITU-
+                                            T Recommendation X.690,
+                                            July 2002.
+
+   [RFC1035]                                Mockapetris, P., "Domain
+                                            names - implementation and
+                                            specification", STD 13,
+                                            RFC 1035, November 1987.
+
+   [RFC2119]                                Bradner, S., "Key words for
+                                            use in RFCs to Indicate
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 15]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+                                            Requirement Levels", BCP 14,
+                                            RFC 2119, March 1997.
+
+   [RFC4033]                                Arends, R., Austein, R.,
+                                            Larson, M., Massey, D., and
+                                            S. Rose, "DNS Security
+                                            Introduction and
+                                            Requirements", RFC 4033,
+                                            March 2005.
+
+   [RFC4034]                                Arends, R., Austein, R.,
+                                            Larson, M., Massey, D., and
+                                            S. Rose, "Resource Records
+                                            for the DNS Security
+                                            Extensions", RFC 4034,
+                                            March 2005.
+
+   [RFC4035]                                Arends, R., Austein, R.,
+                                            Larson, M., Massey, D., and
+                                            S. Rose, "Protocol
+                                            Modifications for the DNS
+                                            Security Extensions",
+                                            RFC 4035, March 2005.
+
+   [RFC4648]                                Josefsson, S., "The Base16,
+                                            Base32, and Base64 Data
+                                            Encodings", RFC 4648,
+                                            October 2006.
+
+   [RFC5280]                                Cooper, D., Santesson, S.,
+                                            Farrell, S., Boeyen, S.,
+                                            Housley, R., and W. Polk,
+                                            "Internet X.509 Public Key
+                                            Infrastructure Certificate
+                                            and Certificate Revocation
+                                            List (CRL) Profile",
+                                            RFC 5280, May 2008.
+
+   [RFC5751]                                Ramsdell, B. and S. Turner,
+                                            "Secure/Multipurpose
+                                            Internet Mail Extensions
+                                            (S/MIME) Version 3.2 Message
+                                            Specification", RFC 5751,
+                                            January 2010.
+
+   [RFC6698]                                Hoffman, P. and J. Schlyter,
+                                            "The DNS-Based
+                                            Authentication of Named
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 16]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+                                            Entities (DANE) Transport
+                                            Layer Security (TLS)
+                                            Protocol: TLSA", RFC 6698,
+                                            August 2012.
+
+9.2.  Informative References
+
+   [NIST.800-57-1]                          National Institute of
+                                            Standards and Technology,
+                                            "NIST Special Publication
+                                            800-57 Recommendations for
+                                            Key Management - Part 1:
+                                            General", NIST 800-57 Part
+                                            1, July 2012.
+
+   [RFC2845]                                Vixie, P., Gudmundsson, O.,
+                                            Eastlake, D., and B.
+                                            Wellington, "Secret Key
+                                            Transaction Authentication
+                                            for DNS (TSIG)", RFC 2845,
+                                            May 2000.
+
+   [RFC2931]                                Eastlake, D., "DNS Request
+                                            and Transaction Signatures (
+                                            SIG(0)s)", RFC 2931,
+                                            September 2000.
+
+   [RFC3403]                                Mealling, M., "Dynamic
+                                            Delegation Discovery System
+                                            (DDDS) Part Three: The
+                                            Domain Name System (DNS)
+                                            Database", RFC 3403,
+                                            October 2002.
+
+   [RFC5322]                                Resnick, P., Ed., "Internet
+                                            Message Format", RFC 5322,
+                                            October 2008.
+
+   [RFC6071]                                Frankel, S. and S. Krishnan,
+                                            "IP Security (IPsec) and
+                                            Internet Key Exchange (IKE)
+                                            Document Roadmap", RFC 6071,
+                                            February 2011.
+
+   [RFC6234]                                Eastlake, D. and T. Hansen,
+                                            "US Secure Hash Algorithms
+                                            (SHA and SHA-based HMAC and
+                                            HKDF)", RFC 6234, May 2011.
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 17]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+   [RFC6376]                                Crocker, D., Hansen, T., and
+                                            M. Kucherawy, "DomainKeys
+                                            Identified Mail (DKIM)
+                                            Signatures", STD 76,
+                                            RFC 6376, September 2011.
+
+   [RFC6530]                                Klensin, J. and Y. Ko,
+                                            "Overview and Framework for
+                                            Internationalized Email",
+                                            RFC 6530, February 2012.
+
+   [RFC7033]                                Jones, P., Salgueiro, G.,
+                                            Jones, M., and J. Smarr,
+                                            "Webfinger", RFC 7033,
+                                            September 2013.
+
+Appendix A.  Operational Considerations for Deploying SMIMEA Records
+
+   Appendix A and B of [RFC6698] for DANE/TLSA are directly applicable,
+   particularly regarding certificate use cases.  Implementers should be
+   familiar with these sections.  SMIMEA specific provisioning examples
+   are included here.
+
+A.1.  Provisioning SMIMEA Records in DNS with Aliases and Wildcards
+
+A.1.1.  Provisioning SMIMEA with DNAME Records
+
+   A DNAME record allows a zone owner to alias an entire subtree of
+   names below the name that has the DNAME.  This allows the wholesale
+   aliasing of prefixed records.  If the domain's users employ the same
+   certificate for both digital signature and encryption, a DNAME record
+   enables a single RR for each user.  Note that if Certificate Access =
+   "NO" the full certificate is required in order to support encryption.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 18]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+    ; DNAME enables single SMIMEA entry for both "_encr" and "_sign"
+    ; Individual records only required for "_encr"
+    ;
+    _sign._smimecert.example.com. IN DNAME _encr._smimecert.example.com.
+
+    ; bob
+    MJXWE===._encr._smimecert.example.com. IN SMIMEA (
+               DANE-EE Cert Full NO 308203b33082029ba003020102020900
+                                    bab0b4d482ae489f300d06092a86 ... )
+    ; alice
+    MFWGSY3F._encr._smimecert.example.com. IN SMIMEA (
+               DANE-EE Cert Full NO 308203bb308202a3a003020102020900
+                                    82e9a1752d56ae57300d06092a86 ... )
+
+
+A.1.2.  Provisioning SMIMEA with CNAME Records
+
+   CNAME records allows a zone owner to alias multiple domain names to a
+   single SMIMEA resource record.  This may be helpful for caches to
+   keep a single copy of a signing certificate and then store CNAMEs for
+   individual users.
+
+
+      ; CNAME enables single SMIMEA RR for TA signing certificate
+      ; Validation requires signature by included gen-user cert
+      ; Only one copy of full certificate in local caches
+      ; Individual records just CNAME
+      ;
+      gen-user._sign._smimecert.example.com.  IN SMIMEA (
+                 DANE-TA Cert Full NO 308202d030820239a0030201...)
+      ;
+      MNUHE2LT._sign._smimecert.example.com. IN CNAME  (
+                           gen-user._sign._smimecert.example.com. )
+      ;
+      MFWGSY3F._sign._smimecert.example.com. IN CNAME  (
+                           gen-user._sign._smimecert.example.com. )
+
+
+A.1.3.  Provisioning SMIMEA Records with Wildcards
+
+   NXDOMAIN response to an SMIMEA request has an ambiguous
+   interpretation.  It could be the result of the DNS zone not
+   supporting SMIMEA records or it could be the result of a query for an
+   invalid user (including case sensitivity mismatches).  Wildcards may
+   be used to remove the ambiguity and may also ease some administrative
+   tasks.  Note that wildcards provide a response to all possible user
+   names and thus increase the risk for use as a DDoS amplification
+   vector.  Two example scenarios are provided that establish fact of
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 19]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+   zone's support for DANE/SMIME and enable certificate revocation.
+
+A.1.3.1.  Wildcard for All Invalid Users
+
+   1.  1.  The domain administrator creates user domains and unique
+       SMIMEA zone entry for each valid user corresponding to users'
+       certificates.
+
+   2.  2.  The administrator creates a wildcard domain SMIMEA entry to
+       act as default for all user names without an explicit zone entry.
+       RDATA in the wildcard domain entry is designed to cause
+       certificate match failures for all certificate checks.
+
+   3.  3.  To revoke a user's certificate, the user's entry is removed
+       from the zone.
+
+
+      ;
+      ; Wildcard example with two valid signing certificate users
+      ; All other .example.com addresses receive INVALID CERTIFICATE
+      ;
+      MFWGSY3F._sign._smimecert.example.com. IN SMIMEA (
+                 PKIX-EE Cert SHA2-256 NO 8c340227ff96128f
+                                  be3764c9b8c5af846d081fac
+                                  72c24af6a5891f6e19b1d847 )
+      ;
+      MJXWE===._sign._smimecert.example.com. IN SMIMEA (
+                 PKIX-EE Cert SHA2-256 NO 021e4874b07c2137
+                                  a5fe95d9bd9d041540b45003
+                                  faa7a73181ddb5cb65913493 )
+      ;
+      *_sign._smimecert.example.com.         IN SMIMEA (
+                                    REJECT Cert Full NO 00 )
+      *_encr._smimecert.example.com.         IN SMIMEA (
+                                    REJECT Cert Full NO 00 )
+
+A.1.3.2.  Organization TA Wildcard
+
+   1.  The zone administrator creates a valid default SMIMEA record
+       using a wildcard domain.  The organization's public certificate
+       is included in the RDATA and the certificate use type is DANE-TA
+       (2) and the matching type is Full (0).  By default, all non-
+       expired certificates that are signed by the organization's public
+       key are considered valid.
+
+   2.  To revoke a user's certificate:
+
+
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 20]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+       1.  A compromised certificate may be revoked by creating a new RR
+           with validation information specifically for the user's new
+           certificate.
+
+       2.  A user may be revoked by including certificate usage =
+           REJECT.
+
+
+  ;
+  ; Wildcard example validating certs for all users as long
+     ;    as their cert is signed by example.com trust anchor.
+     ;    User encryption certs available via WebFinger.
+     ;
+     ; Old sign cert revoked for MNUHKY3L (chuck) -- only new cert
+     ;                                               validates
+     ; All encryption certs for MNUHKY3L (chuck) are revoked
+     ;
+     ;
+     ; common trust anchor for all example.com users
+     *._sign._smimecert.example.com.        IN SMIMEA (
+                                             DANE-TA SPKI Full NO (...)
+     ;
+     *._encr._smimecert.example.com.        IN SMIMEA (
+                                             DANE-TA SPKI Full WF (...)
+     ;
+     ;
+     ; new sign cert for chuck
+     MNUHKY3L._sign._smimecert.example.com. IN SMIMEA (
+                                          DANE-EE SPKI SHA2-256 NO (...)
+     ;
+     ; encr revoked for chuck
+     MNUHKY3L._encr._smimecert.example.com. IN SMIMEA (
+                                       REJECT Cert Full NO 00 )
+
+
+
+Authors' Addresses
+
+   Paul Hoffman
+   VPN Consortium
+
+   EMail: paul.hoffman@vpnc.org
+
+
+
+
+
+
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 21]
+
+Internet-Draft     DNS-Based Authentication for S/MIME    September 2013
+
+
+   Jakob Schlyter
+   Kirei AB
+
+   EMail: jakob@kirei.se
+
+
+   Scott Rose
+   NIST
+   100 Bureau Dr.
+   Gaithersburg, MD  20899
+   USA
+
+   Phone: +1-301-975-8439
+   EMail: scott.rose@nist.gov
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hoffman, et al.           Expires April 3, 2014                [Page 22]
+
