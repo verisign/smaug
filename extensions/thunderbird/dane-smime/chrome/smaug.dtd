@@ -1,0 +1,790 @@
+<!ENTITY smaug.label                   "smgmail">
+<!ENTITY smaug.openpgp.label           "OpenPGP">
+
+<!ENTITY smaug.keyUserId.label         "Account / User ID">
+<!ENTITY smaug.keygenTitle.label       "Generate OpenPGP Key">
+<!ENTITY smaug.useForSigning.label     "Use generated key for the selected identity">
+<!ENTITY smaug.keyComment.label        "Comment">
+<!ENTITY smaug.keyNoPassphrase.label   "No passphrase">
+<!ENTITY smaug.keyPassphrase.label     "Passphrase">
+<!ENTITY smaug.keyPassphraseRepeat.label "Passphrase (repeat)">
+<!ENTITY smaug.generateKey.tooltip     "Generates a new OpenPGP compliant key for encryption and/or signing">
+<!ENTITY smaug.cancelKey.label         "Cancel">
+<!ENTITY smaug.cancelKey.tooltip       "Cancel Key Generation">
+<!ENTITY smaug.keyGen.expiry.title     "Key expiry">
+<!ENTITY smaug.keyGen.expire.label     "Key expires in">
+<!ENTITY smaug.keyGen.days.label       "days">
+<!ENTITY smaug.keyGen.months.label     "months">
+<!ENTITY smaug.keyGen.years.label      "years">
+<!ENTITY smaug.keyGen.noExpiry.label   "Key does not expire">
+<!ENTITY smaug.keyGen.keySize.label    "Key size">
+<!ENTITY smaug.keyGen.console.label    "Key Generation Console">
+<!ENTITY smaug.keyGen.keyType.label    "Key type">
+<!ENTITY smaug.keyGen.keyType.dsa      "DSA &amp; El Gamal">
+<!ENTITY smaug.keyGen.keyType.rsa      "RSA">
+
+<!ENTITY smaug.preferences.label       "smgmail Preferences">
+
+<!ENTITY smaug.passwordSettings.label   "Passphrase settings">
+<!ENTITY smaug.userNoPassphrase.label   "Never ask for any passphrase">
+<!ENTITY smaug.userNoPassphrase.tooltip "Activate if your OpenPGP key is not protected by a passphrase.">
+<!ENTITY smaug.expertUserMenus.label    "Display Expert Settings and Menus">
+<!ENTITY smaug.expertUser.tooltip       "Press if you want to see menu items and options for advanced users.">
+<!ENTITY smaug.basicUserMenus.label     "Hide Expert Settings and Menus">
+<!ENTITY smaug.basicUser.tooltip        "Press if you do not want to see menu items and options for advanced users.">
+
+<!ENTITY smaug.prefs.pathsTitle.label      "Files and Directories">
+<!ENTITY smaug.prefs.overrideGpg.label     "Override with">
+<!ENTITY smaug.prefs.overrideGpg.tooltip   "Click to specify a location for GnuPG">
+
+
+<!ENTITY smaug.agentAdditionalParam.label    "Additional parameters for GnuPG">
+<!ENTITY smaug.agentAdditionalParam.tooltip  "Specify options that will be used by GnuPG.">
+
+<!ENTITY smaug.mime_parts_on_demand.label  "Only download attachments when opened (IMAP only)">
+
+
+<!ENTITY smaug.maxIdleMinutesHead.label "Remember passphrase for">
+<!ENTITY smaug.maxIdleMinutesTail.label "minutes of idle time">
+<!ENTITY smaug.maxIdleMinutes.tooltip   "Cache passphrase in memory for a limited time.">
+
+<!ENTITY smaug.resetPrefsButton.label "Reset">
+<!ENTITY smaug.resetPrefs.tooltip     "Set all smgmail preferences back to their default value.">
+
+<!ENTITY smaug.basic.label            "Basic">
+<!ENTITY smaug.sending.label          "Sending">
+<!ENTITY smaug.keySel.label           "Key Selection">
+<!ENTITY smaug.pgpMime.label          "PGP/MIME">
+<!ENTITY smaug.advanced.label         "Advanced">
+<!ENTITY smaug.debug.label            "Debugging">
+
+<!ENTITY smaug.basicPrefs.label       "Basic Settings">
+
+<!ENTITY smaug.moreOptions.label       "More Options">
+
+<!ENTITY smaug.alwaysTrustSend.label   "Always trust people's keys">
+<!ENTITY smaug.alwaysTrustSend.tooltip "Do not use the Web of Trust to determine the validity of keys">
+<!ENTITY smaug.useNonDefaultComment.label "Add smgmail comment in OpenPGP signature">
+
+<!ENTITY smaug.keyserver.label         "Keyserver">
+<!ENTITY smaug.keyserverDlg.label      "Select Keyserver">
+<!ENTITY smaug.keyservers.label        "Specify your keyserver(s)">
+<!ENTITY smaug.keyservers.sample       "Example: sks.dnsalias.net, pgp.mit.edu, ldap://certserver.pgp.com">
+
+<!ENTITY smaug.searchForKey.label      "Search for key">
+
+
+<!ENTITY smaug.doubleDashSeparator.label "'--' is a signature separator">
+<!ENTITY smaug.useGpgAgent.label         "Use gpg-agent for passphrases">
+<!ENTITY smaug.noHushMailSupport.label   "Use '&lt;' and '&gt;' to specify email addresses">
+
+<!ENTITY smaug.doubleDashSeparator.tooltip  "Two dashes by themselves on a line will denote a signature block">
+<!ENTITY smaug.useGpgAgent.tooltip          "Use gpg-agent (part of GnuPG 2) for all passphrase input">
+<!ENTITY smaug.noHushMailSupport.tooltip    "Use the '&lt;' and '&gt;' characters to specify email addresses for GnuPG. Disable if recipients have old Hushmail keys.">
+<!ENTITY smaug.mime_parts_on_demand.tooltip "You should turn this OFF if you are receiving PGP/MIME messages on IMAP folders.">
+<!ENTITY smaug.disableSMIMEui.tooltip       "Remove the S/MIME button from the message composition window toolbar">
+
+<!ENTITY smaug.logdirectory.label      "Log directory">
+<!ENTITY smaug.testemail.label         "Test email">
+<!ENTITY smaug.test.label              "Test">
+
+<!ENTITY smaug.decryptbutton.label     "Decrypt">
+<!ENTITY smaug.decryptbutton.tip       "Decrypt or verify the message with smgmail">
+
+<!ENTITY smaug.messengermenu.accesskey "a">
+
+<!ENTITY smaug.decryptverify.label    "Decrypt/Verify">
+<!ENTITY smaug.importpublickey.label  "Import Public Key">
+<!ENTITY smaug.savedecrypted.label    "Save Decrypted Message">
+
+<!ENTITY smaug.autoDecrypt.label      "Automatically Decrypt/Verify Messages">
+<!ENTITY smaug.clearPassphrase.label  "Clear Saved Passphrase">
+<!ENTITY smaug.editRules.label        "Edit Per-Recipient Rules">
+
+<!ENTITY smaug.prefs.label            "Preferences">
+
+<!ENTITY smaug.debugMenu.label        "Debugging Options">
+<!ENTITY smaug.viewconsole.label      "View Console">
+<!ENTITY smaug.viewdebuglog.label     "View Logfile">
+
+<!ENTITY smaug.generateKey.label        "Generate key">
+<!ENTITY smaug.help.label               "Help">
+<!ENTITY smaug.about.title              "About smgmail">
+<!ENTITY smaug.about.label              "About smgmail">
+<!ENTITY smaug.reload.label             "Reload Message">
+<!ENTITY smaug.browse.label             "Browse...">
+<!ENTITY smaug.sendersKeyMenu.label     "Sender's Key">
+<!ENTITY smaug.adminSmartCard.label     "Manage SmartCard ...">
+<!ENTITY smaug.setupWiz.label           "Setup Wizard">
+
+<!ENTITY smaug.decryptverify.accesskey   "D">
+<!ENTITY smaug.importpublickey.accesskey "I">
+<!ENTITY smaug.savedecrypted.accesskey   "S">
+<!ENTITY smaug.reload.accesskey          "E">
+<!ENTITY smaug.adminSmartCard.accesskey  "M">
+
+<!ENTITY smaug.autoDecrypt.accesskey     "A">
+<!ENTITY smaug.debugMenu.accesskey       "g">
+
+<!ENTITY smaug.clearPassphrase.accesskey "l">
+<!ENTITY smaug.editRules.accesskey       "R">
+<!ENTITY smaug.setupWiz.accesskey        "S">
+
+
+<!ENTITY smaug.prefs.accesskey           "P">
+<!ENTITY smaug.viewconsole.accesskey     "c">
+<!ENTITY smaug.viewdebuglog.accesskey    "g">
+
+<!ENTITY smaug.help.accesskey            "H">
+<!ENTITY smaug.about.accesskey           "b">
+<!ENTITY smaug.sendersKeyMenu.accesskey  "K">
+
+<!ENTITY smaug.securitybutton.label       "smgmail">
+<!ENTITY smaug.securitybutton.tip         "smgmail security settings">
+
+<!ENTITY smaug.signedsend.label            "Sign Message">
+<!ENTITY smaug.encryptedsend.label         "Encrypt Message">
+<!ENTITY smaug.disableRules.label          "Ignore Per-Recipient Rules">
+
+<!ENTITY smaug.composeOptionsMenu.label     "Default Composition Options">
+
+<!ENTITY smaug.pgpAccountSettings.label     "Signing/Encryption Options...">
+<!ENTITY smaug.sendOptionsMenu.label        "Send Options...">
+<!ENTITY smaug.defaultKeySelOpts.label      "Key Selection Options...">
+<!ENTITY smaug.sendPGPMime.label            "Use PGP/MIME for This Message">
+
+<!ENTITY smaug.tempTrustAllKeys.label       "Trust the keys of all recipients">
+<!ENTITY smaug.undoencryption.label         "Undo Encryption">
+<!ENTITY smaug.attachkey.label              "Attach Public Key ...">
+<!ENTITY smaug.attachmykey.label            "Attach My Public Key">
+
+<!ENTITY smaug.finalEncryptDefault.label    "Use Defaults and Rules for Encryption">
+<!ENTITY smaug.finalEncryptYes.label        "Force Encryption">
+<!ENTITY smaug.finalEncryptNo.label         "Force Not to Encrypt">
+<!ENTITY smaug.finalSignDefault.label       "Use Defaults and Rules for Signing">
+<!ENTITY smaug.finalSignYes.label           "Force Signing">
+<!ENTITY smaug.finalSignNo.label            "Force Not to Sign">
+<!ENTITY smaug.finalPGPMimeDefault.label    "Use Defaults and Rules for PGP format">
+<!ENTITY smaug.finalPGPMimeYes.label        "Force PGP/MIME">
+<!ENTITY smaug.finalPGPMimeNo.label         "Force Inline PGP">
+
+<!ENTITY smaug.composemenu.accesskey        "n">
+
+<!ENTITY smaug.signedsend.accesskey         "S">
+<!ENTITY smaug.signedsend.key               "S">
+<!ENTITY smaug.encryptedsend.accesskey      "E">
+<!ENTITY smaug.encryptedsend.key            "E">
+<!ENTITY smaug.disableRules.accesskey       "I">
+
+<!ENTITY smaug.composeOptionsMenu.accesskey "D">
+<!ENTITY smaug.sendOptionsMenu.accesskey    "S">
+<!ENTITY smaug.defaultKeySelOpts.accesskey  "K">
+<!ENTITY smaug.pgpAccountSettings.accesskey "E">
+<!ENTITY smaug.sendPGPMime.accesskey        "P">
+
+<!ENTITY smaug.tempTrustAllKeys.accesskey   "T">
+<!ENTITY smaug.undoencryption.accesskey     "U">
+<!ENTITY smaug.attachkey.accesskey          "A">
+<!ENTITY smaug.attachmykey.accesskey        "M">
+
+
+<!-- account specific options -->
+<!ENTITY smaug.defaultSigning.label            "Sign messages by default">
+<!ENTITY smaug.defaultEncryption.label         "Encrypt messages by default">
+<!ENTITY smaug.usePGPMimeAlways.label          "Use PGP/MIME by default">
+
+<!ENTITY smaug.afterDefaultsAndRules.label     "After application of defaults and rules:">
+<!ENTITY smaug.finallySignEncrypted.label      "sign encrypted messages">
+<!ENTITY smaug.finallySignNotEncrypted.label   "sign non-encrypted messages">
+
+<!ENTITY smaug.autoEncryptDrafts.label         "Encrypt draft messages on saving">
+
+<!ENTITY smaug.advancedPrefsButton.label       "Advanced...">
+<!ENTITY smaug.openpgpPrefsButton.label        "smgmail Preferences...">
+
+
+<!-- Sending Preferences -->
+
+<!ENTITY smaug.SendingPrefs.label              "General Preferences for Sending">
+<!ENTITY smaug.seeAccountSettings.label        "See also account specific smgmail settings (see Account Settings -> OpenPGP Security)">
+
+<!ENTITY smaug.encryptionModelConvenient.label "Convenient encryption settings">
+<!ENTITY smaug.encryptionModelManually.label   "Manual encryption settings">
+
+<!ENTITY smaug.keepCryptoSettingsForReply.label   "Encrypt/sign replies to encrypted/signed messages">
+<!ENTITY smaug.keepCryptoSettingsForReply.tooltip "When possible, encrypt/sign responses to encrypted/signed email">
+
+<!ENTITY smaug.autoSendEncryptedOption.label   "Automatically send encrypted">
+<!ENTITY smaug.autoSendEncryptedNever.label    "Never">
+<!ENTITY smaug.autoSendEncryptedNever.tooltip  "Don't automatically send encrypted except explicitly triggered by per-recipient rules">
+<!ENTITY smaug.autoSendEncryptedIfKeys.label   "If possible">
+<!ENTITY smaug.autoSendEncryptedIfKeys.tooltip "Automatically send encrypted when for each recipient at least one keys is known and accepted (see above) and no recipient rule forces not to encrypt.">
+
+<!ENTITY smaug.acceptedKeysOption.label    "To send encrypted, accept">
+<!ENTITY smaug.acceptedKeysValid.label     "Only keys I explicitly trust">
+<!ENTITY smaug.acceptedKeysValid.tooltip   "Accept only keys that are signed by yourself or by other people you trust. Technically, you only accept keys 'valid' for encryption.">
+<!ENTITY smaug.acceptedKeysAll.label       "All valid keys I have">
+<!ENTITY smaug.acceptedKeysAll.tooltip     "Accept all keys that are neither disabled by you nor revoked/expired by the owner. Technically, this uses the GPG option '--trust-model always'.">
+
+<!ENTITY smaug.confirmBeforeSendingOption.label           "Confirm before sending">
+<!ENTITY smaug.confirmBeforeSendingNever.label            "Never">
+<!ENTITY smaug.confirmBeforeSendingNever.tooltip          "Don't display information dialog about signing/encryption before sending a message">
+<!ENTITY smaug.confirmBeforeSendingAlways.label           "Always">
+<!ENTITY smaug.confirmBeforeSendingAlways.tooltip         "Always display information dialog about signing/encryption before sending a message">
+<!ENTITY smaug.confirmBeforeSendingIfEncrypted.label      "If encrypted">
+<!ENTITY smaug.confirmBeforeSendingIfEncrypted.tooltip    "Display information dialog about signing/encryption before sending an ENCRYPTED message">
+<!ENTITY smaug.confirmBeforeSendingIfNotEncrypted.label   "If unencrypted">
+<!ENTITY smaug.confirmBeforeSendingIfNotEncrypted.tooltip "Display information dialog about signing/encryption before sending an UNENCRYPTED message">
+<!ENTITY smaug.confirmBeforeSendingIfRules.label          "If rules changed the default encryption setting">
+<!ENTITY smaug.confirmBeforeSendingIfRules.tooltip        "Display information dialog about signing/encryption before sending, if your preference regarding encryption was changed by a per-recipient rule or auto encryption">
+
+
+<!-- keySel Preferences -->
+
+<!ENTITY smaug.recipientsSelectionOption.label "How should we choose the keys?">
+<!ENTITY smaug.assignKeysByRules.label             "By Per-Recipient Rules">
+<!ENTITY smaug.assignKeysByRules.tooltip           "Assign keys according to per-recipient rules. Force to prompt for creating new rules if this is the only selected option.">
+<!ENTITY smaug.assignKeysByEmailAddr.label         "By Email Addresses according to the key manager">
+<!ENTITY smaug.assignKeysByEmailAddr.tooltip       "Assign keys according to keys associated with the email addresses in the key manager.">
+<!ENTITY smaug.assignKeysManuallyIfMissing.label   "Manually if Keys are Missing">
+<!ENTITY smaug.assignKeysManuallyIfMissing.tooltip "Open dialog to manually assign keys if keys are missing.">
+<!ENTITY smaug.assignKeysManuallyAlways.label      "Always (also) Manually">
+<!ENTITY smaug.assignKeysManuallyAlways.tooltip    "Always finally open the dialog to manually assign keys.">
+<!ENTITY smaug.defineRules.label               "Edit Rules ...">
+
+
+<!ENTITY smaug.wrapHtmlBeforeSend.label        "Re-wrap signed HTML text before sending">
+<!ENTITY smaug.wrapHtmlBeforeSend.tooltip      "Rearrange the text to ensure that the signature will remain intact.">
+<!ENTITY smaug.autoKeyRetrieve.label           "Automatically download keys for signature verification">
+<!ENTITY smaug.autoKeyRetrieve2.label          "from the following keyserver:">
+<!ENTITY smaug.resetRememberedValues.label     "Reset Warnings">
+<!ENTITY smaug.resetRememberedValues.tooltip   "Re-display all warning dialogs and questions that you have hidden in the past.">
+
+<!ENTITY smaug.keygen.desc "<a class='smgmailStrong'>NOTE: Key generation may take up to several minutes to complete.</a> Do not exit the application while key generation is in progress. Actively browsing or performing disk-intensive operations during key generation will replenish the 'randomness pool' and speed-up the process. You will be alerted when key generation is completed.">
+
+<!ENTITY smaug.userSelectionList.label           "smgmail Key Selection">
+<!ENTITY smaug.usersNotFound.label               "Recipients not valid, not trusted or not found">
+<!ENTITY smaug.keyExpiry.label                   "Expiry">
+<!ENTITY smaug.uidValidity.label                 "Validity">
+<!ENTITY smaug.keySelection.label                "Selection">
+<!ENTITY smaug.keyId.label                       "Key ID">
+<!ENTITY smaug.userSelSendSigned.label           "Send signed">
+<!ENTITY smaug.userSelSendSigned.accesskey       "S">
+<!ENTITY smaug.userSelSendEncrypted.label        "Send encrypted">
+<!ENTITY smaug.userSelSendEncrypted.accesskey    "E">
+<!ENTITY smaug.displayNoLonger.label             "Do not display this dialog again if encryption is not possible">
+<!ENTITY smaug.importMissingKeys.label           "Download missing keys">
+<!ENTITY smaug.importMissingKeys.accesskey       "D">
+<!ENTITY smaug.importMissingKeys.tooltip         "Try to import the missing keys from a key server">
+<!ENTITY smaug.refreshKeys.label                 "Refresh Key List">
+<!ENTITY smaug.refreshKeys.accesskey             "R">
+<!ENTITY smaug.send.label                        "Send">
+<!ENTITY smaug.perRecipientsOption.label         "Create per-recipient rule(s)">
+
+<!ENTITY smaug.smgmailAttachDesc.label          "This message contains attachments. How would you like encrypt/sign them?">
+<!ENTITY smaug.smgEncryptAttachNone.label           "Just encrypt/sign the message text, but not the attachments">
+<!ENTITY smaug.smgAttachNoneSign.label              "Sign the message text, but not the attachments">
+<!ENTITY smaug.smgAttachNoneEncrypt.label           "Encrypt the message text, but not the attachments">
+<!ENTITY smaug.smgAttachNoneEncryptAndSign.label    "Encrypt and sign the message text, but not the attachments">
+<!ENTITY smaug.smgEncryptAttachInline.label         "Encrypt/sign each attachment separately and send the message using inline PGP">
+<!ENTITY smaug.smgAttachInlineSign.label            "Sign each attachment separately and send the message using inline PGP">
+<!ENTITY smaug.smgAttachInlineEncrypt.label         "Encrypt each attachment separately and send the message using inline PGP">
+<!ENTITY smaug.smgAttachInlineEncryptAndSign.label  "Encrypt and sign each attachment separately and send the message using inline PGP">
+<!ENTITY smaug.smgEncryptAttachPgpMime.label        "Encrypt/sign the message as a whole and send it using PGP/MIME">
+<!ENTITY smaug.smgAttachPgpMimeSign.label           "Sign the message as a whole and send it using PGP/MIME">
+<!ENTITY smaug.smgAttachPgpMimeEncrypt.label        "Encrypt the message as a whole and send it using PGP/MIME">
+<!ENTITY smaug.smgAttachPgpMimeEncryptAndSign.label "Encrypt and sign the message as a whole and send it using PGP/MIME">
+<!ENTITY smaug.smgEncryptAttachDontEncryptMsg.label        "Don't encrypt/sign the message at all">
+<!ENTITY smaug.smgAttachDontEncryptMsgSign.label           "Don't sign the message at all">
+<!ENTITY smaug.smgAttachDontEncryptMsgEncrypt.label        "Don't encrypt the message at all">
+<!ENTITY smaug.smgAttachDontEncryptMsgEncryptAndSign.label "Don't encrypt and sign the message at all">
+<!ENTITY smaug.encryptAttachSkipDlg.label        "Use the selected method for all future attachments">
+
+
+<!ENTITY smaug.ctxDecryptOpen.label              "Decrypt and Open">
+<!ENTITY smaug.ctxDecryptSave.label              "Decrypt and Save As...">
+<!ENTITY smaug.ctxImportKey.label                "Import OpenPGP Key">
+<!ENTITY smaug.ctxVerifyAtt.label                "Verify signature">
+<!ENTITY smaug.ctxDecryptOpen.accesskey          "D">
+<!ENTITY smaug.ctxDecryptSave.accesskey          "C">
+<!ENTITY smaug.ctxImportKey.accesskey            "I">
+<!ENTITY smaug.ctxVerifyAtt.accesskey            "V">
+<!ENTITY smaug.detailsHdrButton.label            "Details">
+<!ENTITY smaug.revealAttachmentsButton.label     "The names of the files attached are hidden. Press the 'Reveal' button to retrieve the original file names.">
+<!ENTITY smaug.revealAttachments.button          "Reveal">
+
+<!ENTITY smaug.amPrefTitle.label                 "OpenPGP Options">
+<!ENTITY smaug.amPrefDesc.label                  "Support for OpenPGP encryption and signing messages is provided by smgmail. You need to have GnuPG (gpg) installed in order to use this feature.">
+<!ENTITY smaug.amPrefEnablePgp.label             "Enable OpenPGP support (smgmail) for this identity">
+<!ENTITY smaug.amPrefUseFromAddr.label           "Use email address of this identity to identify OpenPGP key">
+<!ENTITY smaug.amPrefUseKeyId.label              "Use specific OpenPGP key ID (0x1234ABCD):">
+<!ENTITY smaug.amPrefSelectKey.label             "Select Key ...">
+<!ENTITY smaug.amPrefDefaultEncrypt.label        "Message Composition Default Options">
+<!ENTITY smaug.encryptionDlg.label               "smgmail Encryption &amp; Signing Settings">
+<!ENTITY smaug.encDlgEncrypt.label               "Encrypt Message">
+<!ENTITY smaug.encDlgEncrypt.accesskey           "E">
+<!ENTITY smaug.encDlgSign.label                  "Sign Message">
+<!ENTITY smaug.encDlgSign.accesskey              "S">
+<!ENTITY smaug.encDlgPgpMime.label               "Use PGP/MIME">
+<!ENTITY smaug.encDlgPgpMime.accesskey           "U">
+<!ENTITY smaug.encDlgIgnoreRules.label           "Ignore Per-Recipient Rules">
+<!ENTITY smaug.encDlgIgnoreRules.accesskey       "I">
+<!ENTITY smaug.amPrefPgpHeader.label             "Send 'OpenPGP' Header">
+<!ENTITY smaug.amPrefPgpHeader.id.label          "Send OpenPGP Key ID">
+<!ENTITY smaug.amPrefPgpHeader.url.label         "Send URL for key retrieval:">
+
+<!ENTITY smaug.progressText.label               "Progress:">
+
+<!ENTITY smaug.openPgpSecurity.label            "OpenPGP Security">
+
+<!ENTITY smaug.pgpSecurityInfo.label            "smgmail Security Info ...">
+<!ENTITY smaug.copySecurityInfo.label           "Copy smgmail Security Info">
+<!ENTITY smaug.showPhoto.label                  "View OpenPGP Photo ID">
+<!ENTITY smaug.photoViewer.title                "OpenPGP Photo Viewer">
+<!ENTITY smaug.displayKeyProperties.label       "View Key Properties">
+<!ENTITY smaug.signSenderKey.label              "Sign Key ...">
+<!ENTITY smaug.trustSenderKey.label             "Set Owner Trust ...">
+<!ENTITY smaug.signSenderKeyPopup.label         "Sign Sender's Key ...">
+<!ENTITY smaug.trustSenderKeyPopup.label        "Set Owner Trust of Sender's Key...">
+<!ENTITY smaug.createRuleFromAddr.label         "Create smgmail Rule from Address...">
+<!ENTITY smaug.keyManWindow.label               "Key Management">
+<!ENTITY smaug.keyManWindow.accesskey           "y">
+
+<!ENTITY smaug.singleRcptSettings.label          "smgmail - Recipient Settings">
+<!ENTITY smaug.selKeysButton.label               "Select Key(s)...">
+<!ENTITY smaug.action.label                      "Action">
+<!ENTITY smaug.nextRule.label                    "Continue with next rule for the matching address">
+<!ENTITY smaug.nextAddress.label                 "Do not check further rules for the matching address">
+<!ENTITY smaug.useKeys.label                     "Use the following OpenPGP keys:">
+<!ENTITY smaug.selKeysButton.accesskey           "S">
+<!ENTITY smaug.setDefaultsFor.label              "Defaults for ...">
+<!ENTITY smaug.encryption.label                  "Encryption">
+<!ENTITY smaug.signing.label                     "Signing">
+<!ENTITY smaug.never.label                       "Never">
+<!ENTITY smaug.always.label                      "Always">
+<!ENTITY smaug.maybe.label                       "Yes, if selected in Message Composition">
+<!ENTITY smaug.singleRcptSettings.desc           "(Note: in case of conflicts, 'Never' overrules 'Always')">
+<!ENTITY smaug.ruleEmail.label                   "Set smgmail Rules for">
+<!ENTITY smaug.ruleEmail.tooltip                 "Only fill in email addresses, do NOT set the names of the recipients\nE.g. 'Some Name &lt;some.name@address.net&gt;' is invalid">
+<!ENTITY smaug.sepratationDesc.label             "(Separate several email addresses with spaces)">
+<!ENTITY smaug.matchDescStart.label              "Apply rule if recipient">
+<!ENTITY smaug.matchDescEnd.label                "one of the above addresses">
+<!ENTITY smaug.matchExact.label                  "Is exactly">
+<!ENTITY smaug.matchContains.label               "Contains">
+<!ENTITY smaug.matchBegin.label                  "Starts with">
+<!ENTITY smaug.matchEnd.label                    "Ends with">
+<!ENTITY smaug.not.label                         "Not">
+
+<!ENTITY smaug.rulesEditor.label                 "smgmail - Per-Recipient Rules Editor">
+<!ENTITY smaug.email.label                       "Email">
+<!ENTITY smaug.pgpKeys.label                     "OpenPGP Key(s)">
+<!ENTITY smaug.sign.label                        "Sign">
+<!ENTITY smaug.encrypt.label                     "Encrypt">
+<!ENTITY smaug.edit.label                        "Modify">
+<!ENTITY smaug.edit.accesskey                    "M">
+<!ENTITY smaug.add.label                         "Add">
+<!ENTITY smaug.add.accesskey                     "A">
+<!ENTITY smaug.delete.label                      "Delete">
+<!ENTITY smaug.delete.accesskey                  "E">
+<!ENTITY smaug.moveUp.label                      "Move Up">
+<!ENTITY smaug.moveUp.accesskey                  "U">
+<!ENTITY smaug.moveDown.label                    "Move Down">
+<!ENTITY smaug.moveDown.accesskey                "D">
+<!ENTITY smaug.searchRule.label                  "View rules with email addresses containing:">
+<!ENTITY smaug.clearSearch.label                 "Clear">
+<!ENTITY smaug.clearSearch.accesskey             "C">
+
+<!ENTITY smaug.searchKeyDlg.label               "Download OpenPGP Keys">
+<!ENTITY smaug.searchKeyDlgCapt.label           "Found Keys - Select to Import">
+<!ENTITY smaug.searchKeyDlgSelAll.label         "Select/Deselect all">
+
+<!ENTITY smaug.created.label                    "Created">
+<!ENTITY smaug.valid.label                      "Valid">
+
+<!ENTITY smaug.progress.label                   "Progress">
+
+<!ENTITY smaug.sKeyDlg.title                    "smgmail - Sign Key">
+<!ENTITY smaug.sKeyDlg.signKey.label            "Key to be signed:">
+<!ENTITY smaug.sKeyDlg.fingerprint.label        "Fingerprint:">
+<!ENTITY smaug.sKeyDlg.signWithKey.label        "Key for signing:">
+<!ENTITY smaug.sKeyDlg.checked.label            "How carefully have you verified that the key you are about to sign actually belongs to the person(s) named above?">
+<!ENTITY smaug.sKeyDlg.noAnswer.label           "I will not answer">
+<!ENTITY smaug.sKeyDlg.notChecked.label         "I have not checked at all">
+<!ENTITY smaug.sKeyDlg.casualCheck.label        "I have done casual checking">
+<!ENTITY smaug.sKeyDlg.carefulCheck.label       "I have done very careful checking">
+<!ENTITY smaug.sKeyDlg.createLocal.label        "Local signature (cannot be exported)">
+
+<!ENTITY smaug.addUidDlg.title                  "smgmail - Add User ID">
+<!ENTITY smaug.addUidDlg.name.label             "Name">
+<!ENTITY smaug.addUidDlg.email.label            "Email">
+<!ENTITY smaug.addUidDlg.comment.label          "Comment (optional)">
+
+<!ENTITY smaug.keyTrust.title                   "smgmail - Set Owner Trust">
+<!ENTITY smaug.keyTrust.trustKey.label          "Key To Trust:">
+<!ENTITY smaug.keyTrust.trustLevel.label        "How much do you trust the owner of the key to sign other keys properly?">
+<!ENTITY smaug.keyTrust.dontKnow.label          "I don't know">
+<!ENTITY smaug.keyTrust.noTrust.label           "I do NOT trust">
+<!ENTITY smaug.keyTrust.marginalTrust.label     "I trust marginally">
+<!ENTITY smaug.keyTrust.fullTrust.label         "I trust fully">
+<!ENTITY smaug.keyTrust.ultimateTrust.label     "I trust ultimately">
+
+<!ENTITY smaug.keyExpiry.title                   "smgmail - Change Expiration Date">
+<!ENTITY smaug.keyExpiry.expiryKey.label         "Keys to change expiration date:">
+
+<!ENTITY smaug.keyMan.title                     "smgmail Key Management">
+<!ENTITY smaug.keyMan.close.label               "Close Window">
+<!ENTITY smaug.keyMan.generate.label            "New Key Pair">
+<!ENTITY smaug.keyMan.sign.label                "Sign Key">
+<!ENTITY smaug.keyMan.setTrust.label            "Set Owner Trust">
+<!ENTITY smaug.keyMan.genRevoke.label           "Revocation Certificate">
+<!ENTITY smaug.keyMan.ctxGenRevoke.label        "Generate &amp; Save Revocation Certificate">
+
+<!ENTITY smaug.keyMan.fileMenu.label            "File">
+<!ENTITY smaug.keyMan.editMenu.label            "Edit">
+<!ENTITY smaug.keyMan.viewMenu.label            "View">
+<!ENTITY smaug.keyMan.keyserverMenu.label       "Keyserver">
+<!ENTITY smaug.keyMan.generateMenu.label        "Generate">
+
+<!ENTITY smaug.keyMan.fileMenu.accesskey        "F">
+<!ENTITY smaug.keyMan.editMenu.accesskey        "E">
+<!ENTITY smaug.keyMan.viewMenu.accesskey        "V">
+<!ENTITY smaug.keyMan.keyserverMenu.accesskey   "K">
+<!ENTITY smaug.keyMan.generateMenu.accesskey    "G">
+
+<!ENTITY smaug.keyMan.importFromFile.label      "Import Keys from File">
+<!ENTITY smaug.keyMan.importFromServer.label    "Search for Keys">
+<!ENTITY smaug.keyMan.importFromClipbrd.label   "Import Keys from Clipboard">
+<!ENTITY smaug.keyMan.exportToFile.label        "Export Keys to File">
+<!ENTITY smaug.keyMan.sendKeys.label            "Send Public Keys by Email">
+<!ENTITY smaug.keyMan.createMail.label          "Compose Mail to Selected Keys">
+<!ENTITY smaug.keyMan.uploadToServer.label      "Upload Public Keys">
+<!ENTITY smaug.keyMan.copyToClipbrd.label       "Copy Public Keys to Clipboard">
+<!ENTITY smaug.keyMan.ctxExportToFile.label     "Export Keys to File">
+<!ENTITY smaug.keyMan.ctxUploadToServer.label   "Upload Public Keys to Keyserver">
+<!ENTITY smaug.keyMan.ctxCopyToClipbrd.label    "Copy Public Keys to Clipboard">
+<!ENTITY smaug.keyMan.refreshSelKeys.label      "Refresh Selected Public Keys">
+<!ENTITY smaug.keyMan.refreshAllKeys.label      "Refresh All Public Keys">
+<!ENTITY smaug.keyMan.downloadContactKeys.label "Find keys for all contacts">
+<!ENTITY smaug.keyMan.ctxRefreshKey.label       "Refresh Public Keys From Keyserver">
+
+<!ENTITY smaug.keyMan.reload.label              "Reload Key Cache">
+<!ENTITY smaug.keyMan.addPhoto.label            "Add Photo">
+<!ENTITY smaug.keyMan.manageUid.label           "Manage User IDs">
+<!ENTITY smaug.keyMan.changeExpiry.label        "Change Expiration Date">
+<!ENTITY smaug.keyMan.changePwd.label           "Change Passphrase">
+<!ENTITY smaug.keyMan.delKey.label              "Delete Key">
+<!ENTITY smaug.keyMan.revokeKey.label           "Revoke Key">
+<!ENTITY smaug.keyMan.keyProps.label            "Key Properties">
+<!ENTITY smaug.keyMan.showAllKeys.label         "Display All Keys by Default">
+<!ENTITY smaug.keyMan.viewPhoto.label           "Photo ID">
+<!ENTITY smaug.keyMan.ctxViewPhoto.label        "View Photo ID">
+<!ENTITY smaug.keyMan.viewSig.label             "Signatures">
+<!ENTITY smaug.keyMan.showInvalidKeys.label     "Display invalid keys">
+<!ENTITY smaug.keyMan.showUntrustedKeys.label   "Display untrusted keys">
+<!ENTITY smaug.keyMan.showOthersKeys.label      "Display keys from other people">
+<!ENTITY smaug.keyMan.ctxViewSig.label          "View Signatures">
+<!ENTITY smaug.keyMan.userId.label              "Name">
+<!ENTITY smaug.keyMan.keyType.label             "Type">
+<!ENTITY smaug.keyMan.calcTrust.label           "Key Validity">
+<!ENTITY smaug.keyMan.ownerTrust.label          "Owner Trust">
+<!ENTITY smaug.keyMan.stopTransfer.label        "Stop transfer">
+<!ENTITY smaug.keyMan.fingerprint.label         "Fingerprint">
+<!ENTITY smaug.keyMan.selectAll.label           "Select all Keys">
+<!ENTITY smaug.keyMan.addToPRRule.label         "Add to Per-Recipient Rule">
+<!ENTITY smaug.keyMan.emptyTree.tooltip         "Enter search terms in the box above">
+<!ENTITY smaug.keyMan.nothingFound.tooltip      "No keys match your search terms">
+<!ENTITY smaug.keyMan.pleaseWait.tooltip        "Please wait while keys are being loaded ...">
+
+<!ENTITY smaug.keyMan.filter.label              "Search for:">
+
+<!ENTITY smaug.keyMan.close.accesskey             "C">
+<!ENTITY smaug.keyMan.generate.accesskey          "K">
+<!ENTITY smaug.keyMan.sign.accesskey              "S">
+<!ENTITY smaug.keyMan.setTrust.accesskey          "T">
+<!ENTITY smaug.keyMan.genRevoke.accesskey         "R">
+<!ENTITY smaug.keyMan.delKey.accesskey            "D">
+<!ENTITY smaug.keyMan.revokeKey.accesskey         "R">
+<!ENTITY smaug.keyMan.importFromFile.accesskey    "I">
+<!ENTITY smaug.keyMan.exportToFile.accesskey      "E">
+<!ENTITY smaug.keyMan.importFromServer.accesskey  "S">
+<!ENTITY smaug.keyMan.uploadToServer.accesskey    "U">
+<!ENTITY smaug.keyMan.reload.accesskey            "R">
+<!ENTITY smaug.keyMan.addPhoto.accesskey          "P">
+<!ENTITY smaug.keyMan.manageUid.accesskey         "M">
+<!ENTITY smaug.keyMan.changeExpiry.accesskey      "E">
+<!ENTITY smaug.keyMan.changePwd.accesskey         "P">
+<!ENTITY smaug.keyMan.viewSig.accesskey           "S">
+<!ENTITY smaug.keyMan.showInvalidKeys.accesskey   "D">
+<!ENTITY smaug.keyMan.showUntrustedKeys.accesskey "U">
+<!ENTITY smaug.keyMan.showOthersKeys.accesskey    "O">
+<!ENTITY smaug.keyMan.showPhoto.accesskey         "P">
+<!ENTITY smaug.keyMan.importFromClipbrd.accesskey "I">
+<!ENTITY smaug.keyMan.copyToClipbrd.accesskey     "C">
+<!ENTITY smaug.keyMan.keyDetails.accesskey        "K">
+<!ENTITY smaug.keyMan.showAllKeys.accesskey       "D">
+<!ENTITY smaug.keyMan.enableKey.accesskey         "B">
+<!ENTITY smaug.keyMan.refreshSelKeys.accesskey    "R">
+<!ENTITY smaug.keyMan.refreshAllKeys.accesskey    "A">
+<!ENTITY smaug.keyMan.selectAll.accesskey         "A">
+<!ENTITY smaug.keyMan.sendKeys.accesskey          "S">
+<!ENTITY smaug.keyMan.createMail.accesskey        "C">
+<!ENTITY smaug.keyMan.downloadContactKeys.accesskey "F">
+
+<!ENTITY smaug.keyMan.selectAll.key               "A">
+<!ENTITY smaug.keyMan.keyDetails.key              "I">
+<!ENTITY smaug.keyMan.refreshKey.key              "R">
+<!ENTITY smaug.keyMan.viewSig.key                 "S">
+
+<!ENTITY smaug.keySearch.selectAll.key            "A">
+
+<!ENTITY smaug.viewKeySigDlg.title                "Signature List">
+<!ENTITY smaug.viewKeySigDlg.sigForKey.label      "Signatures for Key:">
+<!ENTITY smaug.viewKeySigDlg.sigType.label        "Sig. Type">
+
+<!ENTITY smaug.manageUidDlg.title                 "Change Primary User ID">
+<!ENTITY smaug.manageUidDlg.affectedKey.label     "Key to change:">
+<!ENTITY smaug.manageUidDlg.availableUid.label    "Available user IDs:">
+<!ENTITY smaug.manageUidDlg.addUid.label          "Add">
+<!ENTITY smaug.manageUidDlg.deleteUid.label       "Delete">
+<!ENTITY smaug.manageUidDlg.revokeUid.label       "Revoke">
+<!ENTITY smaug.manageUidDlg.setPrimary.label      "Set primary">
+
+<!ENTITY smaug.keyDetails.title                   "Key Properties">
+<!ENTITY smaug.keyDetails.userId.label            "Primary User ID">
+<!ENTITY smaug.keyDetails.keyId.label             "Key ID">
+<!ENTITY smaug.keyDetails.additionalUid.label     "Additional User ID">
+<!ENTITY smaug.keyDetails.ID.label                "ID">
+<!ENTITY smaug.keyDetails.keyType.label           "Type">
+<!ENTITY smaug.keyDetails.keyPart.label           "Key Part">
+<!ENTITY smaug.keyDetails.algorithm.label         "Algorithm">
+<!ENTITY smaug.keyDetails.size.label              "Size">
+<!ENTITY smaug.keyDetails.created.label           "Created">
+<!ENTITY smaug.keyDetails.expiry.label            "Expiry">
+<!ENTITY smaug.keyDetails.usage.label             "Usage">
+<!ENTITY smaug.keyDetails.calcTrust.label         "Key validity">
+<!ENTITY smaug.keyDetails.ownerTrust.label        "Owner trust">
+<!ENTITY smaug.keyDetails.fingerprint.label       "Fingerprint">
+<!ENTITY smaug.keyDetails.selAction.label         "Select action ...">
+<!ENTITY smaug.keyDetails.selAction.accesskey     "S">
+
+<!ENTITY smaug.cardDetails.title                  "OpenPGP SmartCard Details">
+<!ENTITY smaug.cardDetails.cardMenu.label         "SmartCard">
+<!ENTITY smaug.cardDetails.adminPin.label         "Change PIN">
+<!ENTITY smaug.cardDetails.genCardKey.label       "Generate Key">
+
+<!ENTITY smaug.cardDetails.vendor.label           "Manufacturer">
+<!ENTITY smaug.cardDetails.serial.label           "Serial Number">
+<!ENTITY smaug.cardDetails.name.label             "Firstname, Name">
+<!ENTITY smaug.cardDetails.lang.label             "Language">
+<!ENTITY smaug.cardDetails.sex.label              "Sex">
+<!ENTITY smaug.cardDetails.url.label              "URL of public key">
+<!ENTITY smaug.cardDetails.login.label            "Login data">
+<!ENTITY smaug.cardDetails.forcepin.label         "Force signature PIN">
+<!ENTITY smaug.cardDetails.maxpinlen.label        "Max. PIN length">
+<!ENTITY smaug.cardDetails.pinretry.label         "PIN retry counter">
+<!ENTITY smaug.cardDetails.sigcount.label         "Signature counter">
+<!ENTITY smaug.cardDetails.sigKey.label           "Signature key">
+<!ENTITY smaug.cardDetails.keyCreated.label       "Created">
+<!ENTITY smaug.cardDetails.encKey.label           "Encryption key">
+<!ENTITY smaug.cardDetails.authKey.label          "Authentication key">
+<!ENTITY smaug.cardDetails.yes.label              "Yes">
+<!ENTITY smaug.cardDetails.no.label               "No">
+<!ENTITY smaug.cardDetails.male.label             "Male">
+<!ENTITY smaug.cardDetails.female.label           "Female">
+<!ENTITY smaug.cardDetails.editData.label         "Edit Card Data">
+<!ENTITY smaug.cardDetails.save.label             "Save">
+<!ENTITY smaug.cardDetails.reset.label            "Reset">
+<!ENTITY smaug.cardDetails.closeWindow.label      "Close">
+
+<!ENTITY smaug.cardDetails.adminPin.accesskey     "P">
+<!ENTITY smaug.cardDetails.genCardKey.accesskey   "G">
+<!ENTITY smaug.cardDetails.cardMenu.accesskey     "S">
+<!ENTITY smaug.cardDetails.editData.accesskey     "E">
+
+<!ENTITY smaug.genCardKey.title                   "Generate OpenPGP Key">
+<!ENTITY smaug.genCardKey.backupKey.label         "Save backup of key outside the card">
+<!ENTITY smaug.genCardKey.desc                    "<a class='smgmailStrong'>NOTE: Key generation may take up to several minutes to complete.</a> Do not exit the application while key generation is in progress. You will be alerted when key generation is completed.">
+
+<!ENTITY smaug.cardPin.title                      "Change SmartCard PIN">
+<!ENTITY smaug.cardPin.action.label               "What do you want to do">
+<!ENTITY smaug.cardPin.changePin.label            "Change PIN">
+<!ENTITY smaug.cardPin.changeAdmPin.label         "Change Admin PIN">
+<!ENTITY smaug.cardPin.unblockPin.label           "Unblock PIN">
+<!ENTITY smaug.cardPin.currAdmPin.label           "Current ADMIN PIN">
+<!ENTITY smaug.cardPin.newAdminPin.label          "New admin PIN">
+<!ENTITY smaug.cardPin.adminPinRepeat.label       "Repeat new PIN">
+<!ENTITY smaug.cardPin.currPin.label              "Current PIN">
+<!ENTITY smaug.cardPin.newPin.label               "New PIN">
+<!ENTITY smaug.cardPin.pinRepeat.label            "Repeat new PIN">
+
+<!ENTITY smaug.changePasswd.title                 "Change OpenPGP Passphrase">
+<!ENTITY smaug.changePasswd.currPasswd.label      "Current Passphrase">
+<!ENTITY smaug.changePasswd.newPasswd.label       "New Passphrase">
+<!ENTITY smaug.changePasswd.repeatPasswd.label    "Repeat Passphrase">
+
+<!-- wizard: welcome step -->
+<!ENTITY smaug.setupWiz.title                     "smgmail Setup Wizard">
+<!ENTITY smaug.setupWiz.yes                       "Yes">
+<!ENTITY smaug.setupWiz.no                        "No, thanks">
+<!ENTITY smaug.setupWiz.pgWelcome.desc            "This wizard helps you to start using smgmail right away. Over the next
+                                                      few screens we'll ask you some questions to get everything setup.
+                                                      <html:br/><html:br/>
+                                                      To keep everything simple, we make some assumptions about configuration.
+                                                      These assumptions try to provide a high level of security for the
+                                                      average user without creating confusion. Of course, you can change all of
+                                                      these settings after you finish the wizard. You can find out more about
+                                                      the smaug features in the Help menu or on the
+                                                      <a class='smaugLink'><html:a onclick='smgOpenURL(event, this)'
+                                                      href='http://www.smaug.net/'>smgmail website</html:a></a>.
+                                                      <html:br/><html:br/>
+                                                      If you have any trouble using this wizard, please let us know by
+                                                      <a class='smaugLink'><html:a
+                                                      href='mailto:smaug-users@smgmail.net'>emailing us</html:a></a>.
+                                                      <html:br/><html:br/>
+                                                      This wizard is automatically invoked when you first install smaug.
+                                                      You can also launch it manually from the smaug menu.
+                                                      <html:br/><html:br/>
+                                                      Thank you for choosing smaug!">
+<!ENTITY smaug.setupWiz.pgWelcome.startNow        "Would you like to use the wizard now?">
+<!ENTITY smaug.setupWiz.pgWelcome.yes             "Yes, I would like the wizard to get me started">
+<!ENTITY smaug.setupWiz.pgWelcome.no              "No, thanks. I prefer to configure things manually">
+
+<!-- wizard: select account IDs step -->
+<!ENTITY smaug.setupWiz.pgSelectId.title          "Select Identities">
+<!ENTITY smaug.setupWiz.pgSelectId.subtitle       "Select the accounts or identities you want smgmail to work with">
+<!ENTITY smaug.setupWiz.pgSelectId.desc           "smgmail settings are specific to accounts and identities. By default
+                                                      smaug will configure itself to work on all your accounts and
+                                                      identities.  If that's not what you want, please select the specific
+                                                      account or identity you want smaug to work with below.">
+<!ENTITY smaug.setupWiz.pgSelectId.allIds         "Would you like to set up smgmail for all identities?">
+<!ENTITY smaug.setupWiz.pgSelectId.selectIds      "I would like to set up smgmail only for the following identities:">
+<!ENTITY smaug.setupWiz.pgSelectId.note           "<a class='smgmailStrong'>Note:</a> Enigmail will always verify signatures
+                                                      on emails for every account or identity, regardless of whether it is enabled or not">
+
+<!-- wizard: install GnuPG step -->
+<!ENTITY smaug.setupWiz.pgInstall.title           "GnuPG Required">
+<!ENTITY smaug.setupWiz.pgInstall.desc            "In order to use smgmail, GnuPG is required as additional component for doing the cryptographic work.
+                                                      The wizard tried to locate GnuPG, but it could not be found.">
+<!ENTITY smaug.setupWiz.pgInstall.installDesc     "smgmail can download GnuPG and launch the installer for you.
+                                                      If you wish to do so, click on the 'Install' button to download and install GnuPG.
+                                                      <html:br/><html:br/>
+                                                      Alternatively, if you already installed GnuPG, use the 'Browse' button to locate GnuPG for the wizard.">
+<!ENTITY smaug.setupWiz.pgInstall.locateDesc      "Please locate GnuPG using the Browse button.">
+<!ENTITY smaug.setupWiz.pgInstall.installButton   "Install ...">
+<!ENTITY smaug.setupWiz.pgInstall.locateButton    "Browse ...">
+<!ENTITY smaug.setupWiz.pgInstall.downloadLabel   "Downloading GnuPG ...">
+<!ENTITY smaug.setupWiz.pgInstall.installLabel    "Starting the installer. Please follow the steps of the GnuPG installer wizard.">
+<!ENTITY smaug.setupWiz.pgInstall.installDone     "Installation complete. Please proceed to the next page of the wizard to continue the setup process.">
+<!ENTITY smaug.setupWiz.pgInstall.gnupgFound      "Valid GnuPG installation found.">
+
+<!-- wizard: encryption step (replaces pgEnc with v1.7) -->
+<!ENTITY smaug.setupWiz.pgEncConv.title           "Encryption">
+<!ENTITY smaug.setupWiz.pgEncConv.subtitle        "Encrypt Your Outgoing Emails">
+<!ENTITY smaug.setupWiz.pgEncConv.desc            "smgmail allows you to encrypt your email messages and any attachments.
+                                                      Encryption is like putting a letter in an envelope. It makes things
+                                                      private.  It's not just for &quot;secret&quot; messages, but for
+                                                      everything that you would not send on a postcard.
+                                                      <html:br/><html:br/>
+                                                      To be able to send encrypted emails you need the key of each recipient.
+                                                      However, because OpenPGP is not common everywhere, it is typical
+                                                      that you only have the keys of <html:i>some</html:i> recipients.
+                                                      To support this situation, smaug provides a convenient encryption mode,
+                                                      which automatically encrypts emails whenever possible.
+                                                      For each email you can still explicitly choose whether or not to encrypt.">
+<!ENTITY smaug.setupWiz.pgEncConv.convEncMsg      "Which general mode do you prefer to encrypt outgoing emails?">
+<!ENTITY smaug.setupWiz.pgEncConv.convYes         "Convenient auto encryption">
+<!ENTITY smaug.setupWiz.pgEncConv.convEncYes      "Encrypt all of my messages by default, because privacy is critical to me">
+<!ENTITY smaug.setupWiz.pgEncConv.convEncNo       "Don't encrypt my messages by default">
+
+<!-- wizard: signing step -->
+<!ENTITY smaug.setupWiz.pgSign.title              "Signing">
+<!ENTITY smaug.setupWiz.pgSign.subtitle           "Digitally Sign Your Outgoing Emails">
+<!ENTITY smaug.setupWiz.pgSign.desc               "smgmail allows you to digitally sign your emails. This is like the
+                                                      electronic version of signing a letter, and it allows people to be sure
+                                                      that an email is really from you.  It's a good security practice to sign
+                                                      all outgoing email.
+                                                      <html:br/><html:br/>
+                                                      To verify your signed email, people need an OpenPGP-aware mail program.
+                                                      If they don't have an OpenPGP-aware mail program they will be able to
+                                                      read your email, but the signature will be displayed as an attachment or
+                                                      as text around the email message, which might annoy some people.
+                                                      In any case you can still explicitly choose whether or not to sign.">
+<!ENTITY smaug.setupWiz.pgSign.signMsg            "Which general mode do you prefer to sign outgoing emails?">
+<!ENTITY smaug.setupWiz.pgSign.signYes            "Sign all of my messages by default">
+<!ENTITY smaug.setupWiz.pgSign.signNo             "Don't sign my messages by default">
+<!-- old labels: -->
+<!ENTITY smaug.setupWiz.pgSign.signAllMsg         "Do you want to sign all your outgoing email by default?">
+<!ENTITY smaug.setupWiz.pgSign.yesSign            "Yes, I want to sign all of my emails">
+<!ENTITY smaug.setupWiz.pgSign.noSign             "No, I want to create per-recipient rules for emails that need to be signed">
+
+<!-- wizard: other settings step -->
+<!ENTITY smaug.setupWiz.pgSettings.title          "Preferences">
+<!ENTITY smaug.setupWiz.pgSettings.subtitle       "Change Your Email Settings To Make smgmail Work More Reliably">
+<!ENTITY smaug.setupWiz.pgSettings.desc           "This wizard can change your email settings to make sure there are no
+                                                      problems with signing and encrypting email on your machine. These
+                                                      setting changes are mostly technical stuff you will not notice, though
+                                                      one important thing is that email will be composed in plain text by default.">
+<!ENTITY smaug.setupWiz.pgSettings.changePref     "Do you want to change a few default settings to make smgmail work better
+                                                      on your machine?">
+<!ENTITY smaug.setupWiz.pgSettings.details        "Details ...">
+<!ENTITY smaug.setupWiz.pgKeySel.title            "Key Selection">
+<!ENTITY smaug.setupWiz.pgKeySel.subtitle         "Create A Key To Sign And Encrypt Email">
+<!ENTITY smaug.setupWiz.pgKeySel.desc             "We have detected that you already have an OpenPGP key. You can either
+                                                      use one of your existing keys to sign, encrypt and decrypt emails, or
+                                                      you can create a new key pair.">
+<!ENTITY smaug.setupWiz.pgKeySel.newKey           "I want to create a new key pair for signing and encrypting my email">
+<!ENTITY smaug.setupWiz.pgKeySel.useExistingKey   "I want to select one of the keys below for signing and encrypting my email:">
+<!ENTITY smaug.setupWiz.pgKeyCreate.title         "Create Key">
+<!ENTITY smaug.setupWiz.pgKeyCreate.subtitle      "Create A Key To Sign And Encrypt Email">
+<!ENTITY smaug.setupWiz.pgKeyCreate.desc1         "You need to have a 'key pair' to sign and encrypt email, or to read
+                                                      emails that are encrypted.  A key pair has two keys, one public and one
+                                                      private.">
+<!ENTITY smaug.setupWiz.pgKeyCreate.desc2         "You need to give your public key to everyone in your contact list who
+                                                      will want to verify your signature, or to encrypt email to you.
+                                                      Meanwhile, you need to keep your private key secret. You must not give
+                                                      it away, or leave it unprotected. It can read all the email people
+                                                      encrypt and send to you. It can also encrypt email in your name.
+                                                      Because it's secret, it's protected by a passphrase.">
+<!ENTITY smaug.setupWiz.pgKeyCreate.passRepeat    "Please confirm your passphrase by typing it again">
+<!ENTITY smaug.setupWiz.pgNoKeyFound.title        "No OpenPGP Key Found">
+<!ENTITY smaug.setupWiz.pgNoKeyFound.subtitle     "We could not find any OpenPGP Key">
+<!ENTITY smaug.setupWiz.pgNoKeyFound.desc         "We could not find any OpenPGP key. Please select below if you want to
+                                                      create a new key pair or if you want to import an existing key.">
+<!ENTITY smaug.setupWiz.pgNoKeyFound.importKey    "I have existing public and private keys that I would like to import">
+<!ENTITY smaug.setupWiz.pgKeyImport.title         "Import OpenPGP Keys">
+<!ENTITY smaug.setupWiz.pgKeyImport.subtitle      "Specify the files to import">
+<!ENTITY smaug.setupWiz.pgKeyImport.desc          "Please specify the files containing the public and the private keys to
+                                                      import. The entry for private keys can be left empty if the first file
+                                                      contains both private and public keys.">
+<!ENTITY smaug.setupWiz.pgKeyImport.pubkeyFile    "Public key file">
+<!ENTITY smaug.setupWiz.pgKeyImport.seckeyFile    "Private key file">
+<!ENTITY smaug.setupWiz.pgSummary.title           "Summary">
+<!ENTITY smaug.setupWiz.pgSummary.subtitle        "Confirm that the wizard shall now commit these changes">
+<!ENTITY smaug.setupWiz.pgSummary.desc            "You are almost complete! If you click on the 'Next' button, the wizard will perform the following actions:">
+<!ENTITY smaug.setupWiz.pgKeygen.title            "Key Creation">
+<!ENTITY smaug.setupWiz.pgKeygen.subtitle         "Your key is now being generated">
+<!ENTITY smaug.setupWiz.pgComplete.title          "Thank you">
+<!ENTITY smaug.setupWiz.pgComplete.desc           "smgmail is now ready to use.<html:br/><html:br/>Thank you for using Enigmail.">
+<!ENTITY smaug.setupWiz.details.title             "Preferences">
+<!ENTITY smaug.setupWiz.details.subtitle          "Modify Application Settings">
+<!ENTITY smaug.setupWiz.details.imapOnDemand      "Disable loading IMAP parts on demand">
+<!ENTITY smaug.setupWiz.details.changingPrefs     "The following preferences are modified by this Wizard:">
+<!ENTITY smaug.setupWiz.details.noFlowedMsg       "Disable flowed text (RFC 2646)">
+<!ENTITY smaug.setupWiz.details.viewAsPlain       "View message body as plain text">
+<!ENTITY smaug.setupWiz.details.8bitEncoding      "Use 8-bit encoding for message sending">
+<!ENTITY smaug.setupWiz.details.noComposeHTML     "Do not compose HTML messages">
+<!ENTITY smaug.setupWiz.pgNoStart.title           "Cancel Wizard">
+<!ENTITY smaug.setupWiz.pgNoStart.desc            "You have chosen not to use the Wizard to configure smgmail.
+                                                      <html:br/><html:br/>Thank you for using smaug.">
+<!ENTITY smaug.advancedIdentityDlg.title          "Advanced smgmail Identity Settings">
+<!ENTITY smaug.amPrefPgp.sendKeyWithMsg.label     "Attach my public key to messages">
+
+<!ENTITY smaug.addPhoto.question.label            "Do you want to add the following picture to the following key?">
+<!ENTITY smaug.addPhoto.title                     "Add Photo to Key">
+<!ENTITY smaug.msgViewColumn.label                "OpenPGP">
+<!ENTITY smaug.msgViewColumn.tooltip              "Sort by the OpenPGP status">
+<!ENTITY smaug.addToRule.title                    "Add Key to Per-Recipient Rule">
+<!ENTITY smaug.addToRule.useRuleButton.label      "Add Key to Selected Rule">
+<!ENTITY smaug.addToRule.useRuleButton.accesskey  "A">
+<!ENTITY smaug.addToRule.newRuleButton.label      "Create New Rule">
+<!ENTITY smaug.addToRule.newRuleButton.accesskey  "N">

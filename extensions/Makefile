@@ -1,4 +1,0 @@
-## -*- Makefile -*-
-
-all %:
-	@( cd .. ; $(MAKE) $@ )

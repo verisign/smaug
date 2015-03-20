@@ -4,82 +4,95 @@ USE AT YOUR OWN RISK !!!
 SMAUG
 ==========
 
-The software in this repository has been constructed to serve as a proof of concept for DANE/Smime body of works under discussion.
+The software in this repository builds a library to implement protocols based on DNS-based Authentication of Named
+Entities (DANE), an IETF working group:
+  https://datatracker.ietf.org/wg/dane/charter/
 
-This prototype is tested on Red Hat Linux 6 and Mac OSX Version 10.9.
+This library has been constructed to serve as a proof of concept for
+multiple DANE-based protocols.  Currently, the implementation implements simple
+S/MIME capabilities using DANE.
 
-The origin of the work draws from DANE/TLS RFC:
 
-	RFC 6698   https://tools.ietf.org/html/rfc6698
+Dependencies
+======
 
-The work currently implents a specific set of changes proposed by SRose for the original 02 version found at http://tools.ietf.org/html/draft-ietf-dane-smime-02.  A version with the proposed changes exists in docs directory.  
+To compile Smaug, there are several mandatory dependencies, and a few optional packages which can be 
+enabled, and result in further dependencies.
 
-Additionally, we have adopted the use of sha\_224 encoding for the left-hand side of the email address.
+Smaug depends on OpenSSL and libunbound.  Optionally, Smaug can be configured to use the getdns API by using the
+configure option:
+``./configure --enable-getdns
+``
+This option requires the installation of libgetdns, and its dependencies.
 
-Compiling
+To install the mandatory dependencies:
+
+Redhat/CentOS/Fedora
+----
+
+```
+sudo yum install unbound-devel
+sudo install openssl-devel
+```
+
+Mac OS X
+---
+
+```
+sudo port install openssl
+# cd to a build directory
+wget http://www.unbound.net/downloads/unbound-latest.tar.gz
+tar -xf unbound-latest.tar.gz
+cd unbound-[0-9]*
+./configure && make && sudo make install
+```
+
+Ubuntu / Debian
+---
+
+```
+apt-get install libunbound-dev
+apt-get install libssl-dev
+```
+
+
+Compiling libsmaug
 ===========
 
-dane-smime.xpi:
-
-This is the Thuderbird extension.
-
-Thunderbird Extension Installation
-===================================
-Dependency: getDns library must be installed ( https://getdnsapi.net/doc.html ) 
-Dependency: Thunderbird 24 (version tested)
-
-1. Check out the full dane-email repository
-2. compile
-
-<code>
-git clone <repository>
-<br>
-cd Smaug
-<br>
+```
+autoreconf -i
+./configure
 make
-</code>
+sudo make install
+```
 
-A build directory will be constructed containing the libdane shared library and the dane-smime.xpi thunderbird
-extension.  The library must be included in the normal library path or referenced by LD\_LIBRARY\_PATH on Linux/unix systems.
+Make sure that the DNSSEC root KSK (or trust anchor) is installed.  This can be done by running the utility
 
-For Example, you could install it globally for your system, assuing sudo privileges:
-<code>
-sudo cp libdane.\* /usr/local/lib
-<br>
-export LD\_LIBRARY\_PATH=$LD\_LIBRARY\_PATH:/usr/local/lib
-<br>
-</code>
+```sudo unbound-anchor ```
 
-launch thunderbird
-add-extension from file, and select the .xpi file
-it should say ok, and then prompt to restart thunderbird.
+This utility is part of the unbound development suite.
 
-now go to the icon bar, right click to customize, and add the dane decrypt button by dragging it from the dialog to the toolbar.
-now click the write button to compose a message, and right click on the toolbar.  Drag the dane-encrypt button to the toolbar.
+Executables
+===========
 
-You should now be ready to go.
+After compliation, several test drivers will be left in the source directory.  In addition to installing the
+reference library in the &quot;$(prefix)/lib&quot; directory, the command-line utility
 
-FOR DEVELOPERS:
-===============
-Sample Code:
-In the src directory, there are a couple of programs that can be used as references.
+ ```
+smimeagen
+```
 
-domain\_socket\_srv, domain\_socket\_client, domain\_client\_test
-These two files creat a client and server over a domain socket.  The domain\_client\_test is used to test the protocol
-with a public key.  Attempting to use a large key with the domain\_socket\_client fails on some platforms, such as on the Mac.
+Will be installed in &quot;$(prefix)/bin&quot;.  This utility will help create SMIMEA records, in a format suitable
+for being pasted into a DNS zone file.
 
-hash\_test <string>
-Simply provide the sha224 hash of a given string.  For phrases, simply quote the phrase on the command line, ie
-./hash\_test "foo bar"
+If an S/MIME certificate is needed, there is a convienent S/MIME certificate generation script to help:
 
-test\_dane\_email <email address>
-Will perform a dns lookup for both an encryption key and a signing key and display the results
+```
+<smaug repo>/scripts/smime-gen.sh
+```
 
 
-Thunderbird Development
-=======================
-I have left a few notes and readme files in the extensions directory and subdirectories as references for developing Mozilla extensions.
+Example Code
+===========
 
-If you would like to build on the current extensions, I suggest that you reference the information here about a proxy file.  Using a proxy file will save you countless steps for testing your changes.
-See extension proxy file:
-https://developer.mozilla.org/en-US/Add-ons/Setting\_up\_extension\_development\_environment
+

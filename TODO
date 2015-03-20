@@ -6,9 +6,16 @@ Enhancements
 	Handle multiple certs being returned from query
 	Handle multiple certs locally
 	configurations
+    Look for adding config option to TBird, to configure where certs are stored.
 		cert file names
 		cert file locations
 
 	What to do with other SMIME/A records - hashes, etc...
 
-	NAPTR functionality
+	Access functionality
+  Try looking for libsmaug (w/o version specific labels)
+
+  PKIX logic
+
+  Locator/Access development
+
