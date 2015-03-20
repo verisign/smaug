@@ -3,3 +3,4 @@
 *.o
 *.so
 .*.swp
+autom4te.cache
