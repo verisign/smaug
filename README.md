@@ -39,6 +39,8 @@ Mac OS X
 ---
 
 ```
+sudo port install automake
+sudo port install libtool
 sudo port install openssl
 # cd to a build directory
 wget http://www.unbound.net/downloads/unbound-latest.tar.gz
