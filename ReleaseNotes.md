@@ -8,9 +8,9 @@ Date:    2015-03-17
 
 Team:
 
-Eric Osterweil
-Lynch Davis
-Gowri Visweswaran
+* Eric Osterweil
+* Glen Wiley
+* Gowri Visweswaran
 
 Purpose of this release:
 =========
@@ -35,8 +35,10 @@ CentOS/Red Hat Linux 6.x
 Known dependencies of this release:
 =========
 
-getdns version 1.5 and its dependencies (optional)
-- or -
+getdns version 0.1.6 and its dependencies (optional)
+
+or 
+
 libunbound (and its dependencies)
 
 openssl-1.0.1j
