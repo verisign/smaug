@@ -31,6 +31,8 @@ Redhat/CentOS/Fedora
 ----
 
 ```
+sudo yum install automake
+sudo yum install libtool
 sudo yum install unbound-devel
 sudo install openssl-devel
 ```
@@ -53,8 +55,10 @@ Ubuntu / Debian
 ---
 
 ```
-apt-get install libunbound-dev
-apt-get install libssl-dev
+sudo apt-get install automake
+sudo apt-get install libtool
+sudo apt-get install libunbound-dev
+sudo apt-get install libssl-dev
 ```
 
 
