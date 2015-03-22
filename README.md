@@ -12,6 +12,7 @@ This library has been constructed to serve as a proof of concept for
 multiple DANE-based protocols.  Currently, the implementation implements simple
 S/MIME capabilities using DANE.
 
+The specific features supported are described in teh [Release Notes](./ReleaseNotes.md)
 
 Dependencies
 ======
