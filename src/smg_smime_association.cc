@@ -26,6 +26,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include <errno.h>
 #include <cstring>
 #include <arpa/inet.h>
 

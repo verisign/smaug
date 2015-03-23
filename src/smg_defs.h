@@ -27,6 +27,9 @@
 #include <map>
 #include <vector>
 
+#include <inttypes.h>
+#include <stdint.h>
+
 class SmgSmimeAssociation;
 class SmgID;
 class SmgSmimeCert;
