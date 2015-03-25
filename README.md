@@ -54,28 +54,43 @@ cd unbound-[0-9]*
 ./configure --with-libunbound-only && make && sudo make install
 ```
 
-If you use brew note that some of the tools will end up with a "g"
+If you use brew:
+
+Note that some of the tools will end up with a "g"
 prefix to avoid conflicts with Apple's tool chain.
 
 ```
 brew install automake
 brew install libtool
-brew install openssl
-brew install --upgrade openssl
-brew unlink openssl
-brew link openssl --force
+```
+
+The brew version of openssl at the time of this writing might
+be missing some symbols that we need, so in these instructions
+we pull openssl sources and build them to satisfy that dependency.
+The ones delivered with OSX are helpful at trying to motivate you 
+to use something else but less helpful at getting our stuff built.
+
+```
+git clone https://github.com/openssl/openssl
+git checkout -b OpenSSL_1_0_2
+cd openssl
+./Configure darwin64-x86_64-cc
+make
+```
+
+Finally, we build libunbound:
+
+```
 wget http://www.unbound.net/downloads/unbound-latest.tar.gz
 tar -xf unbound-latest.tar.gz
 cd unbound-[0-9]*
-./configure --with-libunbound-only && make && sudo make install
+./configure --with-libunbound-only
+make
+sudo make install
 ```
 
 In case you didn't know, trying to use both ports and brew is like
 "crossing the streams" - don't do it.
-
-OpenSSL might give you a little bit of grief since even the newer
-versions of OSX seem to like pre 1.0 versions.
-
 
 Ubuntu / Debian
 ---
