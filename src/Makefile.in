@@ -15,6 +15,8 @@
 @SET_MAKE@
 
 
+
+
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -86,17 +88,20 @@ noinst_PROGRAMS = test_smg_smime_cert$(EXEEXT) \
 bin_PROGRAMS = smimeagen$(EXEEXT)
 @SMG_GETDNS_TRUE@am__append_1 = -lldns -lgetdns
 @SMG_GETDNS_TRUE@am__append_2 = smg_net_getdns.cc
-@SMG_GETDNS_TRUE@am__append_3 = -D_SMG_GETDNS
-@SMG_LDAP_TRUE@am__append_4 = -lldap -llber 
-@SMG_LDAP_TRUE@am__append_5 = -DLDAP_R_COMPILE -DLDAP_LIBRARY \
-@SMG_LDAP_TRUE@	-DLDAP_DEPRECATED -D_SMG_LDAP
-@SMG_LDAP_TRUE@am__append_6 = test_smg_ldap_lctr
-@SMG_GETDNS_TRUE@am__append_7 = smg_net_getdns.cc
-@SMG_GETDNS_TRUE@am__append_8 = -lldns -lgetdns
-@SMG_GETDNS_TRUE@am__append_9 = -D_SMG_GETDNS
+@SMG_GETDNS_TRUE@am__append_3 = smg_net_getdns.h
+@SMG_GETDNS_TRUE@am__append_4 = -D_SMG_GETDNS
+@SMG_LDAP_TRUE@am__append_5 = -lldap -llber 
+@SMG_LDAP_TRUE@am__append_6 = -DLDAP_R_COMPILE -DLDAP_LIBRARY -DLDAP_DEPRECATED -D_SMG_LDAP
+@SMG_LDAP_TRUE@am__append_7 = smg_ldap_lctr.cc
+@SMG_LDAP_TRUE@am__append_8 = smg_ldap_lctr.h
+@SMG_LDAP_TRUE@am__append_9 = test_smg_ldap_lctr
+@SMG_GETDNS_TRUE@am__append_10 = smg_net_getdns.cc
+@SMG_GETDNS_TRUE@am__append_11 = -lldns -lgetdns
+@SMG_GETDNS_TRUE@am__append_12 = -D_SMG_GETDNS
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(srcdir)/config.h.in $(top_srcdir)/depcomp
+	$(srcdir)/config.h.in $(top_srcdir)/depcomp \
+	$(am__smgheader_HEADERS_DIST)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -132,14 +137,17 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
+	"$(DESTDIR)$(bindir)" "$(DESTDIR)$(smgheaderdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libsmaug_la_LIBADD =
 am__libsmaug_la_SOURCES_DIST = smg_id.cc smg_id_cache.cc smg_net.cc \
 	smg_smime_association.cc smg_smime_cert.cc smg_lctr.cc \
 	smg_lctr_factory.cc smg_ad_lctr.cc smg_net_engine.cc \
-	smg_net_libunbound.cc smg_tbird.cc smg_net_getdns.cc
+	smg_net_libunbound.cc smg_tbird.cc smg_net_getdns.cc \
+	smg_ldap_lctr.cc
 @SMG_GETDNS_TRUE@am__objects_1 = libsmaug_la-smg_net_getdns.lo
+@SMG_LDAP_TRUE@am__objects_2 = libsmaug_la-smg_ldap_lctr.lo
 am_libsmaug_la_OBJECTS = libsmaug_la-smg_id.lo \
 	libsmaug_la-smg_id_cache.lo libsmaug_la-smg_net.lo \
 	libsmaug_la-smg_smime_association.lo \
@@ -147,7 +155,7 @@ am_libsmaug_la_OBJECTS = libsmaug_la-smg_id.lo \
 	libsmaug_la-smg_lctr_factory.lo libsmaug_la-smg_ad_lctr.lo \
 	libsmaug_la-smg_net_engine.lo \
 	libsmaug_la-smg_net_libunbound.lo libsmaug_la-smg_tbird.lo \
-	$(am__objects_1)
+	$(am__objects_1) $(am__objects_2)
 libsmaug_la_OBJECTS = $(am_libsmaug_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -202,7 +210,7 @@ test_smg_ldap_lctr_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 am__test_smg_net_SOURCES_DIST = test_smg_net.cc smg_net.cc \
 	smg_net_engine.cc smg_net_libunbound.cc smg_id.cc \
 	smg_smime_association.cc smg_smime_cert.cc smg_net_getdns.cc
-@SMG_GETDNS_TRUE@am__objects_2 =  \
+@SMG_GETDNS_TRUE@am__objects_3 =  \
 @SMG_GETDNS_TRUE@	test_smg_net-smg_net_getdns.$(OBJEXT)
 am_test_smg_net_OBJECTS = test_smg_net-test_smg_net.$(OBJEXT) \
 	test_smg_net-smg_net.$(OBJEXT) \
@@ -210,7 +218,7 @@ am_test_smg_net_OBJECTS = test_smg_net-test_smg_net.$(OBJEXT) \
 	test_smg_net-smg_net_libunbound.$(OBJEXT) \
 	test_smg_net-smg_id.$(OBJEXT) \
 	test_smg_net-smg_smime_association.$(OBJEXT) \
-	test_smg_net-smg_smime_cert.$(OBJEXT) $(am__objects_2)
+	test_smg_net-smg_smime_cert.$(OBJEXT) $(am__objects_3)
 test_smg_net_OBJECTS = $(am_test_smg_net_OBJECTS)
 test_smg_net_LDADD = $(LDADD)
 test_smg_net_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -235,6 +243,7 @@ test_smg_smime_cert_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(test_smg_smime_cert_CXXFLAGS) $(CXXFLAGS) \
 	$(test_smg_smime_cert_LDFLAGS) $(LDFLAGS) -o $@
+SCRIPTS = $(bin_SCRIPTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -285,6 +294,12 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+am__smgheader_HEADERS_DIST = smg_id.h smg_id_cache.h smg_net.h \
+	smg_smime_association.h smg_smime_cert.h smg_lctr.h \
+	smg_lctr_factory.h smg_ad_lctr.h smg_net_engine.h \
+	smg_net_libunbound.h smg_tbird.h smg_defs.h smg_net_getdns.h \
+	smg_ldap_lctr.h
+HEADERS = $(smgheader_HEADERS)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) \
 	$(LISP)config.h.in
 # Read a list of newline-separated strings from the standard input,
@@ -430,42 +445,50 @@ lib_LTLIBRARIES = libsmaug.la
 libsmaug_la_SOURCES = smg_id.cc smg_id_cache.cc smg_net.cc \
 	smg_smime_association.cc smg_smime_cert.cc smg_lctr.cc \
 	smg_lctr_factory.cc smg_ad_lctr.cc smg_net_engine.cc \
-	smg_net_libunbound.cc smg_tbird.cc $(am__append_2)
+	smg_net_libunbound.cc smg_tbird.cc $(am__append_2) \
+	$(am__append_7)
 libsmaug_la_LDFLAGS = $(LDFLAGS) -version-info \
-	$(libsmaug_la_version_info) -L/opt/local/lib -lunbound -lssl \
-	-lcrypto $(am__append_1) $(am__append_4)
+	$(libsmaug_la_version_info) -L/usr/local/lib -lunbound -lssl \
+	-lcrypto $(am__append_1) $(am__append_5)
 libsmaug_la_CXXFLAGS = $(CXXFLAGS) -g -Wall -O2 \
-	-Wno-deprecated-declarations -I/opt/local/include \
-	$(am__append_3) $(am__append_5)
+	-Wno-deprecated-declarations -I/usr/local/include \
+	$(am__append_4) $(am__append_6)
+smgheaderdir = $(includedir)
+smgheader_HEADERS = smg_id.h smg_id_cache.h smg_net.h \
+	smg_smime_association.h smg_smime_cert.h smg_lctr.h \
+	smg_lctr_factory.h smg_ad_lctr.h smg_net_engine.h \
+	smg_net_libunbound.h smg_tbird.h smg_defs.h $(am__append_3) \
+	$(am__append_8)
+bin_SCRIPTS = smime-gen.sh
 test_smg_smime_cert_SOURCES = test_smg_smime_cert.cc smg_smime_cert.cc
-test_smg_smime_cert_LDFLAGS = -L/opt/local/lib -lcrypto $(LDFLAGS)
-test_smg_smime_cert_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/opt/local/include $(CXXFLAGS)
+test_smg_smime_cert_LDFLAGS = -L/usr/local/lib -lcrypto $(LDFLAGS)
+test_smg_smime_cert_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include $(CXXFLAGS)
 test_smg_smime_association_SOURCES = test_smg_smime_association.cc smg_smime_association.cc \
                                      smg_smime_cert.cc
 
-test_smg_smime_association_LDFLAGS = -L/opt/local/lib -lcrypto $(LDFLAGS)
-test_smg_smime_association_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/opt/local/include $(CXXFLAGS)
+test_smg_smime_association_LDFLAGS = -L/usr/local/lib -lcrypto $(LDFLAGS)
+test_smg_smime_association_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include $(CXXFLAGS)
 test_smg_id_SOURCES = test_smg_id.cc smg_id.cc smg_smime_association.cc smg_smime_cert.cc
-test_smg_id_LDFLAGS = -L/opt/local/lib -lcrypto $(LDFLAGS)
-test_smg_id_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/opt/local/include $(CXXFLAGS)
+test_smg_id_LDFLAGS = -L/usr/local/lib -lcrypto $(LDFLAGS)
+test_smg_id_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include $(CXXFLAGS)
 test_smg_net_SOURCES = test_smg_net.cc smg_net.cc smg_net_engine.cc \
 	smg_net_libunbound.cc smg_id.cc smg_smime_association.cc \
-	smg_smime_cert.cc $(am__append_7)
-test_smg_net_LDFLAGS = -L/opt/local/lib -lssl -lcrypto -lunbound \
-	$(LDFLAGS) $(am__append_8)
+	smg_smime_cert.cc $(am__append_10)
+test_smg_net_LDFLAGS = -L/usr/local/lib -lssl -lcrypto -lunbound \
+	$(LDFLAGS) $(am__append_11)
 test_smg_net_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations \
-	-I/opt/local/include $(CXXFLAGS) $(am__append_9)
+	-I/usr/local/include $(CXXFLAGS) $(am__append_12)
 smimeagen_SOURCES = smimeagen.cc smg_id.cc smg_smime_association.cc smg_smime_cert.cc
-smimeagen_LDFLAGS = -L/opt/local/lib -lssl -lcrypto $(LDFLAGS)
-smimeagen_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/opt/local/include $(CXXFLAGS)
+smimeagen_LDFLAGS = -L/usr/local/lib -lssl -lcrypto $(LDFLAGS)
+smimeagen_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include $(CXXFLAGS)
 @SMG_LDAP_TRUE@test_smg_ldap_lctr_SOURCES = test_smg_ldap_lctr.cc smg_ldap_lctr.cc smg_smime_cert.cc
-@SMG_LDAP_TRUE@test_smg_ldap_lctr_LDFLAGS = -L/opt/local/lib -lldap -llber -lssl -lcrypto
-@SMG_LDAP_TRUE@test_smg_ldap_lctr_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/opt/local/include \
+@SMG_LDAP_TRUE@test_smg_ldap_lctr_LDFLAGS = -L/usr/local/lib -lldap -llber -lssl -lcrypto
+@SMG_LDAP_TRUE@test_smg_ldap_lctr_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include \
 @SMG_LDAP_TRUE@                              -DLDAP_R_COMPILE -DLDAP_LIBRARY -DLDAP_DEPRECATED -D_SMG_LDAP
 
 test_smg_id_cache_SOURCES = test_smg_id_cache.cc smg_id.cc smg_id_cache.cc smg_smime_association.cc smg_smime_cert.cc
-test_smg_id_cache_LDFLAGS = -L/opt/local/lib -lssl -lcrypto $(LDFLAGS)
-test_smg_id_cache_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/opt/local/include $(CXXFLAGS)
+test_smg_id_cache_LDFLAGS = -L/usr/local/lib -lssl -lcrypto $(LDFLAGS)
+test_smg_id_cache_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include $(CXXFLAGS)
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -640,6 +663,41 @@ test_smg_smime_association$(EXEEXT): $(test_smg_smime_association_OBJECTS) $(tes
 test_smg_smime_cert$(EXEEXT): $(test_smg_smime_cert_OBJECTS) $(test_smg_smime_cert_DEPENDENCIES) $(EXTRA_test_smg_smime_cert_DEPENDENCIES) 
 	@rm -f test_smg_smime_cert$(EXEEXT)
 	$(AM_V_CXXLD)$(test_smg_smime_cert_LINK) $(test_smg_smime_cert_OBJECTS) $(test_smg_smime_cert_LDADD) $(LIBS)
+install-binSCRIPTS: $(bin_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	@list='$(bin_SCRIPTS)'; test -n "$(bindir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(bindir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(bindir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  if test -f "$$d$$p"; then echo "$$d$$p"; echo "$$p"; else :; fi; \
+	done | \
+	sed -e 'p;s,.*/,,;n' \
+	    -e 'h;s|.*|.|' \
+	    -e 'p;x;s,.*/,,;$(transform)' | sed 'N;N;N;s,\n, ,g' | \
+	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1; } \
+	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
+	    if ($$2 == $$4) { files[d] = files[d] " " $$1; \
+	      if (++n[d] == $(am__install_max)) { \
+		print "f", d, files[d]; n[d] = 0; files[d] = "" } } \
+	    else { print "f", d "/" $$4, $$1 } } \
+	  END { for (d in files) print "f", d, files[d] }' | \
+	while read type dir files; do \
+	     if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
+	     test -z "$$files" || { \
+	       echo " $(INSTALL_SCRIPT) $$files '$(DESTDIR)$(bindir)$$dir'"; \
+	       $(INSTALL_SCRIPT) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
+	     } \
+	; done
+
+uninstall-binSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_SCRIPTS)'; test -n "$(bindir)" || exit 0; \
+	files=`for p in $$list; do echo "$$p"; done | \
+	       sed -e 's,.*/,,;$(transform)'`; \
+	dir='$(DESTDIR)$(bindir)'; $(am__uninstall_files_from_dir)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -652,6 +710,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsmaug_la-smg_id_cache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsmaug_la-smg_lctr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsmaug_la-smg_lctr_factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsmaug_la-smg_ldap_lctr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsmaug_la-smg_net.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsmaug_la-smg_net_engine.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsmaug_la-smg_net_getdns.Plo@am__quote@
@@ -793,6 +852,13 @@ libsmaug_la-smg_net_getdns.lo: smg_net_getdns.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_net_getdns.cc' object='libsmaug_la-smg_net_getdns.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsmaug_la_CXXFLAGS) $(CXXFLAGS) -c -o libsmaug_la-smg_net_getdns.lo `test -f 'smg_net_getdns.cc' || echo '$(srcdir)/'`smg_net_getdns.cc
+
+libsmaug_la-smg_ldap_lctr.lo: smg_ldap_lctr.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsmaug_la_CXXFLAGS) $(CXXFLAGS) -MT libsmaug_la-smg_ldap_lctr.lo -MD -MP -MF $(DEPDIR)/libsmaug_la-smg_ldap_lctr.Tpo -c -o libsmaug_la-smg_ldap_lctr.lo `test -f 'smg_ldap_lctr.cc' || echo '$(srcdir)/'`smg_ldap_lctr.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsmaug_la-smg_ldap_lctr.Tpo $(DEPDIR)/libsmaug_la-smg_ldap_lctr.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_ldap_lctr.cc' object='libsmaug_la-smg_ldap_lctr.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsmaug_la_CXXFLAGS) $(CXXFLAGS) -c -o libsmaug_la-smg_ldap_lctr.lo `test -f 'smg_ldap_lctr.cc' || echo '$(srcdir)/'`smg_ldap_lctr.cc
 
 smimeagen-smimeagen.o: smimeagen.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -MT smimeagen-smimeagen.o -MD -MP -MF $(DEPDIR)/smimeagen-smimeagen.Tpo -c -o smimeagen-smimeagen.o `test -f 'smimeagen.cc' || echo '$(srcdir)/'`smimeagen.cc
@@ -1205,6 +1271,27 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-smgheaderHEADERS: $(smgheader_HEADERS)
+	@$(NORMAL_INSTALL)
+	@list='$(smgheader_HEADERS)'; test -n "$(smgheaderdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(smgheaderdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(smgheaderdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(smgheaderdir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(smgheaderdir)" || exit $$?; \
+	done
+
+uninstall-smgheaderHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(smgheader_HEADERS)'; test -n "$(smgheaderdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(smgheaderdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -1290,11 +1377,12 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) config.h
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(HEADERS) \
+		config.h
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(smgheaderdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -1350,13 +1438,14 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-smgheaderHEADERS
 
 install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-binPROGRAMS install-libLTLIBRARIES
+install-exec-am: install-binPROGRAMS install-binSCRIPTS \
+	install-libLTLIBRARIES
 
 install-html: install-html-am
 
@@ -1396,7 +1485,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES
+uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS \
+	uninstall-libLTLIBRARIES uninstall-smgheaderHEADERS
 
 .MAKE: all install-am install-strip
 
@@ -1406,16 +1496,18 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES
 	ctags-am distclean distclean-compile distclean-generic \
 	distclean-hdr distclean-libtool distclean-tags distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-binPROGRAMS install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
+	install-binPROGRAMS install-binSCRIPTS install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-libLTLIBRARIES install-man install-pdf \
+	install-pdf-am install-ps install-ps-am \
+	install-smgheaderHEADERS install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-libLTLIBRARIES
+	uninstall-binSCRIPTS uninstall-libLTLIBRARIES \
+	uninstall-smgheaderHEADERS
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
     for (tIter = oID.beginEncAssociations();
          oID.endEncAssociations() != tIter;
          tIter++) {
-      string sTxt;
+      std::string sTxt;
       (*tIter)->toText(sTxt);
       fprintf(stdout, "\t%s\n", sTxt.c_str());
     }
