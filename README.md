@@ -1,5 +1,18 @@
-The software and code contained herein has absolutely no guarantee
-written or implied.  USE AT YOUR OWN RISK !!!
+TRUE INTERNET-SCALE OBJECT SECURITY
+===========
+
+We have a problem with security in the Internet today, and it's not new.  Before we can encrypt data or 
+verify signatures, we need a way for someone bootstrap and learn what cryptographic keys are needed.  
+Our security protocols have not formally specified a standardized way to securely bootstrap protocols, until now.
+
+Recently, however, a simple observation has sparked a flurry of innovation: for those protocols that use DNS,
+secure key learning can be accomplished from DNS itself, and verified by the DNS Security Extensions (DNSSEC).
+The IETF has started standardizing a suite of protocols called DNS-based Authentication of Named Entities
+[DANE](https://datatracker.ietf.org/wg/dane/charter/) to do secure key learning in a general way for 
+Internet services.  
+
+This library (Smaug) is a general object security library that uses S/MIME to offer object 
+security primitves using DANE S/MIME.
 
 SMAUG
 ==========
@@ -142,4 +155,43 @@ If an S/MIME certificate is needed, there is a convienent S/MIME certificate gen
 Example Code
 ===========
 
+Simple encryption certificate lookup
+----
 
+```
+#include <string>
+
+#include <smg_net.h>
+#include <smg_id.h>
+#include <smg_smime_association.h>
+
+int main(int argc, char *argv[]) {
+  std::string sName = "user@example.com";
+
+  SmgNet oNet;
+  SmgID oID;
+
+  if (!oNet.init()) {
+    fprintf(stderr, "Could not init network layer.\n");
+  }
+  else if (!oID.init(sName)) {
+    fprintf(stderr, "Could not init ID object.\n");
+  }
+  else if (!oNet.lookupID(oID, ACT_ENCR)) {
+    fprintf(stderr, "Unable to lookup ID for encryption.\n");
+  }
+  else
+  {
+    // Loop over the respons(es)
+    SmgSmimeAssocKIter_t tIter;
+    for (tIter = oID.beginEncAssociations();
+         oID.endEncAssociations() != tIter;
+         tIter++) {
+      string sTxt;
+      (*tIter)->toText(sTxt);
+      fprintf(stdout, "\t%s\n", sTxt.c_str());
+    }
+  }
+
+  return 0;
+}
