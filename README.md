@@ -36,6 +36,8 @@ configured to use the getdns API by using the configure option:
 This option requires the installation of libgetdns, and its
 dependencies.
 
+This beta library is mainly being tested on OS X (and likely works on Linux too).
+
 To install the mandatory dependencies:
 
 Redhat/CentOS/Fedora
@@ -119,7 +121,7 @@ Compiling libsmaug
 ===========
 
 ```
-autoreconf -i
+autoreconf -ivf
 ./configure
 make
 sudo make install
