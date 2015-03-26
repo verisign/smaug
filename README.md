@@ -21,6 +21,8 @@ implements simple S/MIME capabilities using DANE.
 The specific features supported are described in the [Release
 Notes](./ReleaseNotes.md)
 
+Authored by Eric Osterweil eosterweil@verisign.com and Glen Wiley gwiley@verisign.com
+
 Dependencies
 ======
 
