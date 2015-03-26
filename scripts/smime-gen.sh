@@ -344,8 +344,9 @@ sig_csr()
 bundle_key()
 {
     command openssl pkcs12 -export -out $HOME/sssmime/"$k_nam""$key_len""$ext_typ"_"$ntime".p12 -in $HOME/sssmime/"$k_nam""$key_len""$ext_typ"_"$ntime".cer -inkey $HOME/sssmime/"$k_nam""$key_len"_"$ntime".key
-    open $HOME/sssmime/
-    gen_smima
+    command openssl pkcs12 -in $HOME/sssmime/"$k_nam""$key_len""$ext_typ"_"$ntime".p12 -out $HOME/sssmime/"$k_nam""$key_len""$ext_typ"_"$ntime"-combined.pem -nodes
+    # open $HOME/sssmime/
+    # gen_smima
 }
 
 gen_smima()
@@ -443,7 +444,7 @@ EOF
 gen_smimearr()
 {
     localadd=$(openssl x509 -email -inform DER -in $HOME/sssmime/"$k_nam""$key_len""$ext_typ"_"$ntime".der | sed -n '1p' | awk -F'@' '{print $1}' | openssl dgst -sha224)
-    domain=$(openssl x509 -email -inform DER -in $HOME/sssmime/"$k_nam""$key_len""$ext_typ"_"$ntime".der | sed -n '1p' | awk -F'@' '{print $2}')
+    # domain=$(openssl x509 -email -inform DER -in $HOME/sssmime/"$k_nam""$key_len""$ext_typ"_"$ntime".der | sed -n '1p' | awk -F'@' '{print $2}')
     echo "$localadd""._smimecert.""$domain"" IN SMIMEA ( ""$cert_usage"" ""$selector"" ""$matching_type"" ""$cadf"" )" > $HOME/sssmime/"$k_nam""$key_len"SMIMEA_"$ntime".txt
 #    rm $HOME/sssmime/"$k_nam""$key_len"_"$ntime".key $HOME/sssmime/"$k_nam""$key_len""$ext_typ"_"$ntime".der $HOME/sssmime/"$k_nam""$key_len"_"$ntime".csr
 
