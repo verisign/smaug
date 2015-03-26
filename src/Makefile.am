@@ -17,6 +17,10 @@ noinst_PROGRAMS = test_smg_smime_cert test_smg_smime_association test_smg_id tes
 bin_PROGRAMS = smimeagen
 bin_SCRIPTS = smime-gen.sh
 
+if SMG_DEBUG
+libsmaug_la_CXXFLAGS += -D_SMG_DEBUG
+endif
+
 if SMG_GETDNS
 libsmaug_la_LDFLAGS += -lldns -lgetdns
 libsmaug_la_SOURCES += smg_net_getdns.cc

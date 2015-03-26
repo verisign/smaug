@@ -10,6 +10,15 @@ AC_CONFIG_HEADERS([src/config.h])
 AC_SUBST(libsmaug_la_version_info, 0:0:0)
 LT_INIT
 
+AC_ARG_ENABLE([debug],
+              [  --enable-debug   Build Smaug with debugging output to stderr enabled (default is no)],
+              [case "$enableval" in
+                 yes) debug=true;;
+                 no) debug=false;;
+                 *) AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
+               esac],[debug=false])
+AM_CONDITIONAL([SMG_DEBUG], [test "x$debug" = "xtrue"])
+
 AC_ARG_ENABLE([getdns],
               [  --enable-getdns   Build with getdns API (default is no)],
               [case "$enableval" in
@@ -45,20 +54,21 @@ AC_ARG_WITH(openssl-lib-dir,
                            [OPENSSL library directory]),
             [openssl_lib_dir=$withval])
 
-AC_CHECK_LIB(ssl, OpenSSL_add_all_algorithms, OPENSSL_LIB=" ", OPENSSL_LIB= )
+AC_CHECK_LIB(ssl, ssl_ok, OPENSSL_LIB=" ", OPENSSL_LIB= )
 AC_CHECK_LIB(crypto, EVP_PKEY_new, CRYPTO_LIB=" ", CRYPTO_LIB= )
 
 LDFLAGS="$LDFLAGS $OPENSSL_LIB $CRYPTO_LIB $LDAP_LIB"
 
 if test "x$openssl_lib_dir" != "x"; then
-  AC_CHECK_LIB(ssl, OpenSSL_add_all_algorithms, OPENSSL_LIB=" ", OPENSSL_LIB= )
+  AC_CHECK_LIB(ssl, ssl_ok, OPENSSL_LIB=" ", OPENSSL_LIB= )
   # hunt through several directories trying to find the libraries
   if test "x$OPENSSL_LIB" = "x"; then
     old_LDFLAGS="$LDFLAGS"
     for try in $openssl_lib_dir /usr/lib /usr/local/lib /opt/local/lib; do
-      LDFLAGS=$"old_LDFLAGS"
-      unset ac_cv_OpenSSL_add_all_algorithms
-      AC_CHECK_LIB(ssl, OpenSSL_add_all_algorithms, OPENSSL_LIB="-L$try", OPENSSL_LIB=)
+      LDFLAGS=$"old_LDFLAGS -L$try"
+      unset ac_cv_ssl_ok
+      # AC_CHECK_LIB(ssl, OpenSSL_add_all_algorithms, OPENSSL_LIB="-L$try", OPENSSL_LIB=)
+      AC_CHECK_LIB(ssl, ssl_ok, OPENSSL_LIB="-L$try", OPENSSL_LIB=)
       if test "x$OPENSSL_LIB" != "x"; then
         break;
       fi
@@ -77,7 +87,7 @@ if test "x$getdns_dir" != "x"; then
   if test "x$GETDNS_LIB" = "x"; then
     old_LDFLAGS="$LDFLAGS"
     for try in /usr/lib /usr/local/lib /opt/local/lib; do
-      LDFLAGS=$"old_LDFLAGS"
+      LDFLAGS=$"old_LDFLAGS  -L$try"
       unset ac_cv_getdns_context_create
       AC_CHECK_LIB(getdns, getdns_context_create, GETDNS_LIB="-L$try", GETDNS_LIB=)
       if test "x$GETDNS_LIB" != "x"; then
@@ -95,7 +105,7 @@ else
   if test "x$LIBUNBOUND" = "x"; then
     old_LDFLAGS="$LDFLAGS"
     for try in /usr/lib /usr/local/lib /opt/local/lib; do
-      LDFLAGS=$"old_LDFLAGS"
+      LDFLAGS=$"old_LDFLAGS  -L$try"
       unset ac_cv_ub_ctx_create
       AC_CHECK_LIB(unbound, ub_ctx_create, LIBUNBOUND="-L$try", LIBUNBOUND=)
       if test "x$LIBUNBOUND" != "x"; then
@@ -115,7 +125,7 @@ if test "x$openldap" = "xtrue"; then
   if test "x$LDAP_LIB" = "x"; then
     old_LDFLAGS="$LDFLAGS"
     for try in $openldap_dir /usr/lib /usr/local/lib /opt/local/lib; do
-      LDFLAGS=$"old_LDFLAGS"
+      LDFLAGS=$"old_LDFLAGS  -L$try"
       unset ac_cv_ldap_initialize
       AC_CHECK_LIB(ldap, ldap_initialize, LDAP_LIB="-L$try ", LDAP_LIB=)
       if test "x$LDAP_LIB" != "x"; then

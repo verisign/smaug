@@ -647,6 +647,8 @@ SMG_LDAP_FALSE
 SMG_LDAP_TRUE
 SMG_GETDNS_FALSE
 SMG_GETDNS_TRUE
+SMG_DEBUG_FALSE
+SMG_DEBUG_TRUE
 CPP
 OTOOL64
 OTOOL
@@ -773,6 +775,7 @@ enable_dependency_tracking
 with_gnu_ld
 with_sysroot
 enable_libtool_lock
+enable_debug
 enable_getdns
 with_getdns_dir
 enable_openldap
@@ -1421,6 +1424,7 @@ Optional Features:
   --disable-dependency-tracking
                           speeds up one-time build
   --disable-libtool-lock  avoid locking (might break parallel builds)
+  --enable-debug   Build Smaug with debugging output to stderr enabled (default is no)
   --enable-getdns   Build with getdns API (default is no)
   --enable-openldap   Build with OpenLDAP support (default is no)
 
@@ -12116,6 +12120,26 @@ CC=$lt_save_CC
 
 
 
+# Check whether --enable-debug was given.
+if test "${enable_debug+set}" = set; then :
+  enableval=$enable_debug; case "$enableval" in
+                 yes) debug=true;;
+                 no) debug=false;;
+                 *) as_fn_error $? "bad value ${enableval} for --enable-debug" "$LINENO" 5 ;;
+               esac
+else
+  debug=false
+fi
+
+ if test "x$debug" = "xtrue"; then
+  SMG_DEBUG_TRUE=
+  SMG_DEBUG_FALSE='#'
+else
+  SMG_DEBUG_TRUE='#'
+  SMG_DEBUG_FALSE=
+fi
+
+
 # Check whether --enable-getdns was given.
 if test "${enable_getdns+set}" = set; then :
   enableval=$enable_getdns; case "$enableval" in
@@ -12176,9 +12200,9 @@ if test "${with_openssl_lib_dir+set}" = set; then :
 fi
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenSSL_add_all_algorithms in -lssl" >&5
-$as_echo_n "checking for OpenSSL_add_all_algorithms in -lssl... " >&6; }
-if ${ac_cv_lib_ssl_OpenSSL_add_all_algorithms+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ssl_ok in -lssl" >&5
+$as_echo_n "checking for ssl_ok in -lssl... " >&6; }
+if ${ac_cv_lib_ssl_ssl_ok+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -12192,27 +12216,27 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char OpenSSL_add_all_algorithms ();
+char ssl_ok ();
 int
 main ()
 {
-return OpenSSL_add_all_algorithms ();
+return ssl_ok ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_ssl_OpenSSL_add_all_algorithms=yes
+  ac_cv_lib_ssl_ssl_ok=yes
 else
-  ac_cv_lib_ssl_OpenSSL_add_all_algorithms=no
+  ac_cv_lib_ssl_ssl_ok=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_OpenSSL_add_all_algorithms" >&5
-$as_echo "$ac_cv_lib_ssl_OpenSSL_add_all_algorithms" >&6; }
-if test "x$ac_cv_lib_ssl_OpenSSL_add_all_algorithms" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_ssl_ok" >&5
+$as_echo "$ac_cv_lib_ssl_ssl_ok" >&6; }
+if test "x$ac_cv_lib_ssl_ssl_ok" = xyes; then :
   OPENSSL_LIB=" "
 else
   OPENSSL_LIB=
@@ -12264,9 +12288,9 @@ fi
 LDFLAGS="$LDFLAGS $OPENSSL_LIB $CRYPTO_LIB $LDAP_LIB"
 
 if test "x$openssl_lib_dir" != "x"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenSSL_add_all_algorithms in -lssl" >&5
-$as_echo_n "checking for OpenSSL_add_all_algorithms in -lssl... " >&6; }
-if ${ac_cv_lib_ssl_OpenSSL_add_all_algorithms+:} false; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ssl_ok in -lssl" >&5
+$as_echo_n "checking for ssl_ok in -lssl... " >&6; }
+if ${ac_cv_lib_ssl_ssl_ok+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -12280,27 +12304,27 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char OpenSSL_add_all_algorithms ();
+char ssl_ok ();
 int
 main ()
 {
-return OpenSSL_add_all_algorithms ();
+return ssl_ok ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_ssl_OpenSSL_add_all_algorithms=yes
+  ac_cv_lib_ssl_ssl_ok=yes
 else
-  ac_cv_lib_ssl_OpenSSL_add_all_algorithms=no
+  ac_cv_lib_ssl_ssl_ok=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_OpenSSL_add_all_algorithms" >&5
-$as_echo "$ac_cv_lib_ssl_OpenSSL_add_all_algorithms" >&6; }
-if test "x$ac_cv_lib_ssl_OpenSSL_add_all_algorithms" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_ssl_ok" >&5
+$as_echo "$ac_cv_lib_ssl_ssl_ok" >&6; }
+if test "x$ac_cv_lib_ssl_ssl_ok" = xyes; then :
   OPENSSL_LIB=" "
 else
   OPENSSL_LIB=
@@ -12310,11 +12334,12 @@ fi
   if test "x$OPENSSL_LIB" = "x"; then
     old_LDFLAGS="$LDFLAGS"
     for try in $openssl_lib_dir /usr/lib /usr/local/lib /opt/local/lib; do
-      LDFLAGS=$"old_LDFLAGS"
-      unset ac_cv_OpenSSL_add_all_algorithms
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenSSL_add_all_algorithms in -lssl" >&5
-$as_echo_n "checking for OpenSSL_add_all_algorithms in -lssl... " >&6; }
-if ${ac_cv_lib_ssl_OpenSSL_add_all_algorithms+:} false; then :
+      LDFLAGS=$"old_LDFLAGS -L$try"
+      unset ac_cv_ssl_ok
+      # AC_CHECK_LIB(ssl, OpenSSL_add_all_algorithms, OPENSSL_LIB="-L$try", OPENSSL_LIB=)
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ssl_ok in -lssl" >&5
+$as_echo_n "checking for ssl_ok in -lssl... " >&6; }
+if ${ac_cv_lib_ssl_ssl_ok+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -12328,27 +12353,27 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char OpenSSL_add_all_algorithms ();
+char ssl_ok ();
 int
 main ()
 {
-return OpenSSL_add_all_algorithms ();
+return ssl_ok ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_ssl_OpenSSL_add_all_algorithms=yes
+  ac_cv_lib_ssl_ssl_ok=yes
 else
-  ac_cv_lib_ssl_OpenSSL_add_all_algorithms=no
+  ac_cv_lib_ssl_ssl_ok=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_OpenSSL_add_all_algorithms" >&5
-$as_echo "$ac_cv_lib_ssl_OpenSSL_add_all_algorithms" >&6; }
-if test "x$ac_cv_lib_ssl_OpenSSL_add_all_algorithms" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_ssl_ok" >&5
+$as_echo "$ac_cv_lib_ssl_ssl_ok" >&6; }
+if test "x$ac_cv_lib_ssl_ssl_ok" = xyes; then :
   OPENSSL_LIB="-L$try"
 else
   OPENSSL_LIB=
@@ -12413,7 +12438,7 @@ fi
   if test "x$GETDNS_LIB" = "x"; then
     old_LDFLAGS="$LDFLAGS"
     for try in /usr/lib /usr/local/lib /opt/local/lib; do
-      LDFLAGS=$"old_LDFLAGS"
+      LDFLAGS=$"old_LDFLAGS  -L$try"
       unset ac_cv_getdns_context_create
       { $as_echo "$as_me:${as_lineno-$LINENO}: checking for getdns_context_create in -lgetdns" >&5
 $as_echo_n "checking for getdns_context_create in -lgetdns... " >&6; }
@@ -12513,7 +12538,7 @@ fi
   if test "x$LIBUNBOUND" = "x"; then
     old_LDFLAGS="$LDFLAGS"
     for try in /usr/lib /usr/local/lib /opt/local/lib; do
-      LDFLAGS=$"old_LDFLAGS"
+      LDFLAGS=$"old_LDFLAGS  -L$try"
       unset ac_cv_ub_ctx_create
       { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ub_ctx_create in -lunbound" >&5
 $as_echo_n "checking for ub_ctx_create in -lunbound... " >&6; }
@@ -12615,7 +12640,7 @@ fi
   if test "x$LDAP_LIB" = "x"; then
     old_LDFLAGS="$LDFLAGS"
     for try in $openldap_dir /usr/lib /usr/local/lib /opt/local/lib; do
-      LDFLAGS=$"old_LDFLAGS"
+      LDFLAGS=$"old_LDFLAGS  -L$try"
       unset ac_cv_ldap_initialize
       { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ldap_initialize in -lldap" >&5
 $as_echo_n "checking for ldap_initialize in -lldap... " >&6; }
@@ -17432,6 +17457,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${SMG_DEBUG_TRUE}" && test -z "${SMG_DEBUG_FALSE}"; then
+  as_fn_error $? "conditional \"SMG_DEBUG\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${SMG_GETDNS_TRUE}" && test -z "${SMG_GETDNS_FALSE}"; then

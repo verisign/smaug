@@ -86,18 +86,19 @@ noinst_PROGRAMS = test_smg_smime_cert$(EXEEXT) \
 	test_smg_net$(EXEEXT) test_smg_id_cache$(EXEEXT) \
 	$(am__EXEEXT_1)
 bin_PROGRAMS = smimeagen$(EXEEXT)
-@SMG_GETDNS_TRUE@am__append_1 = -lldns -lgetdns
-@SMG_GETDNS_TRUE@am__append_2 = smg_net_getdns.cc
-@SMG_GETDNS_TRUE@am__append_3 = smg_net_getdns.h
-@SMG_GETDNS_TRUE@am__append_4 = -D_SMG_GETDNS
-@SMG_LDAP_TRUE@am__append_5 = -lldap -llber 
-@SMG_LDAP_TRUE@am__append_6 = -DLDAP_R_COMPILE -DLDAP_LIBRARY -DLDAP_DEPRECATED -D_SMG_LDAP
-@SMG_LDAP_TRUE@am__append_7 = smg_ldap_lctr.cc
-@SMG_LDAP_TRUE@am__append_8 = smg_ldap_lctr.h
-@SMG_LDAP_TRUE@am__append_9 = test_smg_ldap_lctr
-@SMG_GETDNS_TRUE@am__append_10 = smg_net_getdns.cc
-@SMG_GETDNS_TRUE@am__append_11 = -lldns -lgetdns
-@SMG_GETDNS_TRUE@am__append_12 = -D_SMG_GETDNS
+@SMG_DEBUG_TRUE@am__append_1 = -D_SMG_DEBUG
+@SMG_GETDNS_TRUE@am__append_2 = -lldns -lgetdns
+@SMG_GETDNS_TRUE@am__append_3 = smg_net_getdns.cc
+@SMG_GETDNS_TRUE@am__append_4 = smg_net_getdns.h
+@SMG_GETDNS_TRUE@am__append_5 = -D_SMG_GETDNS
+@SMG_LDAP_TRUE@am__append_6 = -lldap -llber 
+@SMG_LDAP_TRUE@am__append_7 = -DLDAP_R_COMPILE -DLDAP_LIBRARY -DLDAP_DEPRECATED -D_SMG_LDAP
+@SMG_LDAP_TRUE@am__append_8 = smg_ldap_lctr.cc
+@SMG_LDAP_TRUE@am__append_9 = smg_ldap_lctr.h
+@SMG_LDAP_TRUE@am__append_10 = test_smg_ldap_lctr
+@SMG_GETDNS_TRUE@am__append_11 = smg_net_getdns.cc
+@SMG_GETDNS_TRUE@am__append_12 = -lldns -lgetdns
+@SMG_GETDNS_TRUE@am__append_13 = -D_SMG_GETDNS
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(srcdir)/config.h.in $(top_srcdir)/depcomp \
@@ -445,20 +446,20 @@ lib_LTLIBRARIES = libsmaug.la
 libsmaug_la_SOURCES = smg_id.cc smg_id_cache.cc smg_net.cc \
 	smg_smime_association.cc smg_smime_cert.cc smg_lctr.cc \
 	smg_lctr_factory.cc smg_ad_lctr.cc smg_net_engine.cc \
-	smg_net_libunbound.cc smg_tbird.cc $(am__append_2) \
-	$(am__append_7)
+	smg_net_libunbound.cc smg_tbird.cc $(am__append_3) \
+	$(am__append_8)
 libsmaug_la_LDFLAGS = $(LDFLAGS) -version-info \
 	$(libsmaug_la_version_info) -L/usr/local/lib -lunbound -lssl \
-	-lcrypto $(am__append_1) $(am__append_5)
+	-lcrypto $(am__append_2) $(am__append_6)
 libsmaug_la_CXXFLAGS = $(CXXFLAGS) -g -Wall -O2 \
 	-Wno-deprecated-declarations -I/usr/local/include \
-	$(am__append_4) $(am__append_6)
+	$(am__append_1) $(am__append_5) $(am__append_7)
 smgheaderdir = $(includedir)
 smgheader_HEADERS = smg_id.h smg_id_cache.h smg_net.h \
 	smg_smime_association.h smg_smime_cert.h smg_lctr.h \
 	smg_lctr_factory.h smg_ad_lctr.h smg_net_engine.h \
-	smg_net_libunbound.h smg_tbird.h smg_defs.h $(am__append_3) \
-	$(am__append_8)
+	smg_net_libunbound.h smg_tbird.h smg_defs.h $(am__append_4) \
+	$(am__append_9)
 bin_SCRIPTS = smime-gen.sh
 test_smg_smime_cert_SOURCES = test_smg_smime_cert.cc smg_smime_cert.cc
 test_smg_smime_cert_LDFLAGS = -L/usr/local/lib -lcrypto $(LDFLAGS)
@@ -473,11 +474,11 @@ test_smg_id_LDFLAGS = -L/usr/local/lib -lcrypto $(LDFLAGS)
 test_smg_id_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include $(CXXFLAGS)
 test_smg_net_SOURCES = test_smg_net.cc smg_net.cc smg_net_engine.cc \
 	smg_net_libunbound.cc smg_id.cc smg_smime_association.cc \
-	smg_smime_cert.cc $(am__append_10)
+	smg_smime_cert.cc $(am__append_11)
 test_smg_net_LDFLAGS = -L/usr/local/lib -lssl -lcrypto -lunbound \
-	$(LDFLAGS) $(am__append_11)
+	$(LDFLAGS) $(am__append_12)
 test_smg_net_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations \
-	-I/usr/local/include $(CXXFLAGS) $(am__append_12)
+	-I/usr/local/include $(CXXFLAGS) $(am__append_13)
 smimeagen_SOURCES = smimeagen.cc smg_id.cc smg_smime_association.cc smg_smime_cert.cc
 smimeagen_LDFLAGS = -L/usr/local/lib -lssl -lcrypto $(LDFLAGS)
 smimeagen_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include $(CXXFLAGS)

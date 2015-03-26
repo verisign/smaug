@@ -34,7 +34,11 @@ class SmgSmimeAssociation;
 class SmgID;
 class SmgSmimeCert;
 
+#ifdef _SMG_DEBUG
 #define smg_log(X, ...) fprintf(stderr, "%s [%d] " X, __FILE__, __LINE__, ##__VA_ARGS__); fflush(stderr);
+#else
+#define smg_log(X, ...) ;
+#endif
 
 #define SMG_SMIMEA_MIN_LEN 1 + 1 + 1 + 0 + 0
 #define SMG_SMIMEA_MAX_LEN 10000000
