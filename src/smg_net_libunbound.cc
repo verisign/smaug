@@ -23,6 +23,7 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include <errno.h>
 #include <arpa/inet.h>
+#include <sys/stat.h>
 
 #include <unbound.h>
 
@@ -57,14 +58,35 @@ bool SmgNetLibunbound::init(const char *p_szRootTaFile /*= NULL*/)
     m_pCtx = NULL;
   }
 
+  int iErr = 0;
   if (NULL == p_szRootTaFile || '\0' == p_szRootTaFile[0])
   {
-    p_szRootTaFile = SMG_LIBUNBOUND_TA_FILE;
+    struct stat tStat;
+    memset(&tStat, 0, sizeof(tStat));
+    if (0 == stat(SMG_LIBUNBOUND_TA_FILE, &tStat))
+    {
+      p_szRootTaFile = SMG_LIBUNBOUND_TA_FILE;
+    }
+    else if (0 == stat(SMG_LIBUNBOUND_LIN_TA_FILE, &tStat))
+    {
+      p_szRootTaFile = SMG_LIBUNBOUND_LIN_TA_FILE;
+    }
+    else
+    {
+      smg_log("Unable to find DNSSEC trust anchor file at either '%s' or '%s'\n", 
+              SMG_LIBUNBOUND_TA_FILE,
+              SMG_LIBUNBOUND_LIN_TA_FILE);
+      p_szRootTaFile = NULL;
+    }
   }
 
-  int iErr = 0;
-  m_pCtx = ub_ctx_create();
-  if (NULL == m_pCtx)
+  if (NULL == p_szRootTaFile)
+  {
+    smg_log("Unable to find DNSSEC trust anchor file at either '%s' or '%s'\n",
+            SMG_LIBUNBOUND_TA_FILE,
+            SMG_LIBUNBOUND_LIN_TA_FILE);
+  }
+  else if (NULL == (m_pCtx = ub_ctx_create()))
   {
     smg_log("Unable to create libunbound context.\n");
   }

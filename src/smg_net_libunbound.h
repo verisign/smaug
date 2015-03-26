@@ -29,6 +29,7 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "smg_defs.h"
 
 #define SMG_LIBUNBOUND_TA_FILE "/usr/local/etc/unbound/root.key"
+#define SMG_LIBUNBOUND_LIN_TA_FILE "/var/lib/unbound/root.key"
 
 class SmgNetLibunbound : public SmgNetEngine
 {
