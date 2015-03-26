@@ -144,10 +144,10 @@ Will be installed in &quot;$(prefix)/bin&quot;.  This utility will help create
 SMIMEA records, in a format suitable for being pasted into a DNS zone file.
 
 If an S/MIME certificate is needed, there is a convenient S/MIME certificate
-generation script that will prompt you for your data:
+generation script that gets installed, which will prompt you for your data:
 
 ```
-<smaug repo>/scripts/smime-gen.sh
+smime-gen.sh
 ```
 
 The script writes the files to the ~/sssmime directory.  The file 
