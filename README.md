@@ -1,18 +1,11 @@
 TRUE INTERNET-SCALE OBJECT SECURITY
 ===========
 
-We have a problem with security in the Internet today, and it's not new.  Before we can encrypt data or 
-verify signatures, we need a way for someone bootstrap and learn what cryptographic keys are needed.  
-Our security protocols have not formally specified a standardized way to securely bootstrap protocols, until now.
+We have a problem with security in the Internet today, and it's not new.  Before we can encrypt data or verify signatures, we need a way for someone bootstrap and learn what cryptographic keys are needed.  Our security protocols have not formally specified a standardized way to securely bootstrap protocols, until now.
 
-Recently, however, a simple observation has sparked a flurry of innovation: for those protocols that use DNS,
-secure key learning can be accomplished from DNS itself, and verified by the DNS Security Extensions (DNSSEC).
-The IETF has started standardizing a suite of protocols called DNS-based Authentication of Named Entities
-[DANE](https://datatracker.ietf.org/wg/dane/charter/) to do secure key learning in a general way for 
-Internet services.  
+Recently, however, a simple observation has sparked a flurry of innovation: for those protocols that use DNS, secure key learning can be accomplished from DNS itself, and verified by the DNS Security Extensions (DNSSEC).  The IETF has started standardizing a suite of protocols called DNS-based Authentication of Named Entities [DANE](https://datatracker.ietf.org/wg/dane/charter/) to do secure key learning in a general way for Internet services.  
 
-This library (Smaug) is a general object security library that uses S/MIME to offer object 
-security primitves using DANE S/MIME.
+This library (Smaug) is a general object security library that uses S/MIME to offer object security primitives using DANE S/MIME.
 
 SMAUG
 ==========
@@ -25,7 +18,7 @@ This library has been constructed to serve as a proof of concept for
 multiple DANE-based protocols.  Currently, the implementation
 implements simple S/MIME capabilities using DANE.
 
-The specific features supported are described in teh [Release
+The specific features supported are described in the [Release
 Notes](./ReleaseNotes.md)
 
 Dependencies
@@ -139,7 +132,7 @@ This utility is part of the unbound development suite.
 Executables
 ===========
 
-After compliation, several test drivers will be left in the source directory.
+After compilation, several test drivers will be left in the source directory.
 In addition to installing the reference library in the
 &quot;$(prefix)/lib&quot; directory, the command-line utility
 
@@ -150,7 +143,7 @@ smimeagen
 Will be installed in &quot;$(prefix)/bin&quot;.  This utility will help create
 SMIMEA records, in a format suitable for being pasted into a DNS zone file.
 
-If an S/MIME certificate is needed, there is a convienent S/MIME certificate
+If an S/MIME certificate is needed, there is a convenient S/MIME certificate
 generation script that will prompt you for your data:
 
 ```
