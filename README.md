@@ -51,7 +51,10 @@ sudo port install openssl
 wget http://www.unbound.net/downloads/unbound-latest.tar.gz
 tar -xf unbound-latest.tar.gz
 cd unbound-[0-9]*
-./configure --with-libunbound-only && make && sudo make install
+./configure --with-libunbound-only 
+make 
+sudo make install
+sudo make install unbound-anchor
 ```
 
 If you use brew:
@@ -87,6 +90,7 @@ cd unbound-[0-9]*
 ./configure --with-libunbound-only
 make
 sudo make install
+sudo make install unbound-anchor
 ```
 
 In case you didn't know, trying to use both ports and brew is like
@@ -122,22 +126,27 @@ This utility is part of the unbound development suite.
 Executables
 ===========
 
-After compliation, several test drivers will be left in the source directory.  In addition to installing the
-reference library in the &quot;$(prefix)/lib&quot; directory, the command-line utility
+After compliation, several test drivers will be left in the source directory.
+In addition to installing the reference library in the
+&quot;$(prefix)/lib&quot; directory, the command-line utility
 
  ```
 smimeagen
 ```
 
-Will be installed in &quot;$(prefix)/bin&quot;.  This utility will help create SMIMEA records, in a format suitable
-for being pasted into a DNS zone file.
+Will be installed in &quot;$(prefix)/bin&quot;.  This utility will help create
+SMIMEA records, in a format suitable for being pasted into a DNS zone file.
 
-If an S/MIME certificate is needed, there is a convienent S/MIME certificate generation script to help:
+If an S/MIME certificate is needed, there is a convienent S/MIME certificate
+generation script that will prompt you for your data:
 
 ```
 <smaug repo>/scripts/smime-gen.sh
 ```
 
+The script writes the files to the ~/sssmime directory.  The file 
+with a "-combined.pem" suffix can be used to feed the test_smg_smime_cert
+test program and other programs that need the certificate in ASCII PEM format.
 
 Example Code
 ===========
