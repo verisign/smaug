@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     {
       smg_log("Unable to add tmp-ID with 1 sec TTL.\n");
     }
-    else if (!oCache.lookupID(sTmpEmailAddr, ACT_SIGN, oQueryID))
+    else if (!oCache.lookupSmimeID(sTmpEmailAddr, ACT_SIGN, oQueryID))
     {
       smg_log("UNable to lookup tmp-ID '%s'\n", sTmpEmailAddr.c_str());
     }
@@ -82,11 +82,11 @@ int main(int argc, char *argv[])
       fprintf(stdout, "Sleeping until tmp ID should be flushed.\n");
       sleep(2);
 
-      if (!oCache.lookupID(sEmailAddr, ACT_ENCR, oQueryID))
+      if (!oCache.lookupSmimeID(sEmailAddr, ACT_ENCR, oQueryID))
       {
         smg_log("UNable to lookup perma-ID: '%s'\n", sEmailAddr.c_str());
       }
-      else if (oCache.lookupID(sTmpEmailAddr, ACT_SIGN, oQueryID))
+      else if (oCache.lookupSmimeID(sTmpEmailAddr, ACT_SIGN, oQueryID))
       {
         smg_log("WAS able to lookup tmp ID (after it hsould have been flushed.\n");
       }

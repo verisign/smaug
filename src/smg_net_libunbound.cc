@@ -117,15 +117,15 @@ bool SmgNetLibunbound::init(std::string &p_sRootTaFile)
   return init(p_sRootTaFile.c_str());
 }
 
-bool SmgNetLibunbound::lookupID(SmgID &p_oID,
+bool SmgNetLibunbound::lookupSmimeID(SmgID &p_oID,
                                 SmgCryptAction_e p_eAction)
 {
   uint32_t tTTL;
 
-  return lookupID(p_oID, p_eAction, tTTL);
+  return lookupSmimeID(p_oID, p_eAction, tTTL);
 }
 
-bool SmgNetLibunbound::lookupID(SmgID &p_oID,
+bool SmgNetLibunbound::lookupSmimeID(SmgID &p_oID,
                                 SmgCryptAction_e p_eAction,
                                 uint32_t &p_uTTL)
 {

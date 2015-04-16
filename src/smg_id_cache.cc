@@ -72,7 +72,7 @@ bool SmgIdCache::addID(SmgID &p_oID, SmgCryptAction_e p_eAction, time_t p_tTTL)
   return bRet;
 }
 
-bool SmgIdCache::lookupID(std::string &p_sID, SmgCryptAction_e p_eAction, SmgID &p_oOutputID)
+bool SmgIdCache::lookupSmimeID(std::string &p_sID, SmgCryptAction_e p_eAction, SmgID &p_oOutputID)
 {
   bool bRet = false;
 

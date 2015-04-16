@@ -44,7 +44,7 @@ class SmgIdCache
     static SmgIdCache &getInstance();
 
     bool addID(SmgID &p_oID, SmgCryptAction_e p_eAction, time_t p_tTTL);
-    bool lookupID(std::string &p_sID, SmgCryptAction_e p_eAction, SmgID &p_oOutputID);
+    bool lookupSmimeID(std::string &p_sID, SmgCryptAction_e p_eAction, SmgID &p_oOutputID);
 
     bool clear();
 };

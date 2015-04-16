@@ -77,13 +77,13 @@ bool SmgNetGetDNS::init(std::string &p_sRootTaFile)
   return init(p_sRootTaFile.c_str());
 }
 
-bool SmgNetGetDNS::lookupID(SmgID &p_oID, SmgCryptAction_e p_eAction)
+bool SmgNetGetDNS::lookupSmimeID(SmgID &p_oID, SmgCryptAction_e p_eAction)
 {
   uint32_t uTTL = 0;
   return lookupID(p_oID, p_eAction, uTTL);
 }
 
-bool SmgNetGetDNS::lookupID(SmgID &p_oID, SmgCryptAction_e p_eAction, uint32_t &p_uTTL)
+bool SmgNetGetDNS::lookupSmimeID(SmgID &p_oID, SmgCryptAction_e p_eAction, uint32_t &p_uTTL)
 {
   bool bRet = false;
 

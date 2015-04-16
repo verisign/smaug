@@ -62,11 +62,11 @@ int main(int argc, char *argv[])
     {
       fprintf(stderr, "Unable to init SmgID object with name '%s'.\n", sName.c_str());
     }
-    else if (!oNet.lookupID(oID, ACT_ENCR))
+    else if (!oNet.lookupSmimeID(oID, ACT_ENCR))
     {
       fprintf(stderr, "Unable to lookup encryption key for '%s' at '%s'\n", sName.c_str(), oID.getEncName().c_str());
     }
-    else if (!oNet.lookupID(oID, ACT_SIGN, uTTL))
+    else if (!oNet.lookupSmimeID(oID, ACT_SIGN, uTTL))
     {
       fprintf(stderr, "Unable to lookup signing key for '%s' at '%s'\n", sName.c_str(), oID.getSignName().c_str());
     }

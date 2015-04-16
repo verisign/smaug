@@ -75,7 +75,7 @@ const char* ds_encrypt(const char *p_szEmail, const char *p_pBuf)
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
       bool bFound = false;
 
-      if (oIdCache.lookupID(sEmail, ACT_ENCR, oID))
+      if (oIdCache.lookupSmimeID(sEmail, ACT_ENCR, oID))
       {
         bFound = true;
       }
@@ -91,7 +91,7 @@ const char* ds_encrypt(const char *p_szEmail, const char *p_pBuf)
         {
           smg_log("Unable to initialize network layer.\n");
         }
-        else if (!oNet.lookupID(oID, ACT_ENCR, uTTL))
+        else if (!oNet.lookupSmimeID(oID, ACT_ENCR, uTTL))
         {
           smg_log("Unable to fetch SMIMEA for ID '%s'\n", sEmail.c_str());
         }
@@ -157,7 +157,7 @@ const char* ds_decrypt(const char *p_szEmail, const char *p_pBuf)
       SmgID oID;
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
 
-      if (!oIdCache.lookupID(sEmail, ACT_ENCR, oID))
+      if (!oIdCache.lookupSmimeID(sEmail, ACT_ENCR, oID))
       {
         smg_log("Unable to find ID for '%s'\n", sEmail.c_str());
       }
@@ -279,7 +279,7 @@ const char* ds_sign2(const char *p_szEmail, const char *p_pBuf)
       SmgBytesVector_t oBytes(sBody.begin(), sBody.end());
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
 
-      if (!oIdCache.lookupID(sEmail, ACT_SIGN, oID))
+      if (!oIdCache.lookupSmimeID(sEmail, ACT_SIGN, oID))
       {
         smg_log("Unable to lookup ID for email '%s'\n", sEmail.c_str());
       }
@@ -436,7 +436,7 @@ int smg_encrypt(const char *p_szEmail, const char *p_pBuf, const char **p_pOutpu
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
       bool bFound = false;
 
-      if (oIdCache.lookupID(sEmail, ACT_ENCR, oID))
+      if (oIdCache.lookupSmimeID(sEmail, ACT_ENCR, oID))
       {
         bFound = true;
       }
@@ -452,7 +452,7 @@ int smg_encrypt(const char *p_szEmail, const char *p_pBuf, const char **p_pOutpu
         {
           smg_log("Unable to initialize network layer.\n");
         }
-        else if (!oNet.lookupID(oID, ACT_ENCR, uTTL))
+        else if (!oNet.lookupSmimeID(oID, ACT_ENCR, uTTL))
         {
           smg_log("Unable to fetch SMIMEA for ID '%s'\n", sEmail.c_str());
         }
@@ -528,7 +528,7 @@ int smg_decrypt(const char *p_szEmail, const char *p_pBuf, const char **p_pOutpu
       SmgID oID;
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
 
-      if (!oIdCache.lookupID(sEmail, ACT_ENCR, oID))
+      if (!oIdCache.lookupSmimeID(sEmail, ACT_ENCR, oID))
       {
         smg_log("Unable to find ID for '%s'\n", sEmail.c_str());
       }
@@ -602,7 +602,7 @@ int smg_sign(const char *p_szEmail,   const char *p_pBuf, const char **p_pOutput
       SmgBytesVector_t oBytes(sBody.begin(), sBody.end());
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
 
-      if (!oIdCache.lookupID(sEmail, ACT_SIGN, oID))
+      if (!oIdCache.lookupSmimeID(sEmail, ACT_SIGN, oID))
       {
         smg_log("Unable to lookup ID for email '%s'\n", sEmail.c_str());
       }
@@ -666,7 +666,7 @@ int smg_verify(const char *p_szEmail, const char *p_pBuf)
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
       bool bFound = false;
 
-      if (oIdCache.lookupID(sEmail, ACT_SIGN, oID))
+      if (oIdCache.lookupSmimeID(sEmail, ACT_SIGN, oID))
       {
         bFound = true;
       }
@@ -683,7 +683,7 @@ int smg_verify(const char *p_szEmail, const char *p_pBuf)
         {
           smg_log("Unable to init network layer.\n");
         }
-        else if (!oNet.lookupID(oID, ACT_SIGN, uTTL))
+        else if (!oNet.lookupSmimeID(oID, ACT_SIGN, uTTL))
         {
           smg_log("Unable to fetch SMIMEA for ID '%s'\n", sEmail.c_str());
         }
@@ -751,7 +751,7 @@ int smg_lookup(const char *p_szEmail, int p_iEnc)
       bool bFound = false;
 
       SmgCryptAction_e eAct = (p_iEnc) ? ACT_ENCR : ACT_SIGN;
-      if (oIdCache.lookupID(sEmail, eAct, oID))
+      if (oIdCache.lookupSmimeID(sEmail, eAct, oID))
       {
         bFound = true;
       }
@@ -769,7 +769,7 @@ int smg_lookup(const char *p_szEmail, int p_iEnc)
         {
           smg_log("Unable to initialize network layer.\n");
         }
-        else if (!oNet.lookupID(oID, eAct, uTTL))
+        else if (!oNet.lookupSmimeID(oID, eAct, uTTL))
         {
           smg_log("Unable to fetch SMIMEA for ID '%s'\n", sEmail.c_str());
         }

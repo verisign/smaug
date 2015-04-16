@@ -53,9 +53,9 @@ class SmgNet
     bool init(const char *p_szRootTaFile = NULL);
     bool init(std::string &p_sRootTaFile);
 
-    bool lookupID(SmgID &p_oID,
+    bool lookupSmimeID(SmgID &p_oID,
                   SmgCryptAction_e p_eAction);
-    bool lookupID(SmgID &p_oID,
+    bool lookupSmimeID(SmgID &p_oID,
                   SmgCryptAction_e p_eAction,
                   uint32_t &p_uTTL);
 
