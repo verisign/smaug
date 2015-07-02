@@ -99,15 +99,10 @@ bool SmgID::init(std::string &p_sEmailAddr)
 
         m_sUserHash = oSS.str();
 
-        m_sEncName = m_sUserHash + "._encr._smimecert." + m_sDomain;
-        if (m_sEncName.compare(m_sEncName.size() - 1, 1, "."))
+	m_sSmimeName = m_sUserHash + "._smimecert." + m_sDomain;
+        if (m_sSmimeName.compare(m_sSmimeName.size() - 1, 1, "."))
         {
-          m_sEncName += ".";
-        }
-        m_sSignName = m_sUserHash + "._sign._smimecert." + m_sDomain;
-        if (m_sSignName.compare(m_sEncName.size() - 1, 1, "."))
-        {
-          m_sSignName += ".";
+          m_sSmimeName += ".";
         }
 
         bRet = true;
@@ -128,14 +123,9 @@ std::string &SmgID::getDomain()
   return m_sDomain;
 }
 
-std::string &SmgID::getEncName()
+std::string &SmgID::getSmimeName()
 {
-  return m_sEncName;
-}
-
-std::string &SmgID::getSignName()
-{
-  return m_sSignName;
+  return m_sSmimeName;
 }
 
 std::string &SmgID::getInbox()
@@ -147,91 +137,47 @@ bool SmgID::addAssociation(SmgSmimeAssociation &p_oAssoc)
 {
   bool bRet = false;
 
-  if (!p_oAssoc.isEncCert() && !p_oAssoc.isSignCert())
-  {
-    fprintf(stderr, "S/MIME cert is _neither_ for signing nor encryption?\n");
-  }
-  else
-  {
-    if (p_oAssoc.isEncCert())
-    {
-      SmgSmimeAssociation *pAssoc = new SmgSmimeAssociation(p_oAssoc);
-      m_oEncAssocs.push_back(pAssoc);
-      bRet = true;
-    }
-
-    if (p_oAssoc.isSignCert())
-    {
-      SmgSmimeAssociation *pAssoc = new SmgSmimeAssociation(p_oAssoc);
-      m_oSignAssocs.push_back(pAssoc);
-      bRet = true;
-    }
-  }
+  SmgSmimeAssociation *pAssoc = new SmgSmimeAssociation(p_oAssoc);
+  m_oAssocs.push_back(pAssoc);
+  bRet = true;
 
   return bRet;
 }
 
-SmgSmimeAssocKIter_t SmgID::beginEncAssociations() const
+SmgSmimeAssocKIter_t SmgID::beginAssociations() const
 {
-  return m_oEncAssocs.begin();
+  return m_oAssocs.begin();
 }
 
-SmgSmimeAssocKIter_t SmgID::endEncAssociations() const
+SmgSmimeAssocKIter_t SmgID::endAssociations() const
 {
-  return m_oEncAssocs.end();
+  return m_oAssocs.end();
 }
 
-size_t SmgID::numEncAssociations() const
+size_t SmgID::numAssociations() const
 {
-  return m_oEncAssocs.size();
-}
-
-SmgSmimeAssocKIter_t SmgID::beginSignAssociations() const
-{
-  return m_oSignAssocs.begin();
-}
-
-SmgSmimeAssocKIter_t SmgID::endSignAssociations() const
-{
-  return m_oSignAssocs.end();
-}
-
-size_t SmgID::numSignAssociations() const
-{
-  return m_oSignAssocs.size();
+  return m_oAssocs.size();
 }
 
 SmgID &SmgID::operator=(const SmgID &p_oRHS)
 {
-  smg_log("Copying ID %lu signing assocs and %lu encryption assocs\n", 
-      p_oRHS.numSignAssociations(),
-      p_oRHS.numEncAssociations());
-  m_sEmailAddr = p_oRHS.m_sEmailAddr;
-  m_sUser = p_oRHS.m_sUser;
-  m_sUserHash = p_oRHS.m_sUserHash;
-  m_sDomain = p_oRHS.m_sDomain;
-  m_sEncName = p_oRHS.m_sEncName;
-  m_sSignName = p_oRHS.m_sSignName;
+    smg_log("Copying ID %lu assocs\n", 
+	    p_oRHS.numAssociations());
+    m_sEmailAddr = p_oRHS.m_sEmailAddr;
+    m_sUser      = p_oRHS.m_sUser;
+    m_sUserHash  = p_oRHS.m_sUserHash;
+    m_sDomain    = p_oRHS.m_sDomain;
+    m_sSmimeName = p_oRHS.m_sSmimeName;
 
   SmgSmimeAssocKIter_t tIter;
-  for (tIter = p_oRHS.beginEncAssociations();
-       p_oRHS.endEncAssociations() != tIter;
+  for (tIter = p_oRHS.beginAssociations();
+       p_oRHS.endAssociations() != tIter;
        tIter++)
   {
-    smg_log("Pushing signing assoc\n");
+    smg_log("Pushing assoc\n");
     SmgSmimeAssociation *pAssoc = new SmgSmimeAssociation();
     *(pAssoc) = *(*tIter);
-    m_oEncAssocs.push_back(pAssoc);
-  }
-
-  for (tIter = p_oRHS.beginSignAssociations();
-       p_oRHS.endSignAssociations() != tIter;
-       tIter++)
-  {
-    smg_log("Pushing encryption assoc\n");
-    SmgSmimeAssociation *pAssoc = new SmgSmimeAssociation();
-    (*pAssoc) = *(*tIter);
-    m_oSignAssocs.push_back(pAssoc);
+    m_oAssocs.push_back(pAssoc);
   }
 
   return *this;
@@ -240,21 +186,13 @@ SmgID &SmgID::operator=(const SmgID &p_oRHS)
 bool SmgID::clear()
 {
   SmgSmimeAssocKIter_t tIter;
-  for (tIter = beginEncAssociations();
-       endEncAssociations() != tIter;
+  for (tIter = beginAssociations();
+       endAssociations() != tIter;
        tIter++)
   {
     delete *tIter;
   }
-  m_oEncAssocs.empty();
-
-  for (tIter = beginSignAssociations();
-       endSignAssociations() != tIter;
-       tIter++)
-  {
-    delete *tIter;
-  }
-  m_oSignAssocs.empty();
+  m_oAssocs.empty();
 
   return true;
 }

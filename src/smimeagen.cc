@@ -38,7 +38,7 @@ using namespace std;
 
 void _usage()
 {
-  fprintf(stdout, "smimea-gen [ <email address> <usage number> <selector number> <matching number> [ <access URI> ("") ] <cert file in PEM format> ] | -h\n");
+    fprintf(stdout, "smimea-gen [ <email address> <usage number> <selector number> <matching number> <cert file in PEM format> ] | -h\n");
 }
 
 bool _menu(string &p_sEmail, int &p_iUsage, int &p_iSel, int &p_iMat, string &p_sAccess, string &p_sFile)
@@ -126,10 +126,7 @@ bool _menu(string &p_sEmail, int &p_iUsage, int &p_iSel, int &p_iMat, string &p_
     }
 
     // Get the access field.
-    fprintf(stdout, "Enter the URI Access field (where, if anywhere, the associated key is retreivable from (LDAP, AD, etc.)\n> ");
-    p_sAccess.clear();
-    getline(std::cin, p_sAccess);
-
+    
     fprintf(stdout, "Enter the location of the certificate file (in PEM format)\n> ");
     p_sAccess.clear();
     getline(std::cin, p_sFile);
@@ -182,8 +179,7 @@ int main(int argc, char *argv[])
     _usage();
     iRet = 0;
   }
-  else if (argc > 7
-           || (argc < 6 && argc > 2))
+  else if ( argc > 6 )
   {
     _usage();
   }
@@ -215,15 +211,6 @@ int main(int argc, char *argv[])
       }
       else
       {
-        if (7 == argc)
-        {
-          if (NULL != argv[5])
-          {
-            sAccess = argv[5];
-          }
-          sCertFile = argv[6];
-        }
-        else
         {
           sCertFile = argv[5];
         }
@@ -257,8 +244,8 @@ int main(int argc, char *argv[])
       }
       else
       {
-        fprintf(stdout, "%s IN TYPE%d %s;\n", oID.getEncName().c_str(), SMG_SMIMEA_RR_TYPE, sTxt.c_str());
-
+        fprintf(stdout, "%s IN TYPE%d %s;\n", oID.getSmimeName().c_str(), SMG_SMIMEA_RR_TYPE, sTxt.c_str());
+	/*
         if (!oAssoc.initFromFile(ACT_SIGN,
                                  (SmgUsage_e) iUsage,
                                  (SmgSelector_e) iSelector,
@@ -274,11 +261,12 @@ int main(int argc, char *argv[])
         }
         else
         {
-          fprintf(stdout, "%s IN TYPE%d %s;\n", oID.getSignName().c_str(), SMG_SMIMEA_RR_TYPE,
+          fprintf(stdout, "%s IN TYPE%d %s;\n", oID.getSmimeName().c_str(), SMG_SMIMEA_RR_TYPE,
               sTxt.c_str());
 
           iRet = 0;
         }
+	*/
       }
     }
   }
