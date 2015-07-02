@@ -64,26 +64,23 @@ int main(int argc, char *argv[])
     }
     else if (!oNet.lookupSmimeID(oID, ACT_ENCR))
     {
-      fprintf(stderr, "Unable to lookup encryption key for '%s' at '%s'\n", sName.c_str(), oID.getEncName().c_str());
+      fprintf(stderr, "Unable to lookup smime key for '%s' at '%s'\n", sName.c_str(), oID.getSmimeName().c_str());
     }
     else if (!oNet.lookupSmimeID(oID, ACT_SIGN, uTTL))
     {
-      fprintf(stderr, "Unable to lookup signing key for '%s' at '%s'\n", sName.c_str(), oID.getSignName().c_str());
+	fprintf(stderr, "Unable to lookup smime key for '%s' at '%s'\n", sName.c_str(), oID.getSmimeName().c_str());
     }
-    else if (oID.numSignAssociations() != 1)
+    
+    else if (oID.numAssociations() != 1)
     {
-      fprintf(stderr, "Got the wrong number of signing associations.  Expected 1, got %lu\n", oID.numSignAssociations());
-    }
-    else if (oID.numEncAssociations() != 1)
-    {
-      fprintf(stderr, "Got the wrong number of encryption associations.  Expected 1, got %lu\n", oID.numEncAssociations());
+      fprintf(stderr, "Got the wrong number of associations.  Expected 1, got %lu\n", oID.numAssociations());
     }
     else
     {
-      fprintf(stdout, "Got a TTL of %u for:\n%s\n", uTTL, oID.getSignName().c_str());
+      fprintf(stdout, "Got a TTL of %u for:\n%s\n", uTTL, oID.getSmimeName().c_str());
       SmgSmimeAssocKIter_t tIter;
-      for (tIter = oID.beginSignAssociations();
-           oID.endSignAssociations() != tIter;
+      for (tIter = oID.beginAssociations();
+           oID.endAssociations() != tIter;
            tIter++)
       {
         string sTxt;
@@ -91,9 +88,9 @@ int main(int argc, char *argv[])
         fprintf(stdout, "\t%s\n", sTxt.c_str());
       }
 
-      fprintf(stdout, "%s\n", oID.getEncName().c_str());
-      for (tIter = oID.beginEncAssociations();
-           oID.endEncAssociations() != tIter;
+      fprintf(stdout, "%s\n", oID.getSmimeName().c_str());
+      for (tIter = oID.beginAssociations();
+           oID.endAssociations() != tIter;
            tIter++)
       {
         string sTxt;
