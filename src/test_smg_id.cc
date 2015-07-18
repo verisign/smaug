@@ -98,8 +98,7 @@ int main(int argc, char *argv[])
     {
       fprintf(stdout, "Inbox component is: '%s'\n", oID.getInbox().c_str());
       fprintf(stdout, "Domain component is '%s'\n", oID.getDomain().c_str());
-      fprintf(stdout, "Enc domain name is '%s'\n", oID.getEncName().c_str());
-      fprintf(stdout, "Sign domain name is '%s'\n", oID.getSignName().c_str());
+      fprintf(stdout, "SMIME domain name is '%s'\n", oID.getSmimeName().c_str());
 
       fprintf(stdout, "Adding associations...\n");
 
@@ -126,15 +125,10 @@ int main(int argc, char *argv[])
       {
         smg_log("Unable to add encryption association.\n");
       }
-      else if (1 != oID.numEncAssociations())
+      else if (1 != oID.numAssociations())
       {
-        smg_log("Got the wrong number of enc associations (should have been 1, but got %lu)\n",
-                oID.numEncAssociations());
-      }
-      else if (0 != oID.numSignAssociations())
-      {
-        smg_log("Got the wrong number of sign associations (should have been 0, but got %lu)\n",
-                oID.numSignAssociations());
+        smg_log("Got the wrong number of associations (should have been 1, but got %lu)\n",
+                oID.numAssociations());
       }
       else
       {
@@ -148,15 +142,10 @@ int main(int argc, char *argv[])
         {
           smg_log("Unable to re-add new assoc.\n");
         }
-        else if (1 != oID.numEncAssociations())
+        else if (1 != oID.numAssociations())
         {
-          smg_log("Got the wrong number of enc associations (should have been 1, but got %lu)\n", 
-                  oID.numEncAssociations());
-        }
-        else if (1 != oID.numSignAssociations())
-        {
-          smg_log("Got the wrong number of sign associations (should have been 1, but got %lu)\n",
-                  oID.numSignAssociations());
+          smg_log("Got the wrong number of associations (should have been 1, but got %lu)\n", 
+                  oID.numAssociations());
         }
         else
         {

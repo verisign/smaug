@@ -133,16 +133,16 @@ bool SmgNetLibunbound::lookupSmimeID(SmgID &p_oID,
 
   int iErr = 0;
   struct ub_result *pResult = NULL;
-  string sDomain = (ACT_ENCR == p_eAction) ? p_oID.getEncName() : p_oID.getSignName();
+  string sDomain = p_oID.getSmimeName();
 
   if (NULL == m_pCtx)
   {
     smg_log("Net layer not initialize.\n");
   }
-  else if (ACT_ENCR != p_eAction && ACT_SIGN != p_eAction)
-  {
-    smg_log("Unable to use crypt action that is neither 'sign' nor 'encrypt': %d\n", p_eAction);
-  }
+  //else if (ACT_ENCR != p_eAction && ACT_SIGN != p_eAction)
+  //{
+  //  smg_log("Unable to use crypt action that is neither 'sign' nor 'encrypt': %d\n", p_eAction);
+  //}
   else if (0 != (iErr = ub_resolve(m_pCtx, sDomain.c_str(), SMG_SMIMEA_RR_TYPE, 1, &pResult)))
   {
     smg_log("Unable to resolve '%s': %s\n", sDomain.c_str(), ub_strerror(iErr));

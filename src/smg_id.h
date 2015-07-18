@@ -37,10 +37,8 @@ class SmgID
     std::string m_sUser;
     std::string m_sUserHash;
     std::string m_sDomain;
-    std::string m_sEncName;
-    std::string m_sSignName;
-    SmgSmimeAssocList_t m_oEncAssocs;
-    SmgSmimeAssocList_t m_oSignAssocs;
+    std::string m_sSmimeName;
+    SmgSmimeAssocList_t m_oAssocs;
 
   // Methods
   public:
@@ -52,19 +50,14 @@ class SmgID
 
     std::string &getEmail();
     std::string &getDomain();
-    std::string &getEncName();
-    std::string &getSignName();
+    std::string &getSmimeName();
     std::string &getInbox();
 
     bool addAssociation(SmgSmimeAssociation &p_oAssoc);
 
-    SmgSmimeAssocKIter_t beginEncAssociations() const;
-    SmgSmimeAssocKIter_t endEncAssociations() const;
-    size_t numEncAssociations() const;
-
-    SmgSmimeAssocKIter_t beginSignAssociations() const;
-    SmgSmimeAssocKIter_t endSignAssociations() const;
-    size_t numSignAssociations() const;
+    SmgSmimeAssocKIter_t beginAssociations() const;
+    SmgSmimeAssocKIter_t endAssociations() const;
+    size_t numAssociations() const;
 
     virtual SmgID &operator=(const SmgID &p_oRHS);
 

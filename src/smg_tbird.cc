@@ -104,15 +104,15 @@ const char* ds_encrypt(const char *p_szEmail, const char *p_pBuf)
 
       if (bFound)
       {
-        if (0 >= oID.numEncAssociations())
+        if (0 >= oID.numAssociations())
         {
-          smg_log("Unable to encrypt message to '%s' because no encryption associations found.\n", sEmail.c_str());
+          smg_log("Unable to encrypt message to '%s' because no associations found.\n", sEmail.c_str());
         }
         else
         {
           // This is where we could choose a specific SMIMEA RR if we have a preference.
           // For now, we will just find the first one that fits our needs.
-          SmgSmimeAssociation *pAssoc = *(oID.beginEncAssociations());
+          SmgSmimeAssociation *pAssoc = *(oID.beginAssociations());
           SmgSmimeCert &oCert = pAssoc->getCert();
 
           if (!oCert.encrypt(sBody, sRet))
@@ -163,15 +163,15 @@ const char* ds_decrypt(const char *p_szEmail, const char *p_pBuf)
       }
       else
       {
-        if (0 >= oID.numEncAssociations())
+        if (0 >= oID.numAssociations())
         {
           smg_log("Unable to decrypt message to '%s' because no encryption associations found.\n", sEmail.c_str());
         }
         else
         {
           bool bDecrypted = false;
-          for (SmgSmimeAssocKIter_t tIter = oID.beginEncAssociations();
-               oID.endEncAssociations() != tIter;
+          for (SmgSmimeAssocKIter_t tIter = oID.beginAssociations();
+               oID.endAssociations() != tIter;
                tIter++)
           {
             SmgSmimeAssociation *pAssoc = *tIter;
@@ -283,7 +283,7 @@ const char* ds_sign2(const char *p_szEmail, const char *p_pBuf)
       {
         smg_log("Unable to lookup ID for email '%s'\n", sEmail.c_str());
       }
-      else if (oID.numSignAssociations() < 1)
+      else if (oID.numAssociations() < 1)
       {
         smg_log("Unable to sign with no associations in ID '%s'\n", sEmail.c_str());
       }
@@ -291,7 +291,7 @@ const char* ds_sign2(const char *p_szEmail, const char *p_pBuf)
       {
         // This is where we could choose a specific SMIMEA RR if we have a preference.
         // For now, we will just find the first one that fits our needs.
-        SmgSmimeAssociation *pAssoc = *(oID.beginSignAssociations());
+        SmgSmimeAssociation *pAssoc = *(oID.beginAssociations());
         SmgSmimeCert &oCert = pAssoc->getCert();
 
         if (!oCert.sign(oBytes, sRet))
@@ -303,7 +303,7 @@ const char* ds_sign2(const char *p_szEmail, const char *p_pBuf)
   }
   catch(...)
   {
-    smg_log("Unable to encrypt, caught exception.\n");
+    smg_log("Unable to sign, caught exception.\n");
   }
 
   return sRet.c_str();
@@ -465,7 +465,7 @@ int smg_encrypt(const char *p_szEmail, const char *p_pBuf, const char **p_pOutpu
 
       if (bFound)
       {
-        if (0 >= oID.numEncAssociations())
+        if (0 >= oID.numAssociations())
         {
           smg_log("Unable to encrypt message to '%s' because no encryption associations found.\n", sEmail.c_str());
         }
@@ -473,7 +473,7 @@ int smg_encrypt(const char *p_szEmail, const char *p_pBuf, const char **p_pOutpu
         {
           // This is where we could choose a specific SMIMEA RR if we have a preference.
           // For now, we will just find the first one that fits our needs.
-          SmgSmimeAssociation *pAssoc = *(oID.beginEncAssociations());
+          SmgSmimeAssociation *pAssoc = *(oID.beginAssociations());
           SmgSmimeCert &oCert = pAssoc->getCert();
 
           if (!oCert.encrypt(sBody, sRet))
@@ -534,15 +534,15 @@ int smg_decrypt(const char *p_szEmail, const char *p_pBuf, const char **p_pOutpu
       }
       else
       {
-        if (0 >= oID.numEncAssociations())
+        if (0 >= oID.numAssociations())
         {
           smg_log("Unable to decrypt message to '%s' because no encryption associations found.\n", sEmail.c_str());
         }
         else
         {
           bool bDecrypted = false;
-          for (SmgSmimeAssocKIter_t tIter = oID.beginEncAssociations();
-               oID.endEncAssociations() != tIter;
+          for (SmgSmimeAssocKIter_t tIter = oID.beginAssociations();
+               oID.endAssociations() != tIter;
                tIter++)
           {
             SmgSmimeAssociation *pAssoc = *tIter;
@@ -606,7 +606,7 @@ int smg_sign(const char *p_szEmail,   const char *p_pBuf, const char **p_pOutput
       {
         smg_log("Unable to lookup ID for email '%s'\n", sEmail.c_str());
       }
-      else if (oID.numSignAssociations() < 1)
+      else if (oID.numAssociations() < 1)
       {
         smg_log("Unable to sign with no associations in ID '%s'\n", sEmail.c_str());
       }
@@ -614,7 +614,7 @@ int smg_sign(const char *p_szEmail,   const char *p_pBuf, const char **p_pOutput
       {
         // This is where we could choose a specific SMIMEA RR if we have a preference.
         // For now, we will just find the first one that fits our needs.
-        SmgSmimeAssociation *pAssoc = *(oID.beginSignAssociations());
+        SmgSmimeAssociation *pAssoc = *(oID.beginAssociations());
         SmgSmimeCert &oCert = pAssoc->getCert();
 
         if (!oCert.sign(oBytes, sRet))
@@ -699,15 +699,15 @@ int smg_verify(const char *p_szEmail, const char *p_pBuf)
 
       if (bFound)
       {
-        if (0 >= oID.numSignAssociations())
+        if (0 >= oID.numAssociations())
         {
           smg_log("Unable to verify message to '%s' because no signing associations found.\n", sEmail.c_str());
         }
         else
         {
           SmgBytesVector_t oBytes(sBody.begin(), sBody.end());
-          for (SmgSmimeAssocKIter_t tIter = oID.beginSignAssociations();
-               oID.endSignAssociations() != tIter;
+          for (SmgSmimeAssocKIter_t tIter = oID.beginAssociations();
+               oID.endAssociations() != tIter;
                tIter++)
           {
             SmgSmimeAssociation *pAssoc = *tIter;
@@ -785,7 +785,7 @@ int smg_lookup(const char *p_szEmail, int p_iEnc)
 
       if (bFound)
       {
-        if (0 >= oID.numEncAssociations())
+        if (0 >= oID.numAssociations())
         {
           smg_log("Lookup to '%s' failed, because no associations found.\n", sEmail.c_str());
         }
