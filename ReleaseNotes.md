@@ -10,7 +10,6 @@ Team:
 
 * Eric Osterweil
 * Glen Wiley
-* Gowri Visweswaran
 
 Purpose of this release:
 =========
@@ -53,16 +52,9 @@ per the DANE SMIMEA draft.
 
 Certificate Discovery
 ------
-Encryption associations are located under:
 
 ```
-<SHA224(local part)>._encr._smimecert.<mail domain>
-```
-
-Signing verification associations are located under:
-
-```
-<SHA224(local part)>._sign._smimecert.<mail domain>
+<SHA224(local part)>._smimecert.<mail domain>
 ```
 
 The Certificate Usage Field
@@ -75,8 +67,6 @@ The Certificate Usage Field
 2 or DANE-TA -- TODO
 
 3 or DANE-EE -- Implemented
-
-4 or REJECT -- Implemented
 
 
 The Selector Field
@@ -95,8 +85,4 @@ The Matching Type Field
 
 2 or SHA2-512 -- Implemented
 
-Certificate Access Field as a URI
-------
-
-Implemented
 
