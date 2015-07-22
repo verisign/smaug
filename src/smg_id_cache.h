@@ -33,8 +33,7 @@ class SmgIdCache
   private:
     static SmgIdCache s_oInstance;
 
-    SmgIdMap_t m_oEncMap;
-    SmgIdMap_t m_oSignMap;
+    SmgIdMap_t m_oMap;
 
   // Methods
   public:
@@ -43,8 +42,8 @@ class SmgIdCache
 
     static SmgIdCache &getInstance();
 
-    bool addID(SmgID &p_oID, SmgCryptAction_e p_eAction, time_t p_tTTL);
-    bool lookupSmimeID(std::string &p_sID, SmgCryptAction_e p_eAction, SmgID &p_oOutputID);
+    bool addID(SmgID &p_oID, time_t p_tTTL);
+    bool lookupSmimeID(std::string &p_sID, SmgID &p_oOutputID);
 
     bool clear();
 };

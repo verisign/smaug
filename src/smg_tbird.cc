@@ -48,277 +48,6 @@ const char* hash_sha224(const char *p_szKey)
   return NULL;
 }
 
-const char* ds_encrypt(const char *p_szEmail, const char *p_pBuf)
-{
-  // This makes the function call non-thread safe, but the underlying library
-  // IS thread safe.  Need to find a way to marry to the extension's 
-  // string allocation model
-  static string sRet;
-
-  try
-  {
-    if (NULL == p_szEmail)
-    {
-      smg_log("Unable to encrypt email to NULL inbox.\n");
-    }
-    else if (NULL == p_pBuf)
-    {
-      smg_log("Unable to encrypt NULL buffer.\n");
-    }
-    else
-    {
-      string sEmail = p_szEmail;
-      // The calling code in the plugin makes this a NULL terminated string.
-      string sBody = p_pBuf;
-
-      SmgID oID;
-      SmgIdCache &oIdCache = SmgIdCache::getInstance();
-      bool bFound = false;
-
-      if (oIdCache.lookupSmimeID(sEmail, ACT_ENCR, oID))
-      {
-        bFound = true;
-      }
-      else
-      {
-        uint32_t uTTL = 0;
-        SmgNet oNet;
-        if (!oID.init(sEmail))
-        {
-          smg_log("Unable to init ID with email '%s'\n", sEmail.c_str());
-        }
-        else if (!oNet.init())
-        {
-          smg_log("Unable to initialize network layer.\n");
-        }
-        else if (!oNet.lookupSmimeID(oID, ACT_ENCR, uTTL))
-        {
-          smg_log("Unable to fetch SMIMEA for ID '%s'\n", sEmail.c_str());
-        }
-        else
-        {
-          oIdCache.addID(oID, ACT_ENCR, uTTL);
-          bFound = true;
-        }
-      }
-
-      if (bFound)
-      {
-        if (0 >= oID.numAssociations())
-        {
-          smg_log("Unable to encrypt message to '%s' because no associations found.\n", sEmail.c_str());
-        }
-        else
-        {
-          // This is where we could choose a specific SMIMEA RR if we have a preference.
-          // For now, we will just find the first one that fits our needs.
-          SmgSmimeAssociation *pAssoc = *(oID.beginAssociations());
-          SmgSmimeCert &oCert = pAssoc->getCert();
-
-          if (!oCert.encrypt(sBody, sRet))
-          {
-            smg_log("Unable to encrypt.\n");
-          }
-        }
-      }
-    }
-  }
-  catch(...)
-  {
-    smg_log("Unable to encrypt, caught exception.\n");
-  }
-
-  return sRet.c_str();
-}
-
-const char* ds_decrypt(const char *p_szEmail, const char *p_pBuf)
-{
-  // This makes the function call non-thread safe, but the underlying library
-  // IS thread safe.  Need to find a way to marry to the extension's 
-  // string allocation model
-  static string sRet;
-
-  try
-  {
-    if (NULL == p_szEmail)
-    {
-      smg_log("Unable to decrypt email to NULL inbox.\n");
-    }
-    else if (NULL == p_pBuf)
-    {
-      smg_log("Unable to decrypt into a NULL buffer.\n");
-    }
-    else
-    {
-      string sEmail = p_szEmail;
-      // The calling code in the plugin makes this a NULL terminated string.
-      string sBody = p_pBuf;
-
-      SmgID oID;
-      SmgIdCache &oIdCache = SmgIdCache::getInstance();
-
-      if (!oIdCache.lookupSmimeID(sEmail, ACT_ENCR, oID))
-      {
-        smg_log("Unable to find ID for '%s'\n", sEmail.c_str());
-      }
-      else
-      {
-        if (0 >= oID.numAssociations())
-        {
-          smg_log("Unable to decrypt message to '%s' because no encryption associations found.\n", sEmail.c_str());
-        }
-        else
-        {
-          bool bDecrypted = false;
-          for (SmgSmimeAssocKIter_t tIter = oID.beginAssociations();
-               oID.endAssociations() != tIter;
-               tIter++)
-          {
-            SmgSmimeAssociation *pAssoc = *tIter;
-            SmgSmimeCert &oCert = pAssoc->getCert();
-            SmgBytesVector_t oOut;
-
-            if (oCert.decrypt(sBody, oOut))
-            {
-              bDecrypted = true;
-              sRet.assign((char *) oOut.data(), oOut.size());
-              break;
-            }
-          }
-        }
-      }
-    }
-  }
-  catch(...)
-  {
-    smg_log("Unable to encrypt, caught exception.\n");
-  }
-
-  return sRet.c_str();
-}
-
-const char* ds_sign(const char *p_szEmail, const char *p_pBuf, const char *p_szCertFile)
-{
-  // This makes the function call non-thread safe, but the underlying library
-  // IS thread safe.  Need to find a way to marry to the extension's 
-  // string allocation model
-  static string sRet;
-
-  try
-  {
-    if (NULL == p_szEmail)
-    {
-      smg_log("Unable to decrypt email to NULL inbox.\n");
-    }
-    else if (NULL == p_pBuf)
-    {
-      smg_log("Unable to decrypt into a NULL buffer.\n");
-    }
-    else if (NULL == p_szCertFile)
-    {
-      smg_log("Unable to load NULL cert file.\n");
-    }
-    else
-    {
-      string sEmail = p_szEmail;
-      // The calling code in the plugin makes this a NULL terminated string.
-      string sBody = p_pBuf;
-      string sFile = p_szCertFile;
-
-      SmgID oID;
-      SmgSmimeCert oCert;
-      SmgBytesVector_t oBytes(sBody.begin(), sBody.end());
-
-      if (!oID.init(sEmail))
-      {
-        smg_log("Unable to init ID for '%s'\n", sEmail.c_str());
-      }
-      else if (!oCert.initFromFile(sFile))
-      {
-        smg_log("Unable to init from file '%s'\n", sFile.c_str());
-      }
-      else if (!oCert.sign(oBytes, sRet))
-      {
-        smg_log("Unable to sign with ID '%s' from file '%s'\n", sEmail.c_str(), sFile.c_str());
-      }
-    }
-  }
-  catch(...)
-  {
-    smg_log("Unable to encrypt, caught exception.\n");
-  }
-
-  return sRet.c_str();
-}
-
-const char* ds_sign2(const char *p_szEmail, const char *p_pBuf)
-{
-  // This makes the function call non-thread safe, but the underlying library
-  // IS thread safe.  Need to find a way to marry to the extension's 
-  // string allocation model
-  static string sRet;
-
-  try
-  {
-    if (NULL == p_szEmail)
-    {
-      smg_log("Unable to decrypt email to NULL inbox.\n");
-    }
-    else if (NULL == p_pBuf)
-    {
-      smg_log("Unable to decrypt into a NULL buffer.\n");
-    }
-    else
-    {
-      string sEmail = p_szEmail;
-      // The calling code in the plugin makes this a NULL terminated string.
-      string sBody = p_pBuf;
-
-      SmgID oID;
-      SmgSmimeCert oCert;
-      SmgBytesVector_t oBytes(sBody.begin(), sBody.end());
-      SmgIdCache &oIdCache = SmgIdCache::getInstance();
-
-      if (!oIdCache.lookupSmimeID(sEmail, ACT_SIGN, oID))
-      {
-        smg_log("Unable to lookup ID for email '%s'\n", sEmail.c_str());
-      }
-      else if (oID.numAssociations() < 1)
-      {
-        smg_log("Unable to sign with no associations in ID '%s'\n", sEmail.c_str());
-      }
-      else
-      {
-        // This is where we could choose a specific SMIMEA RR if we have a preference.
-        // For now, we will just find the first one that fits our needs.
-        SmgSmimeAssociation *pAssoc = *(oID.beginAssociations());
-        SmgSmimeCert &oCert = pAssoc->getCert();
-
-        if (!oCert.sign(oBytes, sRet))
-        {
-          smg_log("Unable to sign with ID '%s'\n", sEmail.c_str());
-        }
-      }
-    }
-  }
-  catch(...)
-  {
-    smg_log("Unable to sign, caught exception.\n");
-  }
-
-  return sRet.c_str();
-}
-
-int ds_verify(const char *p_szEmail, const char *p_pBuf)
-{
-  return smg_verify(p_szEmail, p_pBuf);
-}
-
-int ds_lookup(const char *p_szEmail, int p_iEnc)
-{
-  return smg_lookup(p_szEmail, p_iEnc);
-}
-
 int smg_init(const char *p_szEmailAddr, const char *p_szCertFilePath, const char *p_szLogFile)
 {
   int iRet = 0;
@@ -351,13 +80,12 @@ int smg_init(const char *p_szEmailAddr, const char *p_szCertFilePath, const char
     {
       string sEmail = p_szEmailAddr;
       string sFile = p_szCertFilePath;
-      string sAccess;
       if (!oID.init(sEmail))
       {
         smg_log("Unable to initialized ID with email '%s'\n", sEmail.c_str());
         szRet = "Unable to initialized ID with email";
       }
-      else if (!oAssoc.initFromFile(ACT_ENCR, USG_DANE_EE, SEL_FULL, MAT_FULL, sAccess, sFile))
+      else if (!oAssoc.initFromFile(USG_DANE_EE, SEL_FULL, MAT_FULL, sFile))
       {
         smg_log("Unable to init cert, for encryption, from file '%s'\n", sFile.c_str());
         szRet = "Unable to init cert, for encryption, from file";
@@ -367,7 +95,7 @@ int smg_init(const char *p_szEmailAddr, const char *p_szCertFilePath, const char
         smg_log("Unable to add encryption association for file '%s'\n", sFile.c_str());
         szRet = "Unable to add encryption association for file ";
       }
-      else if (!oAssoc.initFromFile(ACT_SIGN, USG_DANE_EE, SEL_FULL, MAT_FULL, sAccess, sFile))
+      else if (!oAssoc.initFromFile(USG_DANE_EE, SEL_FULL, MAT_FULL, sFile))
       {
         smg_log("Unable to init cert, for signing, from file '%s'\n", sFile.c_str());
         szRet = "Unable to init cert, for signing, from file";
@@ -377,12 +105,7 @@ int smg_init(const char *p_szEmailAddr, const char *p_szCertFilePath, const char
         smg_log("Unable to add signing association for file '%s'\n", sFile.c_str());
         szRet = "Unable to add signing association for file ";
       }
-      else if (!oCache.addID(oID, ACT_ENCR, 0))
-      {
-        smg_log("Unable to add ID to cache.\n");
-        szRet = "Unable to add ID to cache.";
-      }
-      else if (!oCache.addID(oID, ACT_SIGN, 0))
+      else if (!oCache.addID(oID, 0))
       {
         smg_log("Unable to add ID to cache.\n");
         szRet = "Unable to add ID to cache.";
@@ -436,7 +159,7 @@ int smg_encrypt(const char *p_szEmail, const char *p_pBuf, const char **p_pOutpu
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
       bool bFound = false;
 
-      if (oIdCache.lookupSmimeID(sEmail, ACT_ENCR, oID))
+      if (oIdCache.lookupSmimeID(sEmail, oID))
       {
         bFound = true;
       }
@@ -452,20 +175,20 @@ int smg_encrypt(const char *p_szEmail, const char *p_pBuf, const char **p_pOutpu
         {
           smg_log("Unable to initialize network layer.\n");
         }
-        else if (!oNet.lookupSmimeID(oID, ACT_ENCR, uTTL))
+        else if (!oNet.lookupSmimeID(oID, uTTL))
         {
           smg_log("Unable to fetch SMIMEA for ID '%s'\n", sEmail.c_str());
         }
         else
         {
-          oIdCache.addID(oID, ACT_ENCR, uTTL);
+          oIdCache.addID(oID, uTTL);
           bFound = true;
         }
       }
 
       if (bFound)
       {
-        if (0 >= oID.numAssociations())
+        if (0 >= oID.numSmimeAssociations())
         {
           smg_log("Unable to encrypt message to '%s' because no encryption associations found.\n", sEmail.c_str());
         }
@@ -473,7 +196,7 @@ int smg_encrypt(const char *p_szEmail, const char *p_pBuf, const char **p_pOutpu
         {
           // This is where we could choose a specific SMIMEA RR if we have a preference.
           // For now, we will just find the first one that fits our needs.
-          SmgSmimeAssociation *pAssoc = *(oID.beginAssociations());
+          SmgSmimeAssociation *pAssoc = *(oID.beginSmimeAssociations());
           SmgSmimeCert &oCert = pAssoc->getCert();
 
           if (!oCert.encrypt(sBody, sRet))
@@ -528,21 +251,21 @@ int smg_decrypt(const char *p_szEmail, const char *p_pBuf, const char **p_pOutpu
       SmgID oID;
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
 
-      if (!oIdCache.lookupSmimeID(sEmail, ACT_ENCR, oID))
+      if (!oIdCache.lookupSmimeID(sEmail, oID))
       {
         smg_log("Unable to find ID for '%s'\n", sEmail.c_str());
       }
       else
       {
-        if (0 >= oID.numAssociations())
+        if (0 >= oID.numSmimeAssociations())
         {
           smg_log("Unable to decrypt message to '%s' because no encryption associations found.\n", sEmail.c_str());
         }
         else
         {
           bool bDecrypted = false;
-          for (SmgSmimeAssocKIter_t tIter = oID.beginAssociations();
-               oID.endAssociations() != tIter;
+          for (SmgSmimeAssocKIter_t tIter = oID.beginSmimeAssociations();
+               oID.endSmimeAssociations() != tIter;
                tIter++)
           {
             SmgSmimeAssociation *pAssoc = *tIter;
@@ -602,11 +325,11 @@ int smg_sign(const char *p_szEmail,   const char *p_pBuf, const char **p_pOutput
       SmgBytesVector_t oBytes(sBody.begin(), sBody.end());
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
 
-      if (!oIdCache.lookupSmimeID(sEmail, ACT_SIGN, oID))
+      if (!oIdCache.lookupSmimeID(sEmail, oID))
       {
         smg_log("Unable to lookup ID for email '%s'\n", sEmail.c_str());
       }
-      else if (oID.numAssociations() < 1)
+      else if (oID.numSmimeAssociations() < 1)
       {
         smg_log("Unable to sign with no associations in ID '%s'\n", sEmail.c_str());
       }
@@ -614,7 +337,7 @@ int smg_sign(const char *p_szEmail,   const char *p_pBuf, const char **p_pOutput
       {
         // This is where we could choose a specific SMIMEA RR if we have a preference.
         // For now, we will just find the first one that fits our needs.
-        SmgSmimeAssociation *pAssoc = *(oID.beginAssociations());
+        SmgSmimeAssociation *pAssoc = *(oID.beginSmimeAssociations());
         SmgSmimeCert &oCert = pAssoc->getCert();
 
         if (!oCert.sign(oBytes, sRet))
@@ -666,7 +389,7 @@ int smg_verify(const char *p_szEmail, const char *p_pBuf)
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
       bool bFound = false;
 
-      if (oIdCache.lookupSmimeID(sEmail, ACT_SIGN, oID))
+      if (oIdCache.lookupSmimeID(sEmail, oID))
       {
         bFound = true;
       }
@@ -683,7 +406,7 @@ int smg_verify(const char *p_szEmail, const char *p_pBuf)
         {
           smg_log("Unable to init network layer.\n");
         }
-        else if (!oNet.lookupSmimeID(oID, ACT_SIGN, uTTL))
+        else if (!oNet.lookupSmimeID(oID, uTTL))
         {
           smg_log("Unable to fetch SMIMEA for ID '%s'\n", sEmail.c_str());
         }
@@ -692,22 +415,22 @@ int smg_verify(const char *p_szEmail, const char *p_pBuf)
           smg_log("Fetched SMIMEA for ID '%s', adding to cache with TTL %lu...\n", 
                   sEmail.c_str(), 
                   (unsigned long) uTTL);
-          oIdCache.addID(oID, ACT_SIGN, uTTL);
+          oIdCache.addID(oID, uTTL);
           bFound = true;
         }
       }
 
       if (bFound)
       {
-        if (0 >= oID.numAssociations())
+        if (0 >= oID.numSmimeAssociations())
         {
           smg_log("Unable to verify message to '%s' because no signing associations found.\n", sEmail.c_str());
         }
         else
         {
           SmgBytesVector_t oBytes(sBody.begin(), sBody.end());
-          for (SmgSmimeAssocKIter_t tIter = oID.beginAssociations();
-               oID.endAssociations() != tIter;
+          for (SmgSmimeAssocKIter_t tIter = oID.beginSmimeAssociations();
+               oID.endSmimeAssociations() != tIter;
                tIter++)
           {
             SmgSmimeAssociation *pAssoc = *tIter;
@@ -750,8 +473,7 @@ int smg_lookup(const char *p_szEmail, int p_iEnc)
       SmgIdCache &oIdCache = SmgIdCache::getInstance();
       bool bFound = false;
 
-      SmgCryptAction_e eAct = (p_iEnc) ? ACT_ENCR : ACT_SIGN;
-      if (oIdCache.lookupSmimeID(sEmail, eAct, oID))
+      if (oIdCache.lookupSmimeID(sEmail, oID))
       {
         bFound = true;
       }
@@ -769,7 +491,7 @@ int smg_lookup(const char *p_szEmail, int p_iEnc)
         {
           smg_log("Unable to initialize network layer.\n");
         }
-        else if (!oNet.lookupSmimeID(oID, eAct, uTTL))
+        else if (!oNet.lookupSmimeID(oID, uTTL))
         {
           smg_log("Unable to fetch SMIMEA for ID '%s'\n", sEmail.c_str());
         }
@@ -778,14 +500,14 @@ int smg_lookup(const char *p_szEmail, int p_iEnc)
           smg_log("Fetched SMIMEA for ID '%s', adding to cache with TTL %lu...\n", 
                    sEmail.c_str(), 
                    (unsigned long) uTTL);
-          oIdCache.addID(oID, eAct, uTTL);
+          oIdCache.addID(oID, uTTL);
           bFound = true;
         }
       }
 
       if (bFound)
       {
-        if (0 >= oID.numAssociations())
+        if (0 >= oID.numSmimeAssociations())
         {
           smg_log("Lookup to '%s' failed, because no associations found.\n", sEmail.c_str());
         }

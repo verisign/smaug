@@ -37,7 +37,6 @@ using namespace std;
 
 SmgSmimeAssociation::SmgSmimeAssociation()
   : m_bInit(false),
-    m_eAction(ACT_PRE_INIT),
     m_eUsage(USG_PRE_INIT),
     m_eSelector(SEL_PRE_INIT),
     m_eMatching(MAT_PRE_INIT)
@@ -47,7 +46,6 @@ SmgSmimeAssociation::SmgSmimeAssociation()
 
 SmgSmimeAssociation::SmgSmimeAssociation(const SmgSmimeAssociation &p_oRHS)
   : m_bInit(false),
-    m_eAction(ACT_PRE_INIT),
     m_eUsage(USG_PRE_INIT),
     m_eSelector(SEL_PRE_INIT),
     m_eMatching(MAT_PRE_INIT)
@@ -60,30 +58,9 @@ SmgSmimeAssociation::~SmgSmimeAssociation()
   clear();
 }
 
-bool SmgSmimeAssociation::init(SmgCryptAction_e p_eAction,
-              SmgUsage_e p_eUsage,
+bool SmgSmimeAssociation::init(SmgUsage_e p_eUsage,
               SmgSelector_e p_eSelector,
               SmgMatching_e p_eMatching,
-              const char *p_szAccess,
-              uint8_t *p_pCertAssocData,
-              size_t p_uDataLen,
-              SmgX509Encoding_e p_eEncoding /*= SMG_X509_DER*/)
-{
-  string sAccess = (NULL != p_szAccess) ? p_szAccess : "";
-  return init(p_eAction, 
-              p_eUsage, 
-              p_eSelector, 
-              p_eMatching, 
-              sAccess,
-              p_pCertAssocData,
-              p_uDataLen, p_eEncoding);
-}
-
-bool SmgSmimeAssociation::init(SmgCryptAction_e p_eAction,
-              SmgUsage_e p_eUsage,
-              SmgSelector_e p_eSelector,
-              SmgMatching_e p_eMatching,
-              std::string &p_sAccess,
               uint8_t *p_pCertAssocData,
               size_t p_uDataLen,
               SmgX509Encoding_e p_eEncoding /*= SMG_X509_DER*/)
@@ -93,11 +70,9 @@ bool SmgSmimeAssociation::init(SmgCryptAction_e p_eAction,
     clear();
   }
 
-  m_eAction = p_eAction;
   m_eUsage = p_eUsage;
   m_eSelector = p_eSelector;
   m_eMatching = p_eMatching;
-  m_sAccess = p_sAccess;
 
   if (NULL == p_pCertAssocData)
   {
@@ -128,11 +103,9 @@ bool SmgSmimeAssociation::init(SmgCryptAction_e p_eAction,
   return m_bInit;
 }
 
-bool SmgSmimeAssociation::initFromFile(SmgCryptAction_e p_eAction,
-                                       SmgUsage_e p_eUsage,
+bool SmgSmimeAssociation::initFromFile(SmgUsage_e p_eUsage,
                                        SmgSelector_e p_eSelector,
                                        SmgMatching_e p_eMatching,
-                                       std::string &p_sAccess,
                                        std::string &p_sFile)
 {
   if (isInitialized())
@@ -140,11 +113,9 @@ bool SmgSmimeAssociation::initFromFile(SmgCryptAction_e p_eAction,
     clear();
   }
 
-  m_eAction = p_eAction;
   m_eUsage = p_eUsage;
   m_eSelector = p_eSelector;
   m_eMatching = p_eMatching;
-  m_sAccess = p_sAccess;
 
   m_bInit = m_oCert.initFromFile(p_sFile);
 
@@ -154,21 +125,6 @@ bool SmgSmimeAssociation::initFromFile(SmgCryptAction_e p_eAction,
 bool SmgSmimeAssociation::isInitialized()
 {
   return m_bInit;
-}
-
-bool SmgSmimeAssociation::isEncCert()
-{
-  return ACT_ENCR == m_eAction;
-}
-
-bool SmgSmimeAssociation::isSignCert()
-{
-  return ACT_SIGN == m_eAction ;
-}
-
-bool SmgSmimeAssociation::isRejectCert()
-{
-  return USG_REJECT == m_eUsage;
 }
 
 bool SmgSmimeAssociation::isFullCert()
@@ -196,18 +152,6 @@ bool SmgSmimeAssociation::isEE()
   return USG_PKIX_EE== m_eUsage || USG_DANE_EE == m_eUsage;
 }
 
-SmgCryptAction_e SmgSmimeAssociation::getAction()
-{
-  return m_eAction;
-}
-
-bool SmgSmimeAssociation::setAction(SmgCryptAction_e p_eAction)
-{
-  m_eAction = p_eAction;
-
-  return true;
-}
-
 SmgUsage_e SmgSmimeAssociation::getUsage()
 {
   return m_eUsage;
@@ -221,11 +165,6 @@ SmgSelector_e SmgSmimeAssociation::getSelector()
 SmgMatching_e SmgSmimeAssociation::getMatching()
 {
   return m_eMatching;
-}
-
-const char *SmgSmimeAssociation::getAccess()
-{
-  return m_sAccess.c_str();
 }
 
 bool SmgSmimeAssociation::getHash(SmgBytesVector_t &p_oOutput)
@@ -288,12 +227,7 @@ bool SmgSmimeAssociation::toWire(SmgBytesVector_t &p_oOutput)
   tRR.m_uUsage = m_eUsage;
   tRR.m_uSelector = m_eSelector;
   tRR.m_uMatching = m_eMatching;
-  tRR.m_uAccessLen =  htons((uint16_t) m_sAccess.size());
   p_oOutput.insert(p_oOutput.end(), (uint8_t *) &tRR, (uint8_t *) &tRR + sizeof(tRR));
-  if (m_sAccess.size() > 0)
-  {
-    p_oOutput.insert(p_oOutput.end(), m_sAccess.c_str(), m_sAccess.c_str() + m_sAccess.size());
-  }
 
   SmgBytesVector_t oHash;
   if (MAT_FULL == m_eMatching)
@@ -332,7 +266,7 @@ bool SmgSmimeAssociation::toWire(SmgBytesVector_t &p_oOutput)
   return bRet;
 }
 
-bool SmgSmimeAssociation::fromWire(SmgCryptAction_e p_eAction, uint8_t *p_pBuffer, size_t p_uLen)
+bool SmgSmimeAssociation::fromWire(uint8_t *p_pBuffer, size_t p_uLen)
 {
   bool bRet = false;
 
@@ -367,19 +301,10 @@ bool SmgSmimeAssociation::fromWire(SmgCryptAction_e p_eAction, uint8_t *p_pBuffe
     SmgSmimeaRR_t tRR;
     memset(&tRR, 0, sizeof(tRR));
     memcpy(&tRR, p_pBuffer, sizeof(tRR));
-    tRR.m_uAccessLen = ntohs(tRR.m_uAccessLen);
-    uint16_t uLen = tRR.m_uAccessLen;
 
-    string sAccess;
-    if (uLen > 0)
-    {
-smg_log("LEN IS > 0 (%u). . . Loading. . . \n", uLen);
-      // sAccess.assign( reinterpret_cast< const char * >(&(p_pBuffer[iIdx])), uLen);
-      sAccess.assign( reinterpret_cast< const char * >(&(p_pBuffer[sizeof(tRR)])), uLen);
-    }
     // The rest is cert of hash data
     // char *pCert = &(p_pBuffer[iIdx + uLen]);
-    uint8_t *pCert = &(p_pBuffer[sizeof(tRR) + uLen]);
+    uint8_t *pCert = &(p_pBuffer[sizeof(tRR)]);
     /*
     bRet = m_oCert.init(pCert, p_uLen - (5 + uLen));
     if (!bRet)
@@ -403,13 +328,11 @@ smg_log("LEN IS > 0 (%u). . . Loading. . . \n", uLen);
                 pCert,
                 p_uLen - (iIdx + uLen));
     */
-    bRet = init(p_eAction,
-                (SmgUsage_e) tRR.m_uUsage,
+    bRet = init((SmgUsage_e) tRR.m_uUsage,
                 (SmgSelector_e) tRR.m_uSelector,
                 (SmgMatching_e) tRR.m_uMatching,
-                sAccess,
                 pCert,
-                p_uLen - (sizeof(tRR) + uLen));
+                p_uLen - (sizeof(tRR)));
   }
 
   return bRet;
@@ -448,7 +371,7 @@ fprintf(stderr, ".");
   return bRet;
 }
 
-bool SmgSmimeAssociation::fromText(SmgCryptAction_e p_eAction, std::string &p_sTxt)
+bool SmgSmimeAssociation::fromText(std::string &p_sTxt)
 {
   bool bRet = false;
 
@@ -522,7 +445,7 @@ bool SmgSmimeAssociation::fromText(SmgCryptAction_e p_eAction, std::string &p_sT
             oBytes.push_back(c);
           }
 
-          bRet = fromWire(p_eAction, oBytes.data(), oBytes.size());
+          bRet = fromWire(oBytes.data(), oBytes.size());
         }
       }
     }
@@ -543,11 +466,9 @@ void SmgSmimeAssociation::setCert(SmgSmimeCert &p_oCert)
 
 SmgSmimeAssociation &SmgSmimeAssociation::operator=(const SmgSmimeAssociation &p_oRHS)
 {
-  m_eAction = p_oRHS.m_eAction;
   m_eUsage = p_oRHS.m_eUsage;
   m_eSelector = p_oRHS.m_eSelector;
   m_eMatching = p_oRHS.m_eMatching;
-  m_sAccess = p_oRHS.m_sAccess;
   m_oCert = p_oRHS.m_oCert;
   m_oHash = p_oRHS.m_oHash;
   m_bInit = p_oRHS.m_bInit;
@@ -558,7 +479,6 @@ SmgSmimeAssociation &SmgSmimeAssociation::operator=(const SmgSmimeAssociation &p
 bool SmgSmimeAssociation::clear()
 {
   m_bInit = false;
-  m_eAction = ACT_PRE_INIT;
   m_eUsage = USG_PRE_INIT;
   m_eSelector = SEL_PRE_INIT;
   m_eMatching = MAT_PRE_INIT;

@@ -49,10 +49,7 @@ class SmgNetGetDNS : public SmgNetEngine
     virtual bool init(std::string &p_sRootTaFile);
 
     virtual bool lookupSmimeID(SmgID &p_oID,
-                          SmgCryptAction_e p_eAction);
-    virtual bool lookupSmimeID(SmgID &p_oID,
-                          SmgCryptAction_e p_eAction,
-                          uint32_t &p_uTTL);
+                           uint32_t &p_uTTL);
 };
 
 #endif

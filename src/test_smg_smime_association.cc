@@ -23,6 +23,11 @@
 
 #include <fstream>
 
+#ifndef _SMG_DEBUG
+#define _SMG_DEBUG
+#endif
+
+
 #include "smg_smime_association.h"
 
 using namespace std;
@@ -58,11 +63,9 @@ int main(int argc, char *argv[])
 
     SmgSmimeAssociation oAssoc;
 
-    if (!oAssoc.initFromFile(ACT_ENCR,
-                             USG_DANE_EE,
+    if (!oAssoc.initFromFile(USG_DANE_EE,
                              SEL_FULL,
                              MAT_FULL,
-                             sAccess,
                              sFile))
     {
       smg_log("Unable to init association.\n");
@@ -70,18 +73,6 @@ int main(int argc, char *argv[])
     else if (!oAssoc.isInitialized())
     {
       smg_log("Should be initialized, but isn't\n");
-    }
-    else if (!oAssoc.isEncCert())
-    {
-      smg_log("Should be enc cert, but isn't\n");
-    }
-    else if (oAssoc.isSignCert())
-    {
-      smg_log("Should not be a sign assoc, but IS.\n");
-    }
-    else if (oAssoc.isRejectCert())
-    {
-      smg_log("Should NOT be a reject assoc, but is.\n");
     }
     else if (!oAssoc.isFullCert())
     {
@@ -130,7 +121,7 @@ int main(int argc, char *argv[])
         SmgSmimeAssociation oAssoc2;
         SmgBytesVector_t oOutVec2;
 
-        if (!(oAssoc2.fromWire(oAssoc.getAction(), oOutVec.data(), oOutVec.size())))
+        if (!(oAssoc2.fromWire(oOutVec.data(), oOutVec.size())))
         {
           smg_log("Unable to initialize from wire.\n");
         }
@@ -144,10 +135,7 @@ int main(int argc, char *argv[])
         {
           smg_log("reconstituted assoc is not initialized.\n");
         }
-        else if (!oAssoc2.isEncCert()
-                 || oAssoc2.isSignCert()
-                 || oAssoc2.isRejectCert()
-                 || !oAssoc2.isFullCert()
+        else if (!oAssoc2.isFullCert()
                  || oAssoc2.isFingerprintCert()
                  || oAssoc2.isTA()
                  || oAssoc2.isPKIX()
@@ -189,7 +177,7 @@ int main(int argc, char *argv[])
           {
             fprintf(stderr, "Serialized to:\n%s\n", sOut.c_str());
 
-            if (!oAssoc2.fromText(oAssoc.getAction(), sOut))
+            if (!oAssoc2.fromText(sOut))
             {
               smg_log("Unable to re-serialize from text.\n");
             }

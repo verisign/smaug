@@ -77,17 +77,11 @@ bool SmgNetGetDNS::init(std::string &p_sRootTaFile)
   return init(p_sRootTaFile.c_str());
 }
 
-bool SmgNetGetDNS::lookupSmimeID(SmgID &p_oID, SmgCryptAction_e p_eAction)
-{
-  uint32_t uTTL = 0;
-  return lookupID(p_oID, p_eAction, uTTL);
-}
-
-bool SmgNetGetDNS::lookupSmimeID(SmgID &p_oID, SmgCryptAction_e p_eAction, uint32_t &p_uTTL)
+bool SmgNetGetDNS::lookupSmimeID(SmgID &p_oID, uint32_t &p_uTTL)
 {
   bool bRet = false;
 
-  string sDomain = (ACT_ENCR == p_eAction) ? p_oID.getEncName() : p_oID.getSignName();
+  string sDomain = p_oID.getSmimeName();
   getdns_dict *pDict = getdns_dict_create();
   getdns_dict *pFullResponse = NULL;
   getdns_return_t tRet = GETDNS_RETURN_GOOD;
@@ -95,11 +89,7 @@ bool SmgNetGetDNS::lookupSmimeID(SmgID &p_oID, SmgCryptAction_e p_eAction, uint3
 
 smg_log("Fetching '%s'\n", p_oID.getSignName().c_str());
 
-  if (ACT_ENCR != p_eAction && ACT_SIGN != p_eAction)
-  {
-    smg_log("Unable to use crypt action that is neither 'sign' nor 'encrypt': %d\n", p_eAction);
-  }
-  else if (NULL == pDict)
+  if (NULL == pDict)
   {
     smg_log("Unable to allocate getdns dictionary.\n");
   }
@@ -274,7 +264,7 @@ smg_log("Fetching '%s'\n", p_oID.getSignName().c_str());
                 }
                 break;
               }
-              else if (!oAssoc.fromWire(p_eAction, pBinData->data, pBinData->size))
+              else if (!oAssoc.fromWire(pBinData->data, pBinData->size))
               {
                 smg_log("Unable to parse SMIMEA RR from wire format.\n");
                 break;

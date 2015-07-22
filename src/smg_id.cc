@@ -137,24 +137,31 @@ bool SmgID::addAssociation(SmgSmimeAssociation &p_oAssoc)
 {
   bool bRet = false;
 
-  SmgSmimeAssociation *pAssoc = new SmgSmimeAssociation(p_oAssoc);
-  m_oAssocs.push_back(pAssoc);
-  bRet = true;
+  if (!p_oAssoc.isInitialized())
+  {
+    smg_log("Cannot add uninitialized association.\n");
+  }
+  else
+  {
+    SmgSmimeAssociation *pAssoc = new SmgSmimeAssociation(p_oAssoc);
+    m_oAssocs.push_back(pAssoc);
+    bRet = true;
+  }
 
   return bRet;
 }
 
-SmgSmimeAssocKIter_t SmgID::beginAssociations() const
+SmgSmimeAssocKIter_t SmgID::beginSmimeAssociations() const
 {
   return m_oAssocs.begin();
 }
 
-SmgSmimeAssocKIter_t SmgID::endAssociations() const
+SmgSmimeAssocKIter_t SmgID::endSmimeAssociations() const
 {
   return m_oAssocs.end();
 }
 
-size_t SmgID::numAssociations() const
+size_t SmgID::numSmimeAssociations() const
 {
   return m_oAssocs.size();
 }
@@ -170,8 +177,8 @@ SmgID &SmgID::operator=(const SmgID &p_oRHS)
     m_sSmimeName = p_oRHS.m_sSmimeName;
 
   SmgSmimeAssocKIter_t tIter;
-  for (tIter = p_oRHS.beginAssociations();
-       p_oRHS.endAssociations() != tIter;
+  for (tIter = p_oRHS.beginSmimeAssociations();
+       p_oRHS.endSmimeAssociations() != tIter;
        tIter++)
   {
     smg_log("Pushing assoc\n");
@@ -186,8 +193,8 @@ SmgID &SmgID::operator=(const SmgID &p_oRHS)
 bool SmgID::clear()
 {
   SmgSmimeAssocKIter_t tIter;
-  for (tIter = beginAssociations();
-       endAssociations() != tIter;
+  for (tIter = beginSmimeAssociations();
+       endSmimeAssociations() != tIter;
        tIter++)
   {
     delete *tIter;

@@ -44,66 +44,49 @@ SmgIdCache &SmgIdCache::getInstance()
   return s_oInstance;
 }
 
-bool SmgIdCache::addID(SmgID &p_oID, SmgCryptAction_e p_eAction, time_t p_tTTL)
+bool SmgIdCache::addID(SmgID &p_oID, time_t p_tTTL)
 {
   bool bRet = false;
 
-  if (ACT_ENCR != p_eAction && ACT_SIGN != p_eAction)
+  SmgIdMapIter_t tIter = m_oMap.find(p_oID.getInbox());
+  if (m_oMap.end() != tIter)
   {
-    smg_log("Unable to add ID with action value %d (not ACT_ENCR or ACT_SIGN)\n", (int) p_eAction);
+    delete tIter->second.m_pID;
   }
-  else
-  {
-    SmgIdMap_t &oMap = (ACT_ENCR == p_eAction) ?  m_oEncMap : m_oSignMap;
-    SmgIdMapIter_t tIter = oMap.find(p_oID.getInbox());
-    if (oMap.end() != tIter)
-    {
-      delete tIter->second.m_pID;
-    }
-    SmgIdTtl_t tEntry;
-    tEntry.m_tExpiration = (0 == p_tTTL) ? 0 : time(NULL) + p_tTTL;
-    tEntry.m_pID = new SmgID();
-    (*tEntry.m_pID) = p_oID;
-    oMap[p_oID.getEmail()] = tEntry;
+  SmgIdTtl_t tEntry;
+  tEntry.m_tExpiration = (0 == p_tTTL) ? 0 : time(NULL) + p_tTTL;
+  tEntry.m_pID = new SmgID();
+  (*tEntry.m_pID) = p_oID;
+  m_oMap[p_oID.getEmail()] = tEntry;
 
-    bRet = true;
-  }
+  bRet = true;
 
   return bRet;
 }
 
-bool SmgIdCache::lookupSmimeID(std::string &p_sID, SmgCryptAction_e p_eAction, SmgID &p_oOutputID)
+bool SmgIdCache::lookupSmimeID(std::string &p_sID, SmgID &p_oOutputID)
 {
   bool bRet = false;
 
-  if (ACT_ENCR != p_eAction && ACT_SIGN != p_eAction)
+  SmgIdMapIter_t tIter = m_oMap.find(p_sID);
+  if (m_oMap.end() != tIter)
   {
-    smg_log("Unable to lookup ID with action value %d (not ACT_ENCR or ACT_SIGN)\n", (int) p_eAction);
-  }
-  else
-  {
-    SmgIdMap_t &oMap = (ACT_ENCR == p_eAction) ?  m_oEncMap : m_oSignMap;
-
-    SmgIdMapIter_t tIter = oMap.find(p_sID);
-    if (oMap.end() != tIter)
+    SmgIdTtl_t tEntry = tIter->second;
+    time_t tNow = time(NULL);
+    if (0 < tEntry.m_tExpiration && tEntry.m_tExpiration < tNow)
     {
-      SmgIdTtl_t tEntry = tIter->second;
-      time_t tNow = time(NULL);
-      if (0 < tEntry.m_tExpiration && tEntry.m_tExpiration < tNow)
-      {
 // smg_log("Deleting ID: %s\n", p_sID.c_str());
-        delete tEntry.m_pID;
-        oMap.erase(tIter);
-      }
-      else if (NULL == tEntry.m_pID)
-      {
-        smg_log("Cache ID map has a NULL pointer in ID: %s\n", p_sID.c_str());
-      }
-      else
-      {
-        p_oOutputID = *tEntry.m_pID;
-        bRet = true;
-      }
+      delete tEntry.m_pID;
+      m_oMap.erase(tIter);
+    }
+    else if (NULL == tEntry.m_pID)
+    {
+      smg_log("Cache ID map has a NULL pointer in ID: %s\n", p_sID.c_str());
+    }
+    else
+    {
+      p_oOutputID = *tEntry.m_pID;
+      bRet = true;
     }
   }
 
@@ -112,21 +95,13 @@ bool SmgIdCache::lookupSmimeID(std::string &p_sID, SmgCryptAction_e p_eAction, S
 
 bool SmgIdCache::clear()
 {
-  for (SmgIdMapIter_t tIter = m_oEncMap.begin();
-       m_oEncMap.end() != tIter;
+  for (SmgIdMapIter_t tIter = m_oMap.begin();
+       m_oMap.end() != tIter;
        tIter++)
   {
     delete tIter->second.m_pID;
   }
-  m_oEncMap.clear();
-
-  for (SmgIdMapIter_t tIter = m_oSignMap.begin();
-       m_oSignMap.end() != tIter;
-       tIter++)
-  {
-    delete tIter->second.m_pID;
-  }
-  m_oSignMap.clear();
+  m_oMap.clear();
 
   return true;
 }

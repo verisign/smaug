@@ -23,6 +23,11 @@
 #include <unistd.h>
 #include <cstring>
 
+#ifndef _SMG_DEBUG
+#define _SMG_DEBUG
+#endif
+
+
 #include "smg_id_cache.h"
 #include "smg_id.h"
 
@@ -65,15 +70,15 @@ int main(int argc, char *argv[])
     {
       smg_log("Unable to initialize tmp object.\n");
     }
-    else if (!oCache.addID(oID, ACT_ENCR, 0))
+    else if (!oCache.addID(oID, 0))
     {
       smg_log("Unable to add perma-ID.\n");
     }
-    else if (!oCache.addID(oTmpID, ACT_SIGN, 1))
+    else if (!oCache.addID(oTmpID, 1))
     {
       smg_log("Unable to add tmp-ID with 1 sec TTL.\n");
     }
-    else if (!oCache.lookupSmimeID(sTmpEmailAddr, ACT_SIGN, oQueryID))
+    else if (!oCache.lookupSmimeID(sTmpEmailAddr, oQueryID))
     {
       smg_log("UNable to lookup tmp-ID '%s'\n", sTmpEmailAddr.c_str());
     }
@@ -82,11 +87,11 @@ int main(int argc, char *argv[])
       fprintf(stdout, "Sleeping until tmp ID should be flushed.\n");
       sleep(2);
 
-      if (!oCache.lookupSmimeID(sEmailAddr, ACT_ENCR, oQueryID))
+      if (!oCache.lookupSmimeID(sEmailAddr, oQueryID))
       {
         smg_log("UNable to lookup perma-ID: '%s'\n", sEmailAddr.c_str());
       }
-      else if (oCache.lookupSmimeID(sTmpEmailAddr, ACT_SIGN, oQueryID))
+      else if (oCache.lookupSmimeID(sTmpEmailAddr, oQueryID))
       {
         smg_log("WAS able to lookup tmp ID (after it hsould have been flushed.\n");
       }

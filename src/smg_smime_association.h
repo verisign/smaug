@@ -33,11 +33,9 @@ class SmgSmimeAssociation
   // Member Variables
   private:
     bool m_bInit;
-    SmgCryptAction_e m_eAction;
     SmgUsage_e m_eUsage;
     SmgSelector_e m_eSelector;
     SmgMatching_e m_eMatching;
-    std::string m_sAccess;
     SmgBytesVector_t m_oHash;
     SmgSmimeCert m_oCert;
 
@@ -47,54 +45,36 @@ class SmgSmimeAssociation
     SmgSmimeAssociation(const SmgSmimeAssociation &p_oRHS);
     virtual ~SmgSmimeAssociation();
 
-    bool init(SmgCryptAction_e p_eAction,
-              SmgUsage_e p_eUsage,
+    bool init(SmgUsage_e p_eUsage,
               SmgSelector_e p_eSelector,
               SmgMatching_e p_eMatching,
-              std::string &p_sAccess,
               uint8_t *p_pCertAssocData,
               size_t p_uDataLen,
               SmgX509Encoding_e p_eEncoding = SMG_X509_DER);
-    bool init(SmgCryptAction_e p_eAction,
-              SmgUsage_e p_eUsage,
-              SmgSelector_e p_eSelector,
-              SmgMatching_e p_eMatching,
-              const char *p_szAccess,
-              uint8_t *p_pCertAssocData,
-              size_t p_uDataLen,
-              SmgX509Encoding_e p_eEncoding = SMG_X509_DER);
-    bool initFromFile(SmgCryptAction_e p_eAction,
-                      SmgUsage_e p_eUsage,
+    bool initFromFile(SmgUsage_e p_eUsage,
                       SmgSelector_e p_eSelector,
                       SmgMatching_e p_eMatching,
-                      std::string &p_sAccess,
                       std::string &p_sFile);
 
 
     bool isInitialized();
-    bool isEncCert();
-    bool isSignCert();
-    bool isRejectCert();
     bool isFullCert();
     bool isFingerprintCert();
     bool isTA();
     bool isPKIX();
     bool isEE();
 
-    SmgCryptAction_e getAction();
-    bool setAction(SmgCryptAction_e p_eAction);
     SmgUsage_e getUsage();
     SmgSelector_e getSelector();
     SmgMatching_e getMatching();
-    const char *getAccess();
     bool getHash(SmgBytesVector_t &p_oOutput);
     bool getHash(std::string &p_sOutput);
 
     bool toWire(SmgBytesVector_t &p_oOutput);
-    bool fromWire(SmgCryptAction_e p_eAction, uint8_t *p_pBuffer, size_t p_uLen);
+    bool fromWire(uint8_t *p_pBuffer, size_t p_uLen);
 
     bool toText(std::string &p_sOutput);
-    bool fromText(SmgCryptAction_e p_eAction, std::string &p_sTxt);
+    bool fromText(std::string &p_sTxt);
 
     SmgSmimeCert &getCert();
     void setCert(SmgSmimeCert &p_oCert);

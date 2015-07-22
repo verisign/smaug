@@ -42,12 +42,7 @@ class SmgNetEngine
     virtual bool init(std::string &p_sRootTaFile) = 0;
 
     virtual bool lookupSmimeID(SmgID &p_oID,
-                          SmgCryptAction_e p_eAction) = 0;
-    virtual bool lookupSmimeID(SmgID &p_oID,
-                          SmgCryptAction_e p_eAction,
-                          uint32_t &p_uTTL) = 0;
-
-    virtual bool chaseLocator(SmgSmimeAssociation &p_oAssoc);
+                           uint32_t &p_uTTL) = 0;
 
 };
 

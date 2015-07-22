@@ -54,12 +54,7 @@ class SmgNet
     bool init(std::string &p_sRootTaFile);
 
     bool lookupSmimeID(SmgID &p_oID,
-                  SmgCryptAction_e p_eAction);
-    bool lookupSmimeID(SmgID &p_oID,
-                  SmgCryptAction_e p_eAction,
-                  uint32_t &p_uTTL);
-
-    bool chaseLocator(SmgSmimeAssociation &p_oAssoc);
+                       uint32_t &p_uTTL);
 };
 
 #endif

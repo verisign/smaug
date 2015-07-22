@@ -22,6 +22,11 @@
 #include <stdio.h>
 #include <cstring>
 
+#ifndef _SMG_DEBUG
+#define _SMG_DEBUG
+#endif
+
+
 #include "smg_smime_cert.h"
 
 using namespace std;

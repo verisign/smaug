@@ -118,15 +118,6 @@ bool SmgNetLibunbound::init(std::string &p_sRootTaFile)
 }
 
 bool SmgNetLibunbound::lookupSmimeID(SmgID &p_oID,
-                                SmgCryptAction_e p_eAction)
-{
-  uint32_t tTTL;
-
-  return lookupSmimeID(p_oID, p_eAction, tTTL);
-}
-
-bool SmgNetLibunbound::lookupSmimeID(SmgID &p_oID,
-                                SmgCryptAction_e p_eAction,
                                 uint32_t &p_uTTL)
 {
   bool bRet = false;
@@ -139,10 +130,6 @@ bool SmgNetLibunbound::lookupSmimeID(SmgID &p_oID,
   {
     smg_log("Net layer not initialize.\n");
   }
-  //else if (ACT_ENCR != p_eAction && ACT_SIGN != p_eAction)
-  //{
-  //  smg_log("Unable to use crypt action that is neither 'sign' nor 'encrypt': %d\n", p_eAction);
-  //}
   else if (0 != (iErr = ub_resolve(m_pCtx, sDomain.c_str(), SMG_SMIMEA_RR_TYPE, 1, &pResult)))
   {
     smg_log("Unable to resolve '%s': %s\n", sDomain.c_str(), ub_strerror(iErr));
@@ -168,7 +155,7 @@ smg_log("Result has rcode %d and is bogus? %d\n", pResult->rcode, pResult->bogus
     {
 smg_log("Result %d...\n", i);
       SmgSmimeAssociation oAssoc;
-      if (!oAssoc.fromWire(p_eAction, (uint8_t *) pResult->data[i], pResult->len[i]))
+      if (!oAssoc.fromWire((uint8_t *) pResult->data[i], pResult->len[i]))
       {
         smg_log("Unable to parse data from wire format.\n");
       }

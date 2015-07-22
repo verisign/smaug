@@ -74,8 +74,6 @@ typedef struct __attribute__ ((__packed__))
   uint8_t m_uUsage;
   uint8_t m_uSelector;
   uint8_t m_uMatching;
-  uint16_t m_uAccessLen;
-  char m_pAccess[0];
   char m_pCertAssociationData[0];
 } SmgSmimeaRR_t;
 
@@ -94,7 +92,6 @@ typedef enum
   USG_PKIX_EE,
   USG_DANE_TA,
   USG_DANE_EE,
-  USG_REJECT,
   USG_PRIV
 } SmgUsage_e;
 
@@ -114,13 +111,6 @@ typedef enum
   MAT_SHA512,
   MAT_PRIV
 } SmgMatching_e;
-
-typedef enum
-{
-  ACT_PRE_INIT = -1,
-  ACT_ENCR,
-  ACT_SIGN
-} SmgCryptAction_e;
 
 typedef enum
 {

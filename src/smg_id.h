@@ -55,9 +55,9 @@ class SmgID
 
     bool addAssociation(SmgSmimeAssociation &p_oAssoc);
 
-    SmgSmimeAssocKIter_t beginAssociations() const;
-    SmgSmimeAssocKIter_t endAssociations() const;
-    size_t numAssociations() const;
+    SmgSmimeAssocKIter_t beginSmimeAssociations() const;
+    SmgSmimeAssocKIter_t endSmimeAssociations() const;
+    size_t numSmimeAssociations() const;
 
     virtual SmgID &operator=(const SmgID &p_oRHS);
 

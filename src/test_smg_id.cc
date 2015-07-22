@@ -25,6 +25,10 @@
 
 #include <cstring>
 
+#ifndef _SMG_DEBUG
+#define _SMG_DEBUG
+#endif
+
 #include "smg_id.h"
 #include "smg_smime_association.h"
 
@@ -104,37 +108,32 @@ int main(int argc, char *argv[])
 
       SmgSmimeAssociation oAssoc;
 
-      /*
       SmgBytesVector_t oCert;
       oCert.insert(oCert.begin(), g_szPEM, g_szPEM + strlen(g_szPEM));
-      */
-      ifstream oIF("/Users/eosterweil/keys/converted-smime.pem", std::ios::binary);
-      SmgBytesVector_t oCert((std::istreambuf_iterator<char>(oIF)),
-                              std::istreambuf_iterator<char>());
 
 
       if (oID.addAssociation(oAssoc))
       {
         smg_log("Was ABLE to add UNINITIALIZED association.\n");
       }
-      else if (!oAssoc.init(ACT_ENCR, USG_DANE_EE, SEL_FULL, MAT_FULL, "", (unsigned char *) g_szPEM, strlen(g_szPEM), SMG_X509_PEM))
+      else if (!oAssoc.init(USG_DANE_EE, SEL_FULL, MAT_FULL, (unsigned char *) g_szPEM, strlen(g_szPEM), SMG_X509_PEM))
       {
         smg_log("Unable to init association with PEM string.\n");
       }
       else if (!oID.addAssociation(oAssoc))
       {
-        smg_log("Unable to add encryption association.\n");
+        smg_log("Unable to add association.\n");
       }
-      else if (1 != oID.numAssociations())
+      else if (1 != oID.numSmimeAssociations())
       {
         smg_log("Got the wrong number of associations (should have been 1, but got %lu)\n",
-                oID.numAssociations());
+                oID.numSmimeAssociations());
       }
       else
       {
         SmgSmimeAssociation oAssoc;
 
-        if (!oAssoc.init(ACT_SIGN, USG_DANE_EE, SEL_FULL, MAT_FULL, "", (unsigned char *) g_szPEM, strlen(g_szPEM), SMG_X509_PEM))
+        if (!oAssoc.init(USG_DANE_EE, SEL_FULL, MAT_FULL, (unsigned char *) g_szPEM, strlen(g_szPEM), SMG_X509_PEM))
         {
           smg_log("Unable to RE-init association for signing, with PEM string.\n");
         }
@@ -142,10 +141,10 @@ int main(int argc, char *argv[])
         {
           smg_log("Unable to re-add new assoc.\n");
         }
-        else if (1 != oID.numAssociations())
+        else if (2 != oID.numSmimeAssociations())
         {
-          smg_log("Got the wrong number of associations (should have been 1, but got %lu)\n", 
-                  oID.numAssociations());
+          smg_log("Got the wrong number of associations (should have been 2, but got %lu)\n", 
+                  oID.numSmimeAssociations());
         }
         else
         {

@@ -229,11 +229,9 @@ int main(int argc, char *argv[])
       {
         fprintf(stderr, "Unable to init ID.\n");
       }
-      else if (!oAssoc.initFromFile(ACT_ENCR, 
-                                    (SmgUsage_e) iUsage,
+      else if (!oAssoc.initFromFile((SmgUsage_e) iUsage,
                                     (SmgSelector_e) iSelector,
                                     (SmgMatching_e) iMatching,
-                                    sAccess,
                                     sCertFile))
       {
         fprintf(stderr, "Unable to init association.\n");

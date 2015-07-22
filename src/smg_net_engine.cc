@@ -33,8 +33,3 @@ SmgNetEngine::~SmgNetEngine()
 
 }
 
-bool SmgNetEngine::chaseLocator(SmgSmimeAssociation &p_oAssoc)
-{
-  return false;
-}
-

@@ -48,18 +48,8 @@ bool SmgNet::init(std::string &p_sRootTaFile)
   return m_oEngine.init(p_sRootTaFile);
 }
 
-bool SmgNet::lookupSmimeID(SmgID &p_oID, SmgCryptAction_e p_eAction)
+bool SmgNet::lookupSmimeID(SmgID &p_oID, uint32_t &p_uTTL)
 {
-  return m_oEngine.lookupSmimeID(p_oID, p_eAction);
-}
-
-bool SmgNet::lookupSmimeID(SmgID &p_oID, SmgCryptAction_e p_eAction, uint32_t &p_uTTL)
-{
-  return m_oEngine.lookupSmimeID(p_oID, p_eAction, p_uTTL);
-}
-
-bool SmgNet::chaseLocator(SmgSmimeAssociation &p_oAssoc)
-{
-  return m_oEngine.chaseLocator(p_oAssoc);
+  return m_oEngine.lookupSmimeID(p_oID, p_uTTL);
 }
 

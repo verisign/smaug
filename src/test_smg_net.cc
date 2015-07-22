@@ -21,6 +21,11 @@
 
 #include <stdio.h>
 
+#ifndef _SMG_DEBUG
+#define _SMG_DEBUG
+#endif
+
+
 #include "smg_net.h"
 #include "smg_id.h"
 #include "smg_smime_association.h"
@@ -62,25 +67,21 @@ int main(int argc, char *argv[])
     {
       fprintf(stderr, "Unable to init SmgID object with name '%s'.\n", sName.c_str());
     }
-    else if (!oNet.lookupSmimeID(oID, ACT_ENCR))
+    else if (!oNet.lookupSmimeID(oID, uTTL))
     {
       fprintf(stderr, "Unable to lookup smime key for '%s' at '%s'\n", sName.c_str(), oID.getSmimeName().c_str());
     }
-    else if (!oNet.lookupSmimeID(oID, ACT_SIGN, uTTL))
-    {
-	fprintf(stderr, "Unable to lookup smime key for '%s' at '%s'\n", sName.c_str(), oID.getSmimeName().c_str());
-    }
     
-    else if (oID.numAssociations() != 1)
+    else if (oID.numSmimeAssociations() != 1)
     {
-      fprintf(stderr, "Got the wrong number of associations.  Expected 1, got %lu\n", oID.numAssociations());
+      fprintf(stderr, "Got the wrong number of associations.  Expected 1, got %lu\n", oID.numSmimeAssociations());
     }
     else
     {
       fprintf(stdout, "Got a TTL of %u for:\n%s\n", uTTL, oID.getSmimeName().c_str());
       SmgSmimeAssocKIter_t tIter;
-      for (tIter = oID.beginAssociations();
-           oID.endAssociations() != tIter;
+      for (tIter = oID.beginSmimeAssociations();
+           oID.endSmimeAssociations() != tIter;
            tIter++)
       {
         string sTxt;
@@ -88,15 +89,6 @@ int main(int argc, char *argv[])
         fprintf(stdout, "\t%s\n", sTxt.c_str());
       }
 
-      fprintf(stdout, "%s\n", oID.getSmimeName().c_str());
-      for (tIter = oID.beginAssociations();
-           oID.endAssociations() != tIter;
-           tIter++)
-      {
-        string sTxt;
-        (*tIter)->toText(sTxt);
-        fprintf(stdout, "\t%s\n", sTxt.c_str());
-      }
       iRet = 0;
     }
   }
