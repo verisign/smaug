@@ -88,7 +88,6 @@ bool SmgSmimeCert::init(SmgBytesVector_t &p_oBytes, SmgX509Encoding_e p_eEncodin
     }
     else if (SMG_X509_DER == p_eEncoding
              && NULL == (m_pCert = d2i_X509_bio(pCrypto, NULL)))
-//             && NULL == (m_pCert = d2i_X509(NULL, (const unsigned char **) &m_pCertBuf, m_uCertBufLen)))
     {
       smg_log("Unable to read DER encoded X509 out of BIO: %s\n", 
                ERR_error_string(ERR_get_error(), pErrBuff));
@@ -101,31 +100,6 @@ bool SmgSmimeCert::init(SmgBytesVector_t &p_oBytes, SmgX509Encoding_e p_eEncodin
     {
       smg_log("Unable to create public key from cert: %s\n", ERR_error_string(ERR_get_error(), pErrBuff));
     }
-    /*
-    // get RSA object from X509 obj, 
-    else if (NULL == (m_pPubKey = PEM_read_bio_PUBKEY(pCrypto, NULL, 0, NULL)))
-    {
-      smg_log("Unable to create public key from BIO: %s\n", ERR_error_string(ERR_get_error(), pErrBuff));
-    }
-    else if (1 != BIO_reset(pCrypto))
-    {
-      smg_log("Unable to reset BIO pointer: %s\n", ERR_error_string(ERR_get_error(), pErrBuff));
-    }
-    */
-    /*
-    else if (NULL == (m_pStore = X509_STORE_new()))
-    {
-      smg_log("Unable to allocate X.509 key store: %s\n", ERR_error_string(ERR_get_error(), pErrBuff));
-    }
-    else if (0 == X509_STORE_add_cert(m_pStore, m_pCert))
-    {
-      smg_log("Unable to add trusted cert to CA store: %s\n", ERR_error_string(ERR_get_error(), pErrBuff));
-    }
-    else if (0 >= (iErr = i2d_X509(m_pCert, &m_pCertBuf)))
-    {
-      smg_log("Unable to create DER buffer for cert: %s\n", ERR_error_string(ERR_get_error(), pErrBuff));
-    }
-    */
     else
     {
       // m_uCertBufLen = iErr;
@@ -178,14 +152,6 @@ bool SmgSmimeCert::init(uint8_t *p_pBytes,
 
   return bRet;
 }
-
-/*
-bool SmgSmimeCert::init(std::string &p_sCertFile,
-              std::string &p_sPrivKeyFile)
-{
-
-}
-*/
 
 bool SmgSmimeCert::calcCertAssocData(SmgSelector_e p_eSelector,
                             SmgMatching_e p_eMatching,
@@ -390,14 +356,6 @@ bool SmgSmimeCert::clear()
     m_pStore = NULL;
   }
 
-  /*
-  if (NULL != m_pCertBuf)
-  {
-    OPENSSL_free(m_pCertBuf);
-    m_pCertBuf = NULL;
-  }
-  */
-
   return true;
 }
 
@@ -480,12 +438,6 @@ bool SmgSmimeCert::verify(SmgBytesVector_t &p_oBytes)
   {
     CMS_ContentInfo_free(pCMS);
   }
-  /*
-  if (NULL != pContent)
-  {
-    BIO_free(pContent);
-  }
-  */
   if (NULL != pRecipStack)
   {
     sk_X509_pop_free(pRecipStack, X509_free);
@@ -792,17 +744,6 @@ SmgSmimeCert &SmgSmimeCert::operator=(SmgSmimeCert const &p_oRHS)
         smg_log("Unable to copy X.509 cert using X509_dup(): %s\n", ERR_error_string(ERR_get_error(),
               pErrBuff));
       }
-      /*
-      else if (NULL == (m_pStore = X509_STORE_new()))
-      {
-        smg_log("Unable to allocate X.509 key store: %s\n", ERR_error_string(ERR_get_error(), pErrBuff));
-      }
-      else if (0 == X509_STORE_add_cert(m_pStore, m_pCert))
-      {
-        smg_log("Unable to add trusted cert to CA store: %s\n", ERR_error_string(ERR_get_error(),
-              pErrBuff));
-      }
-      */
     }
 
     if (NULL != p_oRHS.m_pPubKey)
@@ -813,7 +754,6 @@ SmgSmimeCert &SmgSmimeCert::operator=(SmgSmimeCert const &p_oRHS)
 
     if (NULL != p_oRHS.m_pPrivKey)
     {
-      // CRYPTO_add(p_oRHS.m_pPrivKey->references, 1, CRYPTO_LOCK_EVP_PKEY);
       CRYPTO_add(&p_oRHS.m_pPrivKey->references, 1, CRYPTO_LOCK_EVP_PKEY);
       m_pPrivKey = p_oRHS.m_pPrivKey;
     }

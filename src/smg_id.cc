@@ -169,7 +169,7 @@ size_t SmgID::numSmimeAssociations() const
 SmgID &SmgID::operator=(const SmgID &p_oRHS)
 {
     smg_log("Copying ID %lu assocs\n", 
-	    p_oRHS.numAssociations());
+	    p_oRHS.numSmimeAssociations());
     m_sEmailAddr = p_oRHS.m_sEmailAddr;
     m_sUser      = p_oRHS.m_sUser;
     m_sUserHash  = p_oRHS.m_sUserHash;

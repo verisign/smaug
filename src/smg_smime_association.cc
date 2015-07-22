@@ -84,11 +84,6 @@ bool SmgSmimeAssociation::init(SmgUsage_e p_eUsage,
   }
   else if (MAT_FULL == m_eMatching)
   {
-    /*
-    m_pCertAssocData = new unsigned char[p_uDataLen];
-    memcpy(m_pCertAssocData, p_pCertAssocData, p_uDataLen);
-    m_uDataLen = p_uDataLen;
-    */
     m_bInit = m_oCert.init(p_pCertAssocData, p_uDataLen, p_eEncoding);
   }
   else
@@ -216,13 +211,6 @@ bool SmgSmimeAssociation::toWire(SmgBytesVector_t &p_oOutput)
   bool bRet = false;
 
   p_oOutput.clear();
-  /*
-  p_oOutput.push_back((char) m_eUsage);
-  p_oOutput.push_back((char) m_eSelector);
-  p_oOutput.push_back((char) m_eMatching);
-  uint16_t uAccessLen = htons((uint16_t) m_sAccess.size());
-  p_oOutput.insert(p_oOutput.end(), &uAccessLen, &(uAccessLen) + sizeof(uint16_t));
-  */
   SmgSmimeaRR_t tRR;
   tRR.m_uUsage = m_eUsage;
   tRR.m_uSelector = m_eSelector;
@@ -241,16 +229,6 @@ bool SmgSmimeAssociation::toWire(SmgBytesVector_t &p_oOutput)
       p_oOutput.insert(p_oOutput.end(), oHash.begin(), oHash.end());
       bRet = true;
     }
-  /*
-    // smg_log("Adding cert of length: %lu\n", m_oCert.getBytesLen());
-    p_oOutput.insert(p_oOutput.end(), m_oCert.getBytes(), m_oCert.getBytes() + m_oCert.getBytesLen());
-    for (size_t u = 0; u < m_oCert.getBytesLen(); u++)
-    {
-      p_oOutput.push_back(m_oCert.getBytes()[u]);
-    }
-
-    bRet = true;
-  */
   }
   else if (!getHash(oHash))
   {
@@ -290,14 +268,6 @@ bool SmgSmimeAssociation::fromWire(uint8_t *p_pBuffer, size_t p_uLen)
   }
   else
   {
-    /*
-    int iIdx = 0;
-    SmgUsage_e eUsage = (SmgUsage_e) p_pBuffer[iIdx++];
-    SmgSelector_e eSelector = (SmgSelector_e) p_pBuffer[iIdx++];
-    SmgMatching_e eMatching = (SmgMatching_e) p_pBuffer[iIdx++];
-    uint16_t uLen = ntohs(*((uint16_t *) &(p_pBuffer[iIdx++])));
-    iIdx++;
-    */
     SmgSmimeaRR_t tRR;
     memset(&tRR, 0, sizeof(tRR));
     memcpy(&tRR, p_pBuffer, sizeof(tRR));
@@ -305,29 +275,6 @@ bool SmgSmimeAssociation::fromWire(uint8_t *p_pBuffer, size_t p_uLen)
     // The rest is cert of hash data
     // char *pCert = &(p_pBuffer[iIdx + uLen]);
     uint8_t *pCert = &(p_pBuffer[sizeof(tRR)]);
-    /*
-    bRet = m_oCert.init(pCert, p_uLen - (5 + uLen));
-    if (!bRet)
-    {
-      smg_log("Unable to init cert, failing fromWire call.\n");
-    }
-    else
-    {
-      m_eUsage = eUsage;
-      m_eSelector = eSelector;
-      m_eMatching = eMatching;
-      m_sAccess = sAccess;
-    }
-    */
-    /*
-    bRet = init(ACT_PRE_INIT,
-                eUsage,
-                eSelector,
-                eMatching,
-                sAccess,
-                pCert,
-                p_uLen - (iIdx + uLen));
-    */
     bRet = init((SmgUsage_e) tRR.m_uUsage,
                 (SmgSelector_e) tRR.m_uSelector,
                 (SmgMatching_e) tRR.m_uMatching,
@@ -349,13 +296,6 @@ bool SmgSmimeAssociation::toText(std::string &p_sOutput)
     ostringstream oSS;
     size_t uLen = oBytes.size();
     oSS << "\\# " << uLen << " (";
-    /*
-    for (size_t u = 0; u < uLen; u++)
-    {
-      oSS << " " << std::hex << setfill('0') << setw(2) << oBytes.at(u);
-fprintf(stderr, ".");
-    }
-    */
     char szOct[4] = {0, 0, 0, 0};
     for (size_t u = 0; u < uLen; u++)
     {
