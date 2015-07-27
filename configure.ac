@@ -159,5 +159,5 @@ AC_TYPE_UINT8_T
 AC_CHECK_FUNCS([memset])
 
 # AC_CONFIG_FILES([src/Makefile])
-AC_OUTPUT(Makefile src/Makefile)
+AC_OUTPUT(Makefile src/Makefile scripts/Makefile)
 
