@@ -31,6 +31,7 @@
 #include <stdint.h>
 
 class SmgSmimeAssociation;
+class SmgPgpAssociation;
 class SmgID;
 class SmgSmimeCert;
 
@@ -44,11 +45,20 @@ class SmgSmimeCert;
 #define SMG_SMIMEA_MAX_LEN 10000000
 #define SMG_SMIMEA_MIN_TXT_LEN 2 + 1 + 1
 
+#define SMG_OPENPGPKEY_MAX_LEN 10000000
+
 #define SMG_SMIMEA_RR_TYPE 65514
+#define SMG_OPENPGPKEY_RR_TYPE 61
+
+#define SMG_SHA256_TRUNCATION_LIMIT 28
 
 typedef std::list< SmgSmimeAssociation * > SmgSmimeAssocList_t;
 typedef SmgSmimeAssocList_t::iterator SmgSmimeAssocIter_t;
 typedef SmgSmimeAssocList_t::const_iterator SmgSmimeAssocKIter_t;
+
+typedef std::list< SmgPgpAssociation * > SmgPgpAssocList_t;
+typedef SmgPgpAssocList_t::iterator SmgPgpAssocIter_t;
+typedef SmgPgpAssocList_t::const_iterator SmgPgpAssocKIter_t;
 
 typedef std::list< SmgSmimeCert * > SmgSmimeCertList_t;
 typedef SmgSmimeCertList_t::iterator SmgSmimeCertIter_t;

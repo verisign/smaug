@@ -31,6 +31,7 @@
 
 #include "smg_id.h"
 #include "smg_smime_association.h"
+#include "smg_pgp_association.h"
 
 using namespace std;
 
@@ -72,7 +73,7 @@ int main(int argc, char *argv[])
 
   if (argc > 1)
   {
-    if (strncmp("-h", argv[1], 2))
+    if (0 == strncmp("-h", argv[1], 2))
     {
       _usage();
       iRet = 0;
@@ -102,7 +103,7 @@ int main(int argc, char *argv[])
     {
       fprintf(stdout, "Inbox component is: '%s'\n", oID.getInbox().c_str());
       fprintf(stdout, "Domain component is '%s'\n", oID.getDomain().c_str());
-      fprintf(stdout, "SMIME domain name is '%s'\n", oID.getSmimeName().c_str());
+      fprintf(stdout, "S/MIME domain name is '%s'\n", oID.getSmimeName().c_str());
 
       fprintf(stdout, "Adding associations...\n");
 
@@ -148,8 +149,28 @@ int main(int argc, char *argv[])
         }
         else
         {
-          oAssoc.clear();
-          iRet = 0;
+          SmgPgpAssociation oAssoc3;
+
+          if (!oAssoc3.initLocal(sEmailAddr))
+          {
+            smg_log("Unable to init SmgPgpAssociation with '%s'. Perhaps not a PGP key in the local key ring?\n", sEmailAddr.c_str());
+          }
+          else if (!oID.addAssociation(oAssoc3))
+          {
+            smg_log("Unable to add PGP association.\n");
+          }
+          else if (1 != oID.numPgpAssociations())
+          {
+            smg_log("Got back the wrong number of PGP associations (should have been 1, but got %lu)\n", oID.numPgpAssociations());
+          }
+          else
+          {
+            fprintf(stdout, "PGP domain name is '%s'\n", oID.getPgpName().c_str());
+
+            oAssoc.clear();
+            oAssoc3.clear();
+            iRet = 0;
+          }
         }
       }
     }

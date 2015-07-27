@@ -1,5 +1,5 @@
 /*
-   Copyright (c) <2014> Verisign, Inc.
+   Copyright (c) <2015> Verisign, Inc.
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -20,63 +20,39 @@
 */
 
 
-#ifndef _SMG_SMIME_ASSOCIATION_H
-#define _SMG_SMIME_ASSOCIATION_H
+#ifndef _SMG_PGP_ASSOCIATION_H
+#define _SMG_PGP_ASSOCIATION_H
 
 #include <string>
 
 #include "smg_association.h"
-#ifdef _SMG_NO_SMIME
-class SmgSmimeCert
+#ifdef _SMG_NO_PGP
+class SmgPgpKey
 {
-  public:
-    SmgSmimeCert(){};
-    virtual ~SmgSmimeCert(){};
+  public: 
+    SmgPgpKey(){};
+    virtual ~SmgPgpKey(){};
 };
 #else
-#include "smg_smime_cert.h"
+#include "smg_pgp_key.h"
 #endif
 #include "smg_defs.h"
 
-class SmgSmimeAssociation : public SmgAssociation
+class SmgPgpAssociation : public SmgAssociation
 {
   // Member Variables
   private:
-    SmgUsage_e m_eUsage;
-    SmgSelector_e m_eSelector;
-    SmgMatching_e m_eMatching;
-    SmgBytesVector_t m_oHash;
-    SmgSmimeCert m_oCert;
+    SmgPgpKey m_oKey;
 
   // Methods
   public:
-    SmgSmimeAssociation();
-    SmgSmimeAssociation(const SmgSmimeAssociation &p_oRHS);
-    virtual ~SmgSmimeAssociation();
+    SmgPgpAssociation();
+    SmgPgpAssociation(const SmgPgpAssociation &p_oRHS);
+    virtual ~SmgPgpAssociation();
 
-    bool init(SmgUsage_e p_eUsage,
-              SmgSelector_e p_eSelector,
-              SmgMatching_e p_eMatching,
-              uint8_t *p_pCertAssocData,
-              size_t p_uDataLen,
-              SmgX509Encoding_e p_eEncoding = SMG_X509_DER);
-    bool initFromFile(SmgUsage_e p_eUsage,
-                      SmgSelector_e p_eSelector,
-                      SmgMatching_e p_eMatching,
-                      std::string &p_sFile);
+    bool init(SmgPgpKey &p_oKey);
+    bool initLocal(std::string &p_sID, const char *p_szHomeDir = NULL);
 
-
-    bool isFullCert();
-    bool isFingerprintCert();
-    bool isTA();
-    bool isPKIX();
-    bool isEE();
-
-    SmgUsage_e getUsage();
-    SmgSelector_e getSelector();
-    SmgMatching_e getMatching();
-    bool getHash(SmgBytesVector_t &p_oOutput);
-    bool getHash(std::string &p_sOutput);
 
     virtual bool toWire(SmgBytesVector_t &p_oOutput);
     virtual bool fromWire(uint8_t *p_pBuffer, size_t p_uLen);
@@ -84,8 +60,8 @@ class SmgSmimeAssociation : public SmgAssociation
     virtual bool toText(std::string &p_sOutput);
     virtual bool fromText(std::string &p_sTxt);
 
-    SmgSmimeCert &getCert();
-    void setCert(SmgSmimeCert &p_oCert);
+    SmgPgpKey &getKey();
+    void setKey(SmgPgpKey &p_oKey);
 
     virtual bool verify(SmgBytesVector_t &p_oBytes);
     virtual bool encrypt(SmgBytesVector_t &p_oBytes,
@@ -103,7 +79,7 @@ class SmgSmimeAssociation : public SmgAssociation
     virtual bool sign(SmgBytesVector_t &p_oBytes,
                       std::string &p_sSignature);
 
-    virtual SmgAssociation &operator=(const SmgSmimeAssociation &p_oRHS);
+    virtual SmgAssociation &operator=(const SmgPgpAssociation &p_oRHS);
 
     virtual bool clear();
 };

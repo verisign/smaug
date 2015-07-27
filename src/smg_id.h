@@ -35,10 +35,13 @@ class SmgID
   private:
     std::string m_sEmailAddr;
     std::string m_sUser;
-    std::string m_sUserHash;
+    std::string m_sSmimeUserHash;
+    std::string m_sPgpUserHash;
     std::string m_sDomain;
     std::string m_sSmimeName;
-    SmgSmimeAssocList_t m_oAssocs;
+    std::string m_sPgpName;
+    SmgSmimeAssocList_t m_oSmimeAssocs;
+    SmgPgpAssocList_t m_oPgpAssocs;
 
   // Methods
   public:
@@ -51,13 +54,19 @@ class SmgID
     std::string &getEmail();
     std::string &getDomain();
     std::string &getSmimeName();
+    std::string &getPgpName();
     std::string &getInbox();
 
     bool addAssociation(SmgSmimeAssociation &p_oAssoc);
+    bool addAssociation(SmgPgpAssociation &p_oAssoc);
 
     SmgSmimeAssocKIter_t beginSmimeAssociations() const;
     SmgSmimeAssocKIter_t endSmimeAssociations() const;
     size_t numSmimeAssociations() const;
+
+    SmgPgpAssocKIter_t beginPgpAssociations() const;
+    SmgPgpAssocKIter_t endPgpAssociations() const;
+    size_t numPgpAssociations() const;
 
     virtual SmgID &operator=(const SmgID &p_oRHS);
 

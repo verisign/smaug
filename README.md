@@ -1,28 +1,51 @@
-TRUE INTERNET-SCALE OBJECT SECURITY
-===========
+![Logo](pix/smaug.png "Logo")
 
-We have a problem with security in the Internet today, and it's not new.  Before we can encrypt data or verify signatures, we need a way for someone bootstrap and learn what cryptographic keys are needed.  Our security protocols have not formally specified a standardized way to securely bootstrap protocols, until now.
-
-Recently, however, a simple observation has sparked a flurry of innovation: for those protocols that use DNS, secure key learning can be accomplished from DNS itself, and verified by the DNS Security Extensions (DNSSEC).  The IETF has started standardizing a suite of protocols called DNS-based Authentication of Named Entities [DANE](https://datatracker.ietf.org/wg/dane/charter/) to do secure key learning in a general way for Internet services.  
-
-This library (Smaug) is a general object security library that uses S/MIME to offer object security primitives using DANE S/MIME.
-
-SMAUG
+What is libsmaug?
 ==========
 
-The software in this repository builds a library to implement
-protocols based on DNS-based Authentication of Named Entities (DANE),
-an IETF working group: https://datatracker.ietf.org/wg/dane/charter/
+Smaug is a C++ library that implements the growing set of
+DNS-based Authentication of Named Entities (DANE) protocols specified
+by the IETF working group: https://datatracker.ietf.org/wg/dane/charter/
 
-This library has been constructed to serve as a proof of concept for
-multiple DANE-based protocols.  Currently, the implementation
-implements simple S/MIME capabilities using DANE.
+Smaug is a reference implementation of DANE,
+and currently implements all of DANE's S/MIME capabilities (SMIMEA), 
+its Open PGP capabilities (OPENPGPKEY), and has scripts to easily generate
+S/MIME certificates, and TLSA records (though it does not implement a secure
+sockets layer for TLS).
 
 The specific features supported are described in the [Release
 Notes](./ReleaseNotes.md)
 
 Authored by Eric Osterweil eosterweil@verisign.com and Glen Wiley gwiley@verisign.com
 
+# Table of Contents
+
+* [Compiling](#compiling)
+* [Dependencies](#dependencies)
+* [Executables](#executables)
+* [Example Code](#examples)
+* [Why libsmaug?](#why)
+
+
+#<a name="compiling"></a>
+Compiling libsmaug
+===========
+
+```
+autoreconf -ivf
+./configure
+make
+sudo make install
+```
+
+Make sure that the DNSSEC root KSK (or trust anchor) is installed.  This can be done by running the utility
+
+```sudo unbound-anchor ```
+
+This utility is part of the unbound development suite.
+
+
+#<a name="dependencies"></a>
 Dependencies
 ======
 
@@ -117,35 +140,20 @@ sudo apt-get install libssl-dev
 ```
 
 
-Compiling libsmaug
-===========
-
-```
-autoreconf -ivf
-./configure
-make
-sudo make install
-```
-
-Make sure that the DNSSEC root KSK (or trust anchor) is installed.  This can be done by running the utility
-
-```sudo unbound-anchor ```
-
-This utility is part of the unbound development suite.
-
+#<a name="exectuables"></a>
 Executables
 ===========
 
 After compilation, several test drivers will be left in the source directory.
 In addition to installing the reference library in the
-&quot;$(prefix)/lib&quot; directory, the command-line utility
+&quot;$(prefix)/lib&quot; directory, the command-line utilities:
 
  ```
 smimeagen
 ```
 
-Will be installed in &quot;$(prefix)/bin&quot;.  This utility will help create
-SMIMEA records, in a format suitable for being pasted into a DNS zone file.
+This utility will be installed in &quot;$(prefix)/bin&quot;, and it will help create
+SMIMEA records in a format suitable for being pasted into a DNS zone file.
 
 If an S/MIME certificate is needed, there is a convenient S/MIME certificate
 generation script that gets installed, which will prompt you for your data:
@@ -158,10 +166,30 @@ The script writes the files to the ~/sssmime directory.  The file
 with a "-combined.pem" suffix can be used to feed the test_smg_smime_cert
 test program and other programs that need the certificate in ASCII PEM format.
 
+and
+
+```
+openpgpkeygen
+```
+
+This utility will be installed in &quot;$(prefix)/bin&quot;, and it will help create
+OPENPGPKEY records in a format suitable for being pasted into a DNS zone file.
+
+and
+
+```
+tlsagen
+```
+
+This utility will be installed in &quot;$(prefix)/bin&quot;, and it will help create
+TLSA records in a format suitable for being pasted into a DNS zone file.
+
+
+#<a name="examples"></a>
 Example Code
 ===========
 
-Simple encryption certificate lookup
+Simple S/MIME encryption certificate lookup
 ----
 
 ```
@@ -201,3 +229,14 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+
+#<a name="why"></a>
+BECAUSE: TRUE INTERNET-SCALE OBJECT SECURITY
+===========
+
+We have a problem with security in the Internet today, and it's not new.  Before we can encrypt data or verify signatures, we need a way for someone bootstrap and learn what cryptographic keys are needed.  Our security protocols have not formally specified a standardized way to securely bootstrap protocols, until now.
+
+Recently, however, a simple observation has sparked a flurry of innovation: for those protocols that use DNS, secure key learning can be accomplished from DNS itself, and verified by the DNS Security Extensions (DNSSEC).  The IETF has started standardizing a suite of protocols called DNS-based Authentication of Named Entities [DANE](https://datatracker.ietf.org/wg/dane/charter/) to do secure key learning in a general way for Internet services.  
+
+This library (Smaug) is a general object security library that uses S/MIME to offer object security primitives using DANE S/MIME.
+

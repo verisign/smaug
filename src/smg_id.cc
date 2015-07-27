@@ -22,12 +22,14 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <openssl/pem.h>
 
 #include <sstream>
 #include <iomanip>
 
 #include "smg_id.h"
 #include "smg_smime_association.h"
+#include "smg_pgp_association.h"
 
 using namespace std;
 
@@ -68,28 +70,30 @@ bool SmgID::init(std::string &p_sEmailAddr)
       m_sDomain = m_sEmailAddr.substr(uPos + 1);
 
       unsigned char pHash[SHA224_DIGEST_LENGTH];
-      unsigned char szHash[SHA224_DIGEST_LENGTH + 1];
       memset(pHash, 0, SHA224_DIGEST_LENGTH);
-      memset(szHash, 0, SHA224_DIGEST_LENGTH + 1);
+
+      unsigned char pPgpHash[SHA256_DIGEST_LENGTH];
+      memset(pPgpHash, 0, SHA256_DIGEST_LENGTH);
 
       SHA256_CTX oContext;
       if (!SHA224_Init(&oContext))
       {
-        fprintf(stderr, "Unable to init SHA224 context.\n");
+        smg_log("Unable to init SHA224 context.\n");
       }
       else if (!SHA224_Update(&oContext, m_sUser.c_str(), m_sUser.size()))
       {
-        fprintf(stderr, "Unable to update hash from user '%s'\n", m_sUser.c_str());
+        smg_log("Unable to update hash from user '%s'\n", m_sUser.c_str());
       }
       else if (!SHA224_Final(pHash, &oContext))
       {
-        fprintf(stderr, "Unable to finalize hash.\n");
+        smg_log("Unable to finalize hash.\n");
       }
       else
       {
         ostringstream oSS;
         char szOct[3] = {0, 0, 0};
-        for (int i = 0; i < SHA224_DIGEST_LENGTH; i++)
+        int i = 0;
+        for (i = 0; i < SHA224_DIGEST_LENGTH; i++)
         {
           memset(szOct, 0, 3);
           sprintf(szOct, "%02x", pHash[i]);
@@ -97,15 +101,42 @@ bool SmgID::init(std::string &p_sEmailAddr)
           // oSS << hex << setfill('0') << setw(2) << pHash[i];
         }
 
-        m_sUserHash = oSS.str();
+        m_sSmimeUserHash = oSS.str();
 
-	m_sSmimeName = m_sUserHash + "._smimecert." + m_sDomain;
+        m_sSmimeName = m_sSmimeUserHash + "._smimecert." + m_sDomain;
         if (m_sSmimeName.compare(m_sSmimeName.size() - 1, 1, "."))
         {
           m_sSmimeName += ".";
         }
 
-        bRet = true;
+        if (!SHA256_Init(&oContext))
+        {
+          smg_log("Unable to init SHA256 context.\n");
+        }
+        else if (!SHA256_Update(&oContext, m_sUser.c_str(), m_sUser.size()))
+        {
+          smg_log("Unable to update SHA256 hash from user '%s'\n", m_sUser.c_str());
+        }
+        else if (!SHA256_Final(pPgpHash, &oContext))
+        {
+          smg_log("Unable to finalize SHA256 hash.\n");
+        }
+        else
+        {
+          oSS.clear();
+          oSS.str(string());
+          for (i = 0; i < SMG_SHA256_TRUNCATION_LIMIT; i++)
+          {
+            memset(szOct, 0, 3);
+            sprintf(szOct, "%02x", pPgpHash[i]);
+            oSS << szOct;
+          }
+
+          m_sPgpUserHash = oSS.str();
+          m_sPgpName = m_sPgpUserHash + "._openpgpkey." + m_sDomain;
+
+          bRet = true;
+        }
       }
     }
   }
@@ -128,6 +159,11 @@ std::string &SmgID::getSmimeName()
   return m_sSmimeName;
 }
 
+std::string &SmgID::getPgpName()
+{
+  return m_sPgpName;
+}
+
 std::string &SmgID::getInbox()
 {
   return m_sUser;
@@ -144,7 +180,25 @@ bool SmgID::addAssociation(SmgSmimeAssociation &p_oAssoc)
   else
   {
     SmgSmimeAssociation *pAssoc = new SmgSmimeAssociation(p_oAssoc);
-    m_oAssocs.push_back(pAssoc);
+    m_oSmimeAssocs.push_back(pAssoc);
+    bRet = true;
+  }
+
+  return bRet;
+}
+
+bool SmgID::addAssociation(SmgPgpAssociation &p_oAssoc)
+{
+  bool bRet = false;
+
+  if (!p_oAssoc.isInitialized())
+  {
+    smg_log("Cannot add uninitialized association.\n");
+  }
+  else
+  {
+    SmgPgpAssociation *pAssoc = new SmgPgpAssociation(p_oAssoc);
+    m_oPgpAssocs.push_back(pAssoc);
     bRet = true;
   }
 
@@ -153,28 +207,44 @@ bool SmgID::addAssociation(SmgSmimeAssociation &p_oAssoc)
 
 SmgSmimeAssocKIter_t SmgID::beginSmimeAssociations() const
 {
-  return m_oAssocs.begin();
+  return m_oSmimeAssocs.begin();
 }
 
 SmgSmimeAssocKIter_t SmgID::endSmimeAssociations() const
 {
-  return m_oAssocs.end();
+  return m_oSmimeAssocs.end();
 }
 
 size_t SmgID::numSmimeAssociations() const
 {
-  return m_oAssocs.size();
+  return m_oSmimeAssocs.size();
+}
+
+SmgPgpAssocKIter_t SmgID::beginPgpAssociations() const
+{
+  return m_oPgpAssocs.begin();
+}
+
+SmgPgpAssocKIter_t SmgID::endPgpAssociations() const
+{
+  return m_oPgpAssocs.end();
+}
+
+size_t SmgID::numPgpAssociations() const
+{
+  return m_oPgpAssocs.size();
 }
 
 SmgID &SmgID::operator=(const SmgID &p_oRHS)
 {
-    smg_log("Copying ID %lu assocs\n", 
-	    p_oRHS.numSmimeAssociations());
+    smg_log("Copying ID %lu S/MIME assocs and %lu PGP assocs\n", p_oRHS.numSmimeAssociations(), p_oRHS.numPgpAssociations());
     m_sEmailAddr = p_oRHS.m_sEmailAddr;
     m_sUser      = p_oRHS.m_sUser;
-    m_sUserHash  = p_oRHS.m_sUserHash;
+    m_sSmimeUserHash  = p_oRHS.m_sSmimeUserHash;
+    m_sPgpUserHash  = p_oRHS.m_sPgpUserHash;
     m_sDomain    = p_oRHS.m_sDomain;
     m_sSmimeName = p_oRHS.m_sSmimeName;
+    m_sPgpName = p_oRHS.m_sPgpName;
 
   SmgSmimeAssocKIter_t tIter;
   for (tIter = p_oRHS.beginSmimeAssociations();
@@ -184,7 +254,18 @@ SmgID &SmgID::operator=(const SmgID &p_oRHS)
     smg_log("Pushing assoc\n");
     SmgSmimeAssociation *pAssoc = new SmgSmimeAssociation();
     *(pAssoc) = *(*tIter);
-    m_oAssocs.push_back(pAssoc);
+    m_oSmimeAssocs.push_back(pAssoc);
+  }
+
+  SmgPgpAssocKIter_t tIter2;
+  for (tIter2 = p_oRHS.beginPgpAssociations();
+       p_oRHS.endPgpAssociations() != tIter2;
+       tIter2++)
+  {
+    smg_log("Pushing assoc\n");
+    SmgPgpAssociation *pAssoc = new SmgPgpAssociation();
+    *(pAssoc) = *(*tIter2);
+    m_oPgpAssocs.push_back(pAssoc);
   }
 
   return *this;
@@ -199,7 +280,16 @@ bool SmgID::clear()
   {
     delete *tIter;
   }
-  m_oAssocs.empty();
+  m_oSmimeAssocs.empty();
+
+  SmgPgpAssocKIter_t tIter2;
+  for (tIter2 = beginPgpAssociations();
+       endPgpAssociations() != tIter2;
+       tIter2++)
+  {
+    delete *tIter2;
+  }
+  m_oPgpAssocs.empty();
 
   return true;
 }

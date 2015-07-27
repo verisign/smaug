@@ -36,8 +36,7 @@
 using namespace std;
 
 SmgSmimeAssociation::SmgSmimeAssociation()
-  : m_bInit(false),
-    m_eUsage(USG_PRE_INIT),
+  : m_eUsage(USG_PRE_INIT),
     m_eSelector(SEL_PRE_INIT),
     m_eMatching(MAT_PRE_INIT)
 {
@@ -45,8 +44,7 @@ SmgSmimeAssociation::SmgSmimeAssociation()
 }
 
 SmgSmimeAssociation::SmgSmimeAssociation(const SmgSmimeAssociation &p_oRHS)
-  : m_bInit(false),
-    m_eUsage(USG_PRE_INIT),
+  : m_eUsage(USG_PRE_INIT),
     m_eSelector(SEL_PRE_INIT),
     m_eMatching(MAT_PRE_INIT)
 {
@@ -84,7 +82,10 @@ bool SmgSmimeAssociation::init(SmgUsage_e p_eUsage,
   }
   else if (MAT_FULL == m_eMatching)
   {
-    m_bInit = m_oCert.init(p_pCertAssocData, p_uDataLen, p_eEncoding);
+    if (m_oCert.init(p_pCertAssocData, p_uDataLen, p_eEncoding))
+    {
+      SmgAssociation::init();
+    }
   }
   else
   {
@@ -92,10 +93,10 @@ bool SmgSmimeAssociation::init(SmgUsage_e p_eUsage,
     m_oHash.insert(m_oHash.begin(),
                    (const char *) p_pCertAssocData, 
                    (const char *) p_pCertAssocData + p_uDataLen);
-    m_bInit = true;
+    SmgAssociation::init();
   }
 
-  return m_bInit;
+  return isInitialized();
 }
 
 bool SmgSmimeAssociation::initFromFile(SmgUsage_e p_eUsage,
@@ -112,14 +113,12 @@ bool SmgSmimeAssociation::initFromFile(SmgUsage_e p_eUsage,
   m_eSelector = p_eSelector;
   m_eMatching = p_eMatching;
 
-  m_bInit = m_oCert.initFromFile(p_sFile);
+  if (m_oCert.initFromFile(p_sFile))
+  {
+    SmgAssociation::init();
+  }
 
-  return m_bInit;
-}
-
-bool SmgSmimeAssociation::isInitialized()
-{
-  return m_bInit;
+  return isInitialized();
 }
 
 bool SmgSmimeAssociation::isFullCert()
@@ -166,7 +165,7 @@ bool SmgSmimeAssociation::getHash(SmgBytesVector_t &p_oOutput)
 {
   bool bRet = false;
 
-  if (!m_bInit)
+  if (!isInitialized())
   {
     smg_log("Association is not initialized.\n");
   }
@@ -404,14 +403,61 @@ void SmgSmimeAssociation::setCert(SmgSmimeCert &p_oCert)
   m_oCert = p_oCert;
 }
 
-SmgSmimeAssociation &SmgSmimeAssociation::operator=(const SmgSmimeAssociation &p_oRHS)
+bool SmgSmimeAssociation::verify(SmgBytesVector_t &p_oBytes)
 {
+  return getCert().verify(p_oBytes);
+}
+
+bool SmgSmimeAssociation::encrypt(SmgBytesVector_t &p_oBytes,
+                         SmgBytesVector_t &p_oEncryptedBytes)
+{
+  return getCert().encrypt(p_oBytes, p_oEncryptedBytes);
+}
+
+bool SmgSmimeAssociation::encrypt(SmgBytesVector_t &p_oBytes,
+                         std::string &p_sEncrypted)
+{
+  return getCert().encrypt(p_oBytes, p_sEncrypted);
+}
+
+bool SmgSmimeAssociation::encrypt(std::string &p_oClear,
+                         std::string &p_sEncrypted)
+{
+  return getCert().encrypt(p_oClear, p_sEncrypted);
+}
+
+bool SmgSmimeAssociation::decrypt(SmgBytesVector_t &p_oEncryptedBytes,
+                         SmgBytesVector_t &p_oBytes)
+{
+  return getCert().decrypt(p_oEncryptedBytes, p_oBytes);
+}
+
+bool SmgSmimeAssociation::decrypt(std::string &p_sEncrypted,
+                         SmgBytesVector_t &p_oBytes)
+{
+  return getCert().decrypt(p_sEncrypted, p_oBytes);
+}
+
+bool SmgSmimeAssociation::sign(SmgBytesVector_t &p_oBytes,
+                      SmgBytesVector_t &p_oSignature)
+{
+  return getCert().sign(p_oBytes, p_oSignature);
+}
+
+bool SmgSmimeAssociation::sign(SmgBytesVector_t &p_oBytes,
+                      std::string &p_sSignature)
+{
+  return getCert().sign(p_oBytes, p_sSignature);
+}
+
+SmgAssociation &SmgSmimeAssociation::operator=(const SmgSmimeAssociation &p_oRHS)
+{
+  SmgAssociation::operator=(p_oRHS);
   m_eUsage = p_oRHS.m_eUsage;
   m_eSelector = p_oRHS.m_eSelector;
   m_eMatching = p_oRHS.m_eMatching;
   m_oCert = p_oRHS.m_oCert;
   m_oHash = p_oRHS.m_oHash;
-  m_bInit = p_oRHS.m_bInit;
 
   return *this;
 }

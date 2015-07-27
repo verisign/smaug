@@ -243,28 +243,6 @@ int main(int argc, char *argv[])
       else
       {
         fprintf(stdout, "%s IN TYPE%d %s;\n", oID.getSmimeName().c_str(), SMG_SMIMEA_RR_TYPE, sTxt.c_str());
-	/*
-        if (!oAssoc.initFromFile(ACT_SIGN,
-                                 (SmgUsage_e) iUsage,
-                                 (SmgSelector_e) iSelector,
-                                 (SmgMatching_e) iMatching,
-                                 sAccess,
-                                 sCertFile))
-        {
-          fprintf(stderr, "Unable to re-init association.\n");
-        }
-        else if (!oAssoc.toText(sTxt))
-        {
-          fprintf(stderr, "Unable to re-get text of association.\n");
-        }
-        else
-        {
-          fprintf(stdout, "%s IN TYPE%d %s;\n", oID.getSmimeName().c_str(), SMG_SMIMEA_RR_TYPE,
-              sTxt.c_str());
-
-          iRet = 0;
-        }
-	*/
       }
     }
   }
