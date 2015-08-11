@@ -109,7 +109,6 @@ SmgMatching_e SmgSmimeAssociation::getMatching()
 
 bool SmgSmimeAssociation::getHash(SmgBytesVector_t &p_oOutput)
 {
-  bool bRet = false;
 
   return true;;
 }
