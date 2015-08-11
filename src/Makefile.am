@@ -15,6 +15,7 @@ smgheader_HEADERS = smg_id.h smg_id_cache.h smg_net.h smg_smime_association.h sm
 
 noinst_PROGRAMS = test_smg_smime_cert test_smg_smime_association test_smg_id test_smg_net \
                   test_smg_id_cache test_smg_pgp_association test_smg_pgp_key
+bin_PROGRAMS = smimeagen openpgpkeygen
 
 if SMG_DEBUG
 libsmaug_la_CXXFLAGS += -D_SMG_DEBUG

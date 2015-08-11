@@ -94,6 +94,7 @@ noinst_PROGRAMS = test_smg_smime_cert$(EXEEXT) \
 	test_smg_smime_association$(EXEEXT) test_smg_id$(EXEEXT) \
 	test_smg_net$(EXEEXT) test_smg_id_cache$(EXEEXT) \
 	test_smg_pgp_association$(EXEEXT) test_smg_pgp_key$(EXEEXT)
+bin_PROGRAMS = smimeagen$(EXEEXT) openpgpkeygen$(EXEEXT)
 @SMG_DEBUG_TRUE@am__append_1 = -D_SMG_DEBUG
 @SMG_GETDNS_TRUE@am__append_2 = -lldns -lgetdns
 @SMG_GETDNS_TRUE@am__append_3 = smg_net_getdns.cc
@@ -140,7 +141,8 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(smgheaderdir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
+	"$(DESTDIR)$(smgheaderdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libsmaug_la_LIBADD =
 am__libsmaug_la_SOURCES_DIST = smg_id.cc smg_id_cache.cc smg_net.cc \
@@ -163,7 +165,28 @@ am__v_lt_1 =
 libsmaug_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(libsmaug_la_CXXFLAGS) \
 	$(CXXFLAGS) $(libsmaug_la_LDFLAGS) $(LDFLAGS) -o $@
-PROGRAMS = $(noinst_PROGRAMS)
+PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
+am_openpgpkeygen_OBJECTS = openpgpkeygen-openpgpkeygen.$(OBJEXT) \
+	openpgpkeygen-smg_id.$(OBJEXT) \
+	openpgpkeygen-smg_smime_association_stub.$(OBJEXT) \
+	openpgpkeygen-smg_pgp_key.$(OBJEXT) \
+	openpgpkeygen-smg_pgp_association.$(OBJEXT)
+openpgpkeygen_OBJECTS = $(am_openpgpkeygen_OBJECTS)
+openpgpkeygen_LDADD = $(LDADD)
+openpgpkeygen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) $(openpgpkeygen_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am_smimeagen_OBJECTS = smimeagen-smimeagen.$(OBJEXT) \
+	smimeagen-smg_id.$(OBJEXT) \
+	smimeagen-smg_smime_association.$(OBJEXT) \
+	smimeagen-smg_smime_cert.$(OBJEXT) \
+	smimeagen-smg_pgp_association_stub.$(OBJEXT)
+smimeagen_OBJECTS = $(am_smimeagen_OBJECTS)
+smimeagen_LDADD = $(LDADD)
+smimeagen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(smimeagen_CXXFLAGS) \
+	$(CXXFLAGS) $(smimeagen_LDFLAGS) $(LDFLAGS) -o $@
 am_test_smg_id_OBJECTS = test_smg_id-test_smg_id.$(OBJEXT) \
 	test_smg_id-smg_id.$(OBJEXT) \
 	test_smg_id-smg_smime_association.$(OBJEXT) \
@@ -283,14 +306,17 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libsmaug_la_SOURCES) $(test_smg_id_SOURCES) \
+SOURCES = $(libsmaug_la_SOURCES) $(openpgpkeygen_SOURCES) \
+	$(smimeagen_SOURCES) $(test_smg_id_SOURCES) \
 	$(test_smg_id_cache_SOURCES) $(test_smg_net_SOURCES) \
 	$(test_smg_pgp_association_SOURCES) \
 	$(test_smg_pgp_key_SOURCES) \
 	$(test_smg_smime_association_SOURCES) \
 	$(test_smg_smime_cert_SOURCES)
-DIST_SOURCES = $(am__libsmaug_la_SOURCES_DIST) $(test_smg_id_SOURCES) \
-	$(test_smg_id_cache_SOURCES) $(am__test_smg_net_SOURCES_DIST) \
+DIST_SOURCES = $(am__libsmaug_la_SOURCES_DIST) \
+	$(openpgpkeygen_SOURCES) $(smimeagen_SOURCES) \
+	$(test_smg_id_SOURCES) $(test_smg_id_cache_SOURCES) \
+	$(am__test_smg_net_SOURCES_DIST) \
 	$(test_smg_pgp_association_SOURCES) \
 	$(test_smg_pgp_key_SOURCES) \
 	$(test_smg_smime_association_SOURCES) \
@@ -606,6 +632,55 @@ clean-libLTLIBRARIES:
 
 libsmaug.la: $(libsmaug_la_OBJECTS) $(libsmaug_la_DEPENDENCIES) $(EXTRA_libsmaug_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(libsmaug_la_LINK) -rpath $(libdir) $(libsmaug_la_OBJECTS) $(libsmaug_la_LIBADD) $(LIBS)
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(bindir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(bindir)" || exit 1; \
+	fi; \
+	for p in $$list; do echo "$$p $$p"; done | \
+	sed 's/$(EXEEXT)$$//' | \
+	while read p p1; do if test -f $$p \
+	 || test -f $$p1 \
+	  ; then echo "$$p"; echo "$$p"; else :; fi; \
+	done | \
+	sed -e 'p;s,.*/,,;n;h' \
+	    -e 's|.*|.|' \
+	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
+	sed 'N;N;N;s,\n, ,g' | \
+	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
+	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
+	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
+	    else { print "f", $$3 "/" $$4, $$1; } } \
+	  END { for (d in files) print "f", d, files[d] }' | \
+	while read type dir files; do \
+	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
+	    test -z "$$files" || { \
+	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
+	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
+	    } \
+	; done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+	files=`for p in $$list; do echo "$$p"; done | \
+	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
+	      -e 's/$$/$(EXEEXT)/' \
+	`; \
+	test -n "$$list" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(bindir)" && rm -f $$files
+
+clean-binPROGRAMS:
+	@list='$(bin_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -615,6 +690,14 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+
+openpgpkeygen$(EXEEXT): $(openpgpkeygen_OBJECTS) $(openpgpkeygen_DEPENDENCIES) $(EXTRA_openpgpkeygen_DEPENDENCIES) 
+	@rm -f openpgpkeygen$(EXEEXT)
+	$(AM_V_CXXLD)$(openpgpkeygen_LINK) $(openpgpkeygen_OBJECTS) $(openpgpkeygen_LDADD) $(LIBS)
+
+smimeagen$(EXEEXT): $(smimeagen_OBJECTS) $(smimeagen_DEPENDENCIES) $(EXTRA_smimeagen_DEPENDENCIES) 
+	@rm -f smimeagen$(EXEEXT)
+	$(AM_V_CXXLD)$(smimeagen_LINK) $(smimeagen_OBJECTS) $(smimeagen_LDADD) $(LIBS)
 
 test_smg_id$(EXEEXT): $(test_smg_id_OBJECTS) $(test_smg_id_DEPENDENCIES) $(EXTRA_test_smg_id_DEPENDENCIES) 
 	@rm -f test_smg_id$(EXEEXT)
@@ -661,6 +744,16 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsmaug_la-smg_smime_association.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsmaug_la-smg_smime_cert.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsmaug_la-smg_tbird.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/openpgpkeygen-openpgpkeygen.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/openpgpkeygen-smg_id.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/openpgpkeygen-smg_pgp_association.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/openpgpkeygen-smg_pgp_key.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/openpgpkeygen-smg_smime_association_stub.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smimeagen-smg_id.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smimeagen-smg_pgp_association_stub.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smimeagen-smg_smime_association.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smimeagen-smg_smime_cert.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smimeagen-smimeagen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_smg_id-smg_id.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_smg_id-smg_pgp_association.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_smg_id-smg_pgp_key.Po@am__quote@
@@ -793,6 +886,146 @@ libsmaug_la-smg_net_getdns.lo: smg_net_getdns.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_net_getdns.cc' object='libsmaug_la-smg_net_getdns.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsmaug_la_CXXFLAGS) $(CXXFLAGS) -c -o libsmaug_la-smg_net_getdns.lo `test -f 'smg_net_getdns.cc' || echo '$(srcdir)/'`smg_net_getdns.cc
+
+openpgpkeygen-openpgpkeygen.o: openpgpkeygen.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -MT openpgpkeygen-openpgpkeygen.o -MD -MP -MF $(DEPDIR)/openpgpkeygen-openpgpkeygen.Tpo -c -o openpgpkeygen-openpgpkeygen.o `test -f 'openpgpkeygen.cc' || echo '$(srcdir)/'`openpgpkeygen.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/openpgpkeygen-openpgpkeygen.Tpo $(DEPDIR)/openpgpkeygen-openpgpkeygen.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='openpgpkeygen.cc' object='openpgpkeygen-openpgpkeygen.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -c -o openpgpkeygen-openpgpkeygen.o `test -f 'openpgpkeygen.cc' || echo '$(srcdir)/'`openpgpkeygen.cc
+
+openpgpkeygen-openpgpkeygen.obj: openpgpkeygen.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -MT openpgpkeygen-openpgpkeygen.obj -MD -MP -MF $(DEPDIR)/openpgpkeygen-openpgpkeygen.Tpo -c -o openpgpkeygen-openpgpkeygen.obj `if test -f 'openpgpkeygen.cc'; then $(CYGPATH_W) 'openpgpkeygen.cc'; else $(CYGPATH_W) '$(srcdir)/openpgpkeygen.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/openpgpkeygen-openpgpkeygen.Tpo $(DEPDIR)/openpgpkeygen-openpgpkeygen.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='openpgpkeygen.cc' object='openpgpkeygen-openpgpkeygen.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -c -o openpgpkeygen-openpgpkeygen.obj `if test -f 'openpgpkeygen.cc'; then $(CYGPATH_W) 'openpgpkeygen.cc'; else $(CYGPATH_W) '$(srcdir)/openpgpkeygen.cc'; fi`
+
+openpgpkeygen-smg_id.o: smg_id.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -MT openpgpkeygen-smg_id.o -MD -MP -MF $(DEPDIR)/openpgpkeygen-smg_id.Tpo -c -o openpgpkeygen-smg_id.o `test -f 'smg_id.cc' || echo '$(srcdir)/'`smg_id.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/openpgpkeygen-smg_id.Tpo $(DEPDIR)/openpgpkeygen-smg_id.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_id.cc' object='openpgpkeygen-smg_id.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -c -o openpgpkeygen-smg_id.o `test -f 'smg_id.cc' || echo '$(srcdir)/'`smg_id.cc
+
+openpgpkeygen-smg_id.obj: smg_id.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -MT openpgpkeygen-smg_id.obj -MD -MP -MF $(DEPDIR)/openpgpkeygen-smg_id.Tpo -c -o openpgpkeygen-smg_id.obj `if test -f 'smg_id.cc'; then $(CYGPATH_W) 'smg_id.cc'; else $(CYGPATH_W) '$(srcdir)/smg_id.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/openpgpkeygen-smg_id.Tpo $(DEPDIR)/openpgpkeygen-smg_id.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_id.cc' object='openpgpkeygen-smg_id.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -c -o openpgpkeygen-smg_id.obj `if test -f 'smg_id.cc'; then $(CYGPATH_W) 'smg_id.cc'; else $(CYGPATH_W) '$(srcdir)/smg_id.cc'; fi`
+
+openpgpkeygen-smg_smime_association_stub.o: smg_smime_association_stub.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -MT openpgpkeygen-smg_smime_association_stub.o -MD -MP -MF $(DEPDIR)/openpgpkeygen-smg_smime_association_stub.Tpo -c -o openpgpkeygen-smg_smime_association_stub.o `test -f 'smg_smime_association_stub.cc' || echo '$(srcdir)/'`smg_smime_association_stub.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/openpgpkeygen-smg_smime_association_stub.Tpo $(DEPDIR)/openpgpkeygen-smg_smime_association_stub.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_smime_association_stub.cc' object='openpgpkeygen-smg_smime_association_stub.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -c -o openpgpkeygen-smg_smime_association_stub.o `test -f 'smg_smime_association_stub.cc' || echo '$(srcdir)/'`smg_smime_association_stub.cc
+
+openpgpkeygen-smg_smime_association_stub.obj: smg_smime_association_stub.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -MT openpgpkeygen-smg_smime_association_stub.obj -MD -MP -MF $(DEPDIR)/openpgpkeygen-smg_smime_association_stub.Tpo -c -o openpgpkeygen-smg_smime_association_stub.obj `if test -f 'smg_smime_association_stub.cc'; then $(CYGPATH_W) 'smg_smime_association_stub.cc'; else $(CYGPATH_W) '$(srcdir)/smg_smime_association_stub.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/openpgpkeygen-smg_smime_association_stub.Tpo $(DEPDIR)/openpgpkeygen-smg_smime_association_stub.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_smime_association_stub.cc' object='openpgpkeygen-smg_smime_association_stub.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -c -o openpgpkeygen-smg_smime_association_stub.obj `if test -f 'smg_smime_association_stub.cc'; then $(CYGPATH_W) 'smg_smime_association_stub.cc'; else $(CYGPATH_W) '$(srcdir)/smg_smime_association_stub.cc'; fi`
+
+openpgpkeygen-smg_pgp_key.o: smg_pgp_key.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -MT openpgpkeygen-smg_pgp_key.o -MD -MP -MF $(DEPDIR)/openpgpkeygen-smg_pgp_key.Tpo -c -o openpgpkeygen-smg_pgp_key.o `test -f 'smg_pgp_key.cc' || echo '$(srcdir)/'`smg_pgp_key.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/openpgpkeygen-smg_pgp_key.Tpo $(DEPDIR)/openpgpkeygen-smg_pgp_key.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_pgp_key.cc' object='openpgpkeygen-smg_pgp_key.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -c -o openpgpkeygen-smg_pgp_key.o `test -f 'smg_pgp_key.cc' || echo '$(srcdir)/'`smg_pgp_key.cc
+
+openpgpkeygen-smg_pgp_key.obj: smg_pgp_key.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -MT openpgpkeygen-smg_pgp_key.obj -MD -MP -MF $(DEPDIR)/openpgpkeygen-smg_pgp_key.Tpo -c -o openpgpkeygen-smg_pgp_key.obj `if test -f 'smg_pgp_key.cc'; then $(CYGPATH_W) 'smg_pgp_key.cc'; else $(CYGPATH_W) '$(srcdir)/smg_pgp_key.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/openpgpkeygen-smg_pgp_key.Tpo $(DEPDIR)/openpgpkeygen-smg_pgp_key.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_pgp_key.cc' object='openpgpkeygen-smg_pgp_key.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -c -o openpgpkeygen-smg_pgp_key.obj `if test -f 'smg_pgp_key.cc'; then $(CYGPATH_W) 'smg_pgp_key.cc'; else $(CYGPATH_W) '$(srcdir)/smg_pgp_key.cc'; fi`
+
+openpgpkeygen-smg_pgp_association.o: smg_pgp_association.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -MT openpgpkeygen-smg_pgp_association.o -MD -MP -MF $(DEPDIR)/openpgpkeygen-smg_pgp_association.Tpo -c -o openpgpkeygen-smg_pgp_association.o `test -f 'smg_pgp_association.cc' || echo '$(srcdir)/'`smg_pgp_association.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/openpgpkeygen-smg_pgp_association.Tpo $(DEPDIR)/openpgpkeygen-smg_pgp_association.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_pgp_association.cc' object='openpgpkeygen-smg_pgp_association.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -c -o openpgpkeygen-smg_pgp_association.o `test -f 'smg_pgp_association.cc' || echo '$(srcdir)/'`smg_pgp_association.cc
+
+openpgpkeygen-smg_pgp_association.obj: smg_pgp_association.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -MT openpgpkeygen-smg_pgp_association.obj -MD -MP -MF $(DEPDIR)/openpgpkeygen-smg_pgp_association.Tpo -c -o openpgpkeygen-smg_pgp_association.obj `if test -f 'smg_pgp_association.cc'; then $(CYGPATH_W) 'smg_pgp_association.cc'; else $(CYGPATH_W) '$(srcdir)/smg_pgp_association.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/openpgpkeygen-smg_pgp_association.Tpo $(DEPDIR)/openpgpkeygen-smg_pgp_association.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_pgp_association.cc' object='openpgpkeygen-smg_pgp_association.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(openpgpkeygen_CXXFLAGS) $(CXXFLAGS) -c -o openpgpkeygen-smg_pgp_association.obj `if test -f 'smg_pgp_association.cc'; then $(CYGPATH_W) 'smg_pgp_association.cc'; else $(CYGPATH_W) '$(srcdir)/smg_pgp_association.cc'; fi`
+
+smimeagen-smimeagen.o: smimeagen.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -MT smimeagen-smimeagen.o -MD -MP -MF $(DEPDIR)/smimeagen-smimeagen.Tpo -c -o smimeagen-smimeagen.o `test -f 'smimeagen.cc' || echo '$(srcdir)/'`smimeagen.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/smimeagen-smimeagen.Tpo $(DEPDIR)/smimeagen-smimeagen.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smimeagen.cc' object='smimeagen-smimeagen.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -c -o smimeagen-smimeagen.o `test -f 'smimeagen.cc' || echo '$(srcdir)/'`smimeagen.cc
+
+smimeagen-smimeagen.obj: smimeagen.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -MT smimeagen-smimeagen.obj -MD -MP -MF $(DEPDIR)/smimeagen-smimeagen.Tpo -c -o smimeagen-smimeagen.obj `if test -f 'smimeagen.cc'; then $(CYGPATH_W) 'smimeagen.cc'; else $(CYGPATH_W) '$(srcdir)/smimeagen.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/smimeagen-smimeagen.Tpo $(DEPDIR)/smimeagen-smimeagen.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smimeagen.cc' object='smimeagen-smimeagen.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -c -o smimeagen-smimeagen.obj `if test -f 'smimeagen.cc'; then $(CYGPATH_W) 'smimeagen.cc'; else $(CYGPATH_W) '$(srcdir)/smimeagen.cc'; fi`
+
+smimeagen-smg_id.o: smg_id.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -MT smimeagen-smg_id.o -MD -MP -MF $(DEPDIR)/smimeagen-smg_id.Tpo -c -o smimeagen-smg_id.o `test -f 'smg_id.cc' || echo '$(srcdir)/'`smg_id.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/smimeagen-smg_id.Tpo $(DEPDIR)/smimeagen-smg_id.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_id.cc' object='smimeagen-smg_id.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -c -o smimeagen-smg_id.o `test -f 'smg_id.cc' || echo '$(srcdir)/'`smg_id.cc
+
+smimeagen-smg_id.obj: smg_id.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -MT smimeagen-smg_id.obj -MD -MP -MF $(DEPDIR)/smimeagen-smg_id.Tpo -c -o smimeagen-smg_id.obj `if test -f 'smg_id.cc'; then $(CYGPATH_W) 'smg_id.cc'; else $(CYGPATH_W) '$(srcdir)/smg_id.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/smimeagen-smg_id.Tpo $(DEPDIR)/smimeagen-smg_id.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_id.cc' object='smimeagen-smg_id.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -c -o smimeagen-smg_id.obj `if test -f 'smg_id.cc'; then $(CYGPATH_W) 'smg_id.cc'; else $(CYGPATH_W) '$(srcdir)/smg_id.cc'; fi`
+
+smimeagen-smg_smime_association.o: smg_smime_association.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -MT smimeagen-smg_smime_association.o -MD -MP -MF $(DEPDIR)/smimeagen-smg_smime_association.Tpo -c -o smimeagen-smg_smime_association.o `test -f 'smg_smime_association.cc' || echo '$(srcdir)/'`smg_smime_association.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/smimeagen-smg_smime_association.Tpo $(DEPDIR)/smimeagen-smg_smime_association.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_smime_association.cc' object='smimeagen-smg_smime_association.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -c -o smimeagen-smg_smime_association.o `test -f 'smg_smime_association.cc' || echo '$(srcdir)/'`smg_smime_association.cc
+
+smimeagen-smg_smime_association.obj: smg_smime_association.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -MT smimeagen-smg_smime_association.obj -MD -MP -MF $(DEPDIR)/smimeagen-smg_smime_association.Tpo -c -o smimeagen-smg_smime_association.obj `if test -f 'smg_smime_association.cc'; then $(CYGPATH_W) 'smg_smime_association.cc'; else $(CYGPATH_W) '$(srcdir)/smg_smime_association.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/smimeagen-smg_smime_association.Tpo $(DEPDIR)/smimeagen-smg_smime_association.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_smime_association.cc' object='smimeagen-smg_smime_association.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -c -o smimeagen-smg_smime_association.obj `if test -f 'smg_smime_association.cc'; then $(CYGPATH_W) 'smg_smime_association.cc'; else $(CYGPATH_W) '$(srcdir)/smg_smime_association.cc'; fi`
+
+smimeagen-smg_smime_cert.o: smg_smime_cert.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -MT smimeagen-smg_smime_cert.o -MD -MP -MF $(DEPDIR)/smimeagen-smg_smime_cert.Tpo -c -o smimeagen-smg_smime_cert.o `test -f 'smg_smime_cert.cc' || echo '$(srcdir)/'`smg_smime_cert.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/smimeagen-smg_smime_cert.Tpo $(DEPDIR)/smimeagen-smg_smime_cert.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_smime_cert.cc' object='smimeagen-smg_smime_cert.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -c -o smimeagen-smg_smime_cert.o `test -f 'smg_smime_cert.cc' || echo '$(srcdir)/'`smg_smime_cert.cc
+
+smimeagen-smg_smime_cert.obj: smg_smime_cert.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -MT smimeagen-smg_smime_cert.obj -MD -MP -MF $(DEPDIR)/smimeagen-smg_smime_cert.Tpo -c -o smimeagen-smg_smime_cert.obj `if test -f 'smg_smime_cert.cc'; then $(CYGPATH_W) 'smg_smime_cert.cc'; else $(CYGPATH_W) '$(srcdir)/smg_smime_cert.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/smimeagen-smg_smime_cert.Tpo $(DEPDIR)/smimeagen-smg_smime_cert.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_smime_cert.cc' object='smimeagen-smg_smime_cert.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -c -o smimeagen-smg_smime_cert.obj `if test -f 'smg_smime_cert.cc'; then $(CYGPATH_W) 'smg_smime_cert.cc'; else $(CYGPATH_W) '$(srcdir)/smg_smime_cert.cc'; fi`
+
+smimeagen-smg_pgp_association_stub.o: smg_pgp_association_stub.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -MT smimeagen-smg_pgp_association_stub.o -MD -MP -MF $(DEPDIR)/smimeagen-smg_pgp_association_stub.Tpo -c -o smimeagen-smg_pgp_association_stub.o `test -f 'smg_pgp_association_stub.cc' || echo '$(srcdir)/'`smg_pgp_association_stub.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/smimeagen-smg_pgp_association_stub.Tpo $(DEPDIR)/smimeagen-smg_pgp_association_stub.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_pgp_association_stub.cc' object='smimeagen-smg_pgp_association_stub.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -c -o smimeagen-smg_pgp_association_stub.o `test -f 'smg_pgp_association_stub.cc' || echo '$(srcdir)/'`smg_pgp_association_stub.cc
+
+smimeagen-smg_pgp_association_stub.obj: smg_pgp_association_stub.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -MT smimeagen-smg_pgp_association_stub.obj -MD -MP -MF $(DEPDIR)/smimeagen-smg_pgp_association_stub.Tpo -c -o smimeagen-smg_pgp_association_stub.obj `if test -f 'smg_pgp_association_stub.cc'; then $(CYGPATH_W) 'smg_pgp_association_stub.cc'; else $(CYGPATH_W) '$(srcdir)/smg_pgp_association_stub.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/smimeagen-smg_pgp_association_stub.Tpo $(DEPDIR)/smimeagen-smg_pgp_association_stub.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_pgp_association_stub.cc' object='smimeagen-smg_pgp_association_stub.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -c -o smimeagen-smg_pgp_association_stub.obj `if test -f 'smg_pgp_association_stub.cc'; then $(CYGPATH_W) 'smg_pgp_association_stub.cc'; else $(CYGPATH_W) '$(srcdir)/smg_pgp_association_stub.cc'; fi`
 
 test_smg_id-test_smg_id.o: test_smg_id.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_smg_id_CXXFLAGS) $(CXXFLAGS) -MT test_smg_id-test_smg_id.o -MD -MP -MF $(DEPDIR)/test_smg_id-test_smg_id.Tpo -c -o test_smg_id-test_smg_id.o `test -f 'test_smg_id.cc' || echo '$(srcdir)/'`test_smg_id.cc
@@ -1382,8 +1615,10 @@ distdir: $(DISTFILES)
 check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS) config.h
+install-binPROGRAMS: install-libLTLIBRARIES
+
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(smgheaderdir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(smgheaderdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -1418,8 +1653,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-noinstPROGRAMS mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
+	clean-libtool clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -1445,7 +1680,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-libLTLIBRARIES
+install-exec-am: install-binPROGRAMS install-libLTLIBRARIES
 
 install-html: install-html-am
 
@@ -1485,16 +1720,18 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libLTLIBRARIES uninstall-smgheaderHEADERS
+uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
+	uninstall-smgheaderHEADERS
 
 .MAKE: all install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-noinstPROGRAMS \
-	cscopelist-am ctags ctags-am distclean distclean-compile \
-	distclean-generic distclean-hdr distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
+.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
+	clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
+	clean-libtool clean-noinstPROGRAMS cscopelist-am ctags \
+	ctags-am distclean distclean-compile distclean-generic \
+	distclean-hdr distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-binPROGRAMS install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am \
 	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
@@ -1503,7 +1740,8 @@ uninstall-am: uninstall-libLTLIBRARIES uninstall-smgheaderHEADERS
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-libLTLIBRARIES uninstall-smgheaderHEADERS
+	uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
+	uninstall-smgheaderHEADERS
 
 .PRECIOUS: Makefile
 
