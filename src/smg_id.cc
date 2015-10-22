@@ -93,7 +93,7 @@ bool SmgID::init(std::string &p_sEmailAddr)
         ostringstream oSS;
         char szOct[3] = {0, 0, 0};
         int i = 0;
-        for (i = 0; i < SHA256_DIGEST_LENGTH; i++)
+        for (i = 0; i < SMG_SHA256_TRUNCATION_LIMIT; i++)
         {
           memset(szOct, 0, 3);
           sprintf(szOct, "%02x", pHash[i]);
