@@ -28,6 +28,7 @@
 
 #include <errno.h>
 #include <cstring>
+#include <cstdlib>
 #include <arpa/inet.h>
 
 #include "smg_pgp_association.h"
