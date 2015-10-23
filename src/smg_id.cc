@@ -69,22 +69,22 @@ bool SmgID::init(std::string &p_sEmailAddr)
       m_sUser = m_sEmailAddr.substr(0, uPos);
       m_sDomain = m_sEmailAddr.substr(uPos + 1);
 
-      unsigned char pHash[SHA224_DIGEST_LENGTH];
-      memset(pHash, 0, SHA224_DIGEST_LENGTH);
+      unsigned char pHash[SHA256_DIGEST_LENGTH];
+      memset(pHash, 0, SHA256_DIGEST_LENGTH);
 
       unsigned char pPgpHash[SHA256_DIGEST_LENGTH];
       memset(pPgpHash, 0, SHA256_DIGEST_LENGTH);
 
       SHA256_CTX oContext;
-      if (!SHA224_Init(&oContext))
+      if (!SHA256_Init(&oContext))
       {
-        smg_log("Unable to init SHA224 context.\n");
+        smg_log("Unable to init SHA256 context.\n");
       }
-      else if (!SHA224_Update(&oContext, m_sUser.c_str(), m_sUser.size()))
+      else if (!SHA256_Update(&oContext, m_sUser.c_str(), m_sUser.size()))
       {
         smg_log("Unable to update hash from user '%s'\n", m_sUser.c_str());
       }
-      else if (!SHA224_Final(pHash, &oContext))
+      else if (!SHA256_Final(pHash, &oContext))
       {
         smg_log("Unable to finalize hash.\n");
       }
@@ -93,7 +93,7 @@ bool SmgID::init(std::string &p_sEmailAddr)
         ostringstream oSS;
         char szOct[3] = {0, 0, 0};
         int i = 0;
-        for (i = 0; i < SHA224_DIGEST_LENGTH; i++)
+        for (i = 0; i < SMG_SHA256_TRUNCATION_LIMIT; i++)
         {
           memset(szOct, 0, 3);
           sprintf(szOct, "%02x", pHash[i]);
