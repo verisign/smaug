@@ -18,6 +18,8 @@ Notes](./ReleaseNotes.md)
 
 Authored by Eric Osterweil eosterweil@verisign.com and Glen Wiley gwiley@verisign.com
 
+Also see Smaug's [Thunderbird plugin](https://github.com/verisign/smaug-tbird-plugin).
+
 # Table of Contents
 
 * [Compiling](#compiling)
