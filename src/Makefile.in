@@ -93,7 +93,8 @@ host_triplet = @host@
 noinst_PROGRAMS = test_smg_smime_cert$(EXEEXT) \
 	test_smg_smime_association$(EXEEXT) test_smg_id$(EXEEXT) \
 	test_smg_net$(EXEEXT) test_smg_id_cache$(EXEEXT) \
-	test_smg_pgp_association$(EXEEXT) test_smg_pgp_key$(EXEEXT)
+	test_smg_pgp_association$(EXEEXT) test_smg_pgp_key$(EXEEXT) \
+	test_crypt_check_smg_smime_cert$(EXEEXT)
 bin_PROGRAMS = smimeagen$(EXEEXT) openpgpkeygen$(EXEEXT)
 @SMG_DEBUG_TRUE@am__append_1 = -D_SMG_DEBUG
 @SMG_GETDNS_TRUE@am__append_2 = -lldns -lgetdns
@@ -187,6 +188,15 @@ smimeagen_LDADD = $(LDADD)
 smimeagen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(smimeagen_CXXFLAGS) \
 	$(CXXFLAGS) $(smimeagen_LDFLAGS) $(LDFLAGS) -o $@
+am_test_crypt_check_smg_smime_cert_OBJECTS = test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.$(OBJEXT) \
+	test_crypt_check_smg_smime_cert-smg_smime_cert.$(OBJEXT)
+test_crypt_check_smg_smime_cert_OBJECTS =  \
+	$(am_test_crypt_check_smg_smime_cert_OBJECTS)
+test_crypt_check_smg_smime_cert_LDADD = $(LDADD)
+test_crypt_check_smg_smime_cert_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(test_crypt_check_smg_smime_cert_CXXFLAGS) $(CXXFLAGS) \
+	$(test_crypt_check_smg_smime_cert_LDFLAGS) $(LDFLAGS) -o $@
 am_test_smg_id_OBJECTS = test_smg_id-test_smg_id.$(OBJEXT) \
 	test_smg_id-smg_id.$(OBJEXT) \
 	test_smg_id-smg_smime_association.$(OBJEXT) \
@@ -307,14 +317,16 @@ am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libsmaug_la_SOURCES) $(openpgpkeygen_SOURCES) \
-	$(smimeagen_SOURCES) $(test_smg_id_SOURCES) \
-	$(test_smg_id_cache_SOURCES) $(test_smg_net_SOURCES) \
-	$(test_smg_pgp_association_SOURCES) \
+	$(smimeagen_SOURCES) \
+	$(test_crypt_check_smg_smime_cert_SOURCES) \
+	$(test_smg_id_SOURCES) $(test_smg_id_cache_SOURCES) \
+	$(test_smg_net_SOURCES) $(test_smg_pgp_association_SOURCES) \
 	$(test_smg_pgp_key_SOURCES) \
 	$(test_smg_smime_association_SOURCES) \
 	$(test_smg_smime_cert_SOURCES)
 DIST_SOURCES = $(am__libsmaug_la_SOURCES_DIST) \
 	$(openpgpkeygen_SOURCES) $(smimeagen_SOURCES) \
+	$(test_crypt_check_smg_smime_cert_SOURCES) \
 	$(test_smg_id_SOURCES) $(test_smg_id_cache_SOURCES) \
 	$(am__test_smg_net_SOURCES_DIST) \
 	$(test_smg_pgp_association_SOURCES) \
@@ -545,6 +557,11 @@ test_smg_pgp_key_LDFLAGS = -L/usr/local/lib -L/opt/local/lib -lgpgme -lgpg-error
 test_smg_pgp_key_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include \
                              -I/opt/local/include $(CXXFLAGS) -D_SMG_DEBUG
 
+test_crypt_check_smg_smime_cert_SOURCES = test_crypt_check_smg_smime_cert.cc smg_smime_cert.cc
+test_crypt_check_smg_smime_cert_LDFLAGS = -L/usr/local/lib -L/opt/local/lib -lssl -lcrypto $(LDFLAGS)
+test_crypt_check_smg_smime_cert_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include \
+                               -I/opt/local/include $(CXXFLAGS)
+
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -699,6 +716,10 @@ smimeagen$(EXEEXT): $(smimeagen_OBJECTS) $(smimeagen_DEPENDENCIES) $(EXTRA_smime
 	@rm -f smimeagen$(EXEEXT)
 	$(AM_V_CXXLD)$(smimeagen_LINK) $(smimeagen_OBJECTS) $(smimeagen_LDADD) $(LIBS)
 
+test_crypt_check_smg_smime_cert$(EXEEXT): $(test_crypt_check_smg_smime_cert_OBJECTS) $(test_crypt_check_smg_smime_cert_DEPENDENCIES) $(EXTRA_test_crypt_check_smg_smime_cert_DEPENDENCIES) 
+	@rm -f test_crypt_check_smg_smime_cert$(EXEEXT)
+	$(AM_V_CXXLD)$(test_crypt_check_smg_smime_cert_LINK) $(test_crypt_check_smg_smime_cert_OBJECTS) $(test_crypt_check_smg_smime_cert_LDADD) $(LIBS)
+
 test_smg_id$(EXEEXT): $(test_smg_id_OBJECTS) $(test_smg_id_DEPENDENCIES) $(EXTRA_test_smg_id_DEPENDENCIES) 
 	@rm -f test_smg_id$(EXEEXT)
 	$(AM_V_CXXLD)$(test_smg_id_LINK) $(test_smg_id_OBJECTS) $(test_smg_id_LDADD) $(LIBS)
@@ -754,6 +775,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smimeagen-smg_smime_association.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smimeagen-smg_smime_cert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smimeagen-smimeagen.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_crypt_check_smg_smime_cert-smg_smime_cert.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_smg_id-smg_id.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_smg_id-smg_pgp_association.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_smg_id-smg_pgp_key.Po@am__quote@
@@ -1026,6 +1049,34 @@ smimeagen-smg_pgp_association_stub.obj: smg_pgp_association_stub.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_pgp_association_stub.cc' object='smimeagen-smg_pgp_association_stub.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(smimeagen_CXXFLAGS) $(CXXFLAGS) -c -o smimeagen-smg_pgp_association_stub.obj `if test -f 'smg_pgp_association_stub.cc'; then $(CYGPATH_W) 'smg_pgp_association_stub.cc'; else $(CYGPATH_W) '$(srcdir)/smg_pgp_association_stub.cc'; fi`
+
+test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.o: test_crypt_check_smg_smime_cert.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_crypt_check_smg_smime_cert_CXXFLAGS) $(CXXFLAGS) -MT test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.o -MD -MP -MF $(DEPDIR)/test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.Tpo -c -o test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.o `test -f 'test_crypt_check_smg_smime_cert.cc' || echo '$(srcdir)/'`test_crypt_check_smg_smime_cert.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.Tpo $(DEPDIR)/test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_crypt_check_smg_smime_cert.cc' object='test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_crypt_check_smg_smime_cert_CXXFLAGS) $(CXXFLAGS) -c -o test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.o `test -f 'test_crypt_check_smg_smime_cert.cc' || echo '$(srcdir)/'`test_crypt_check_smg_smime_cert.cc
+
+test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.obj: test_crypt_check_smg_smime_cert.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_crypt_check_smg_smime_cert_CXXFLAGS) $(CXXFLAGS) -MT test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.obj -MD -MP -MF $(DEPDIR)/test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.Tpo -c -o test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.obj `if test -f 'test_crypt_check_smg_smime_cert.cc'; then $(CYGPATH_W) 'test_crypt_check_smg_smime_cert.cc'; else $(CYGPATH_W) '$(srcdir)/test_crypt_check_smg_smime_cert.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.Tpo $(DEPDIR)/test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_crypt_check_smg_smime_cert.cc' object='test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_crypt_check_smg_smime_cert_CXXFLAGS) $(CXXFLAGS) -c -o test_crypt_check_smg_smime_cert-test_crypt_check_smg_smime_cert.obj `if test -f 'test_crypt_check_smg_smime_cert.cc'; then $(CYGPATH_W) 'test_crypt_check_smg_smime_cert.cc'; else $(CYGPATH_W) '$(srcdir)/test_crypt_check_smg_smime_cert.cc'; fi`
+
+test_crypt_check_smg_smime_cert-smg_smime_cert.o: smg_smime_cert.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_crypt_check_smg_smime_cert_CXXFLAGS) $(CXXFLAGS) -MT test_crypt_check_smg_smime_cert-smg_smime_cert.o -MD -MP -MF $(DEPDIR)/test_crypt_check_smg_smime_cert-smg_smime_cert.Tpo -c -o test_crypt_check_smg_smime_cert-smg_smime_cert.o `test -f 'smg_smime_cert.cc' || echo '$(srcdir)/'`smg_smime_cert.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_crypt_check_smg_smime_cert-smg_smime_cert.Tpo $(DEPDIR)/test_crypt_check_smg_smime_cert-smg_smime_cert.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_smime_cert.cc' object='test_crypt_check_smg_smime_cert-smg_smime_cert.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_crypt_check_smg_smime_cert_CXXFLAGS) $(CXXFLAGS) -c -o test_crypt_check_smg_smime_cert-smg_smime_cert.o `test -f 'smg_smime_cert.cc' || echo '$(srcdir)/'`smg_smime_cert.cc
+
+test_crypt_check_smg_smime_cert-smg_smime_cert.obj: smg_smime_cert.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_crypt_check_smg_smime_cert_CXXFLAGS) $(CXXFLAGS) -MT test_crypt_check_smg_smime_cert-smg_smime_cert.obj -MD -MP -MF $(DEPDIR)/test_crypt_check_smg_smime_cert-smg_smime_cert.Tpo -c -o test_crypt_check_smg_smime_cert-smg_smime_cert.obj `if test -f 'smg_smime_cert.cc'; then $(CYGPATH_W) 'smg_smime_cert.cc'; else $(CYGPATH_W) '$(srcdir)/smg_smime_cert.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_crypt_check_smg_smime_cert-smg_smime_cert.Tpo $(DEPDIR)/test_crypt_check_smg_smime_cert-smg_smime_cert.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='smg_smime_cert.cc' object='test_crypt_check_smg_smime_cert-smg_smime_cert.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_crypt_check_smg_smime_cert_CXXFLAGS) $(CXXFLAGS) -c -o test_crypt_check_smg_smime_cert-smg_smime_cert.obj `if test -f 'smg_smime_cert.cc'; then $(CYGPATH_W) 'smg_smime_cert.cc'; else $(CYGPATH_W) '$(srcdir)/smg_smime_cert.cc'; fi`
 
 test_smg_id-test_smg_id.o: test_smg_id.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_smg_id_CXXFLAGS) $(CXXFLAGS) -MT test_smg_id-test_smg_id.o -MD -MP -MF $(DEPDIR)/test_smg_id-test_smg_id.Tpo -c -o test_smg_id-test_smg_id.o `test -f 'test_smg_id.cc' || echo '$(srcdir)/'`test_smg_id.cc

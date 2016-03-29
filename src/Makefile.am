@@ -14,7 +14,7 @@ smgheader_HEADERS = smg_id.h smg_id_cache.h smg_net.h smg_smime_association.h sm
                     smg_net_engine.h smg_net_libunbound.h smg_tbird.h smg_defs.h
 
 noinst_PROGRAMS = test_smg_smime_cert test_smg_smime_association test_smg_id test_smg_net \
-                  test_smg_id_cache test_smg_pgp_association test_smg_pgp_key
+                  test_smg_id_cache test_smg_pgp_association test_smg_pgp_key test_crypt_check_smg_smime_cert
 bin_PROGRAMS = smimeagen openpgpkeygen
 
 if SMG_DEBUG
@@ -81,3 +81,9 @@ test_smg_pgp_key_SOURCES = test_smg_pgp_key.cc smg_pgp_association.cc smg_pgp_ke
 test_smg_pgp_key_LDFLAGS = -L/usr/local/lib -L/opt/local/lib -lgpgme -lgpg-error $(LDFLAGS)
 test_smg_pgp_key_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include \
                              -I/opt/local/include $(CXXFLAGS) -D_SMG_DEBUG
+
+test_crypt_check_smg_smime_cert_SOURCES = test_crypt_check_smg_smime_cert.cc smg_smime_cert.cc
+test_crypt_check_smg_smime_cert_LDFLAGS = -L/usr/local/lib -L/opt/local/lib -lssl -lcrypto $(LDFLAGS)
+test_crypt_check_smg_smime_cert_CXXFLAGS = -g -Wall -O2 -Wno-deprecated-declarations -I/usr/local/include \
+                               -I/opt/local/include $(CXXFLAGS)
+
