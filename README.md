@@ -73,6 +73,7 @@ sudo yum install automake
 sudo yum install libtool
 sudo yum install unbound-devel
 sudo install openssl-devel
+sudo install gpgme-devel
 ```
 
 Mac OS X
@@ -82,6 +83,7 @@ If you use ports:
 sudo port install automake
 sudo port install libtool
 sudo port install openssl
+sudo port install gpgme-devel
 # cd to a build directory
 wget http://www.unbound.net/downloads/unbound-latest.tar.gz
 tar -xf unbound-latest.tar.gz
@@ -139,6 +141,7 @@ sudo apt-get install automake
 sudo apt-get install libtool
 sudo apt-get install libunbound-dev
 sudo apt-get install libssl-dev
+sudo apt-get install gpgme-devel
 ```
 
 
