@@ -141,7 +141,7 @@ sudo apt-get install automake
 sudo apt-get install libtool
 sudo apt-get install libunbound-dev
 sudo apt-get install libssl-dev
-sudo apt-get install gpgme-devel
+sudo apt-get install libgpgme11-dev
 ```
 
 
